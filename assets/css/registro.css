@@ -1,0 +1,68 @@
+/* Contenedor principal */
+.registro-container {
+  max-width: 500px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Título y subtítulo */
+.registro-container h1 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #215A63;
+  font-size: 2rem;
+}
+
+.registro-container p {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+/* Formulario */
+.registro-form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.registro-form input,
+.registro-form select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.registro-form input:focus,
+.registro-form select:focus {
+  border-color: #215A63;
+  outline: none;
+}
+
+/* Botón */
+.registro-btn {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #215A63;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.registro-btn:hover {
+  background-color: #1a4a52;
+}

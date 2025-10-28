@@ -1,0 +1,28 @@
+.simple-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em 2em;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.simple-header .logo {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #215A63;
+}
+
+.back-home {
+  color: #215A63;
+  font-weight: 600;
+}
+
+.simple-footer {
+  text-align: center;
+  padding: 1em;
+  font-size: 0.9em;
+  color: #777;
+  border-top: 1px solid #ddd;
+  margin-top: 2rem;
+}
