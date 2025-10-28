@@ -20,6 +20,9 @@ switch ($page) {
   case 'seleccion_registro':
     echo $templates->render('seleccion_registro', ['title' => '¿Quién eres?']);
     break;
+  case 'tabla_usuarios':
+    echo $templates->render('tabla_usuarios', ['title' => 'Alumnos']);
+    break;
 
   case 'landing':
   default:
