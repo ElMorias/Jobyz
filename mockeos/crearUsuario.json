@@ -1,0 +1,10 @@
+{
+  "creado": true,
+  "mensaje": "Usuario creado correctamente",
+  "usuario": {
+    "id": 7,
+    "nombre": "Elena",
+    "apellidos": "Navarro Ruiz",
+    "mail": "elena.navarro@example.com"
+  }
+}

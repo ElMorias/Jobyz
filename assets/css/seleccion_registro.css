@@ -2,7 +2,7 @@
   max-width: 500px;
   margin: 4rem auto;
   padding: 2rem;
-  background-color: #fff;
+  background-color: #215A63; /* fondo principal */
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
   text-align: center;
@@ -10,13 +10,13 @@
 }
 
 .elige-tipo-container h1 {
-  color: #215A63;
+  color: #fff;
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
 .elige-tipo-container p {
-  color: #555;
+  color: #e0e0e0;
   margin-bottom: 2rem;
 }
 
@@ -34,22 +34,10 @@
   text-decoration: none;
   font-size: 1rem;
   transition: background-color 0.3s ease;
-}
-
-.btn-tipo.alumno {
   background-color: #B4E900; /* verde lima */
   color: #215A63;
 }
 
-.btn-tipo.alumno:hover {
+.btn-tipo:hover {
   background-color: #A0D800;
-}
-
-.btn-tipo.empresa {
-  background-color: #215A63;
-  color: #fff;
-}
-
-.btn-tipo.empresa:hover {
-  background-color: #1a4a52;
 }

@@ -1,4 +1,4 @@
-<?php $this->layout('base_simple', ['title' => 'Registro de usuario']) ?>
+<?php $this->layout('base_simple', ['title' => 'Registro de Alumno']) ?>
 
 <?php $this->start('css') ?>
 <link rel="stylesheet" href="assets/css/registro.css">
@@ -6,43 +6,62 @@
 
 <?php $this->start('contenido') ?>
 <section class="registro-container">
-  <h1>Regístrate en Jobyz</h1>
-  <p>Crea tu cuenta como alumno o empresa.</p>
+  <h1>Registro de Alumno</h1>
 
-  <form action="/?page=registro" method="POST" class="registro-form">
-    <!-- Correo -->
-    <label for="email">Correo electrónico</label>
-    <input type="email" id="email" name="email" required value="<?= $_POST['email'] ?? '' ?>">
+<form action="/?page=login" method="POST" enctype="multipart/form-data" class="registro-container">
+ <div class="form-grid">
+    <div>
+      
+      <label for="correo">Correo electrónico</label>
+      <input type="email" name="correo" id="correo" required>
+      <div id="errorCorreo"></div>
 
-    <!-- Contraseña -->
-    <label for="password">Contraseña</label>
-    <input type="password" id="password" name="password" required>
+      <label for="contrasena">Contraseña</label>
+      <input type="password" name="contrasena" id="contrasena" required>
+      <div id="errorContrasena"></div>
 
-    <!-- Tipo de usuario -->
-    <label for="tipo">Soy:</label>
-    <select id="tipo" name="tipo" required onchange="this.form.submit()">
-      <option value="">Selecciona una opción</option>
-      <option value="alumno" <?= ($_POST['tipo'] ?? '') === 'alumno' ? 'selected' : '' ?>>Alumno</option>
-      <option value="empresa" <?= ($_POST['tipo'] ?? '') === 'empresa' ? 'selected' : '' ?>>Empresa</option>
-    </select>
+      <label for="nombre">Nombre</label>
+      <input type="text" name="nombre" id="nombre" required>
+      <div id="errorNombre"></div>
 
-    <?php if ($_POST['tipo'] ?? '' === 'alumno'): ?>
-      <!-- Campos adicionales para alumno -->
-      <label for="carrera">Carrera o especialidad</label>
-      <input type="text" id="carrera" name="carrera" value="<?= $_POST['carrera'] ?? '' ?>">
+      <label for="apellido1">Primer apellido</label>
+      <input type="text" name="apellido1" id="apellido1" required>
+      <div id="errorApellido1"></div>
+            
+      <label for="apellido2">Segundo apellido</label>
+      <input type="text" name="apellido2" id="apellido2">
+    </div>
 
-      <label for="centro">Centro educativo</label>
-      <input type="text" id="centro" name="centro" value="<?= $_POST['centro'] ?? '' ?>">
-    <?php elseif ($_POST['tipo'] ?? '' === 'empresa'): ?>
-      <!-- Campos adicionales para empresa -->
-      <label for="nombre_empresa">Nombre de la empresa</label>
-      <input type="text" id="nombre_empresa" name="nombre_empresa" value="<?= $_POST['nombre_empresa'] ?? '' ?>">
+    <div>
+      <label for="fnacimiento">Fecha de nacimiento</label>
+      <input type="date" name="fnacimiento" id="fnacimiento" required>
+      <div id="errorFnacimiento"></div>
 
-      <label for="sector">Sector</label>
-      <input type="text" id="sector" name="sector" value="<?= $_POST['sector'] ?? '' ?>">
-    <?php endif; ?>
+      <label for="curriculum">Currículum</label>
+      <input type="file" name="curriculum" id="curriculum" accept=".pdf,.doc,.docx" required>
+      <div id="errorCurriculum"></div>
 
-    <button type="submit" class="registro-btn">Crear cuenta</button>
-  </form>
+      <label for="dni">DNI</label>
+      <input type="text" name="dni" id="dni" required>
+      <div id="errorDni"></div>
+
+      <label for="direccion">Dirección</label>
+      <input type="text" name="direccion" id="direccion" required>
+      <div id="errorDireccion"></div>
+
+      <label for="foto">Foto de perfil</label>
+      <input type="file" name="foto" id="foto" accept="image/*">
+
+      <button type="button" id="btnTomarFoto">Tomar foto</button>
+      <button type="button" id="btnSubirFoto">Subir foto</button>
+
+
+    </div>
+  </div>
+
+  <button type="submit">Registrarse</button>
+</form>
+
+
 </section>
 <?php $this->stop() ?>

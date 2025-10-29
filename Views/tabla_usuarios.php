@@ -8,7 +8,15 @@
 <section class="tablaUsuariosContainer">
   <h1>Listado de usuarios</h1>
 
-  <div><button id="borrar">borrar usuario<button></div>
+  <div class="accionesUsuarios">
+    <div class="busqueda">
+      <input type="text" id="buscadorUsuarios" placeholder="Buscar Alumno...">
+      <button id="filtrarUsuarios">Filtrar</button>
+    </div>
+    <button id="addUsuario">Añadir</button>
+    <button id="borrar">borrar</button>
+  </div>
+
 
   <table class="tablaUsuarios">
     <thead>

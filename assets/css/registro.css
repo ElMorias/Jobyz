@@ -1,68 +1,76 @@
-/* Contenedor principal */
-.registro-container {
-  max-width: 500px;
-  margin: 4rem auto;
-  padding: 2rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+body {
+  background-color: #215A63;
   font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-/* Título y subtítulo */
+.registro-container {
+  max-width: 800px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  color: #215A63;
+}
+
 .registro-container h1 {
   text-align: center;
-  margin-bottom: 0.5rem;
-  color: #215A63;
-  font-size: 2rem;
-}
-
-.registro-container p {
-  text-align: center;
   margin-bottom: 2rem;
-  color: #555;
+  color: #215A63;
 }
 
-/* Formulario */
-.registro-form label {
-  display: block;
-  margin-top: 1rem;
-  font-weight: 600;
-  color: #333;
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
 }
 
-.registro-form input,
-.registro-form select {
-  width: 100%;
-  padding: 0.75rem;
-  margin-top: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-.registro-form input:focus,
-.registro-form select:focus {
-  border-color: #215A63;
-  outline: none;
-}
-
-/* Botón */
-.registro-btn {
-  margin-top: 2rem;
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #215A63;
-  color: white;
-  border: none;
-  border-radius: 6px;
+label {
   font-weight: bold;
+  margin-bottom: 0.3rem;
+  display: block;
+  color: #215A63;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.9rem;
   font-size: 1rem;
+  border: 2px solid #B4E900;
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-bottom: 1.2rem;
+}
+
+input[type="file"] {
+  background-color: #f9f9f9;
+  color: #215A63;
+  font-weight: bold;
+}
+
+button {
+  background-color: #B4E900;
+  color: #215A63;
+  font-weight: bold;
+  border: none;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  display: block;
+  margin: 2rem auto 0;
+  width: 50%;
 }
 
-.registro-btn:hover {
-  background-color: #1a4a52;
+button:hover {
+  background-color: #A0D800;
 }
+
+footer{
+  background-color: #ffffff;
+}
+
