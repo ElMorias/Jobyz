@@ -1,23 +1,30 @@
 <?php
+require_once '../controllers/AlumnoController.php';
+
+$controller = new AlumnoController();
+
+// GET → obtener todos o uno por ID
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    obtenerAlumno();
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    crearAlumno();
-} elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-    actualizarAlumno();
-} elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    eliminarAlumno();
-} else {
-    http_response_code(405); // Método no permitido
-    echo json_encode(['error' => 'Método no permitido']);
-    exit;
+  if (isset($_GET['id'])) {
+    $controller->apiGetAlumno($_GET['id']);
+  } else {
+    $controller->apiGetTodos();
+  }
 }
 
-function obtenerAlumno(){
-    //aqui se recogen los datos del body o del header o de dodne sea
-    // se hace un converter si hace falta
-    // hago el json y se llama al repositorio para que obtenga datos o lo que sea
+// POST → crear alumno
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $datos = json_decode(file_get_contents('php://input'), true);
+  $controller->apiCrearAlumno($datos);
 }
 
-
-?>
+// DELETE → borrar alumno
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+  $datos = json_decode(file_get_contents('php://input'), true);
+  if (isset($datos['id'])) {
+    $controller->apiBorrarAlumno($datos['id']);
+  } else {
+    http_response_code(400);
+    echo json_encode(['error' => 'Falta el ID']);
+  }
+}

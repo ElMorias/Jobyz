@@ -20,8 +20,10 @@ switch ($page) {
   case 'seleccion_registro':
     echo $templates->render('seleccion_registro', ['title' => '¿Quién eres?']);
     break;
-  case 'tabla_usuarios':
-    echo $templates->render('tabla_usuarios', ['title' => 'Alumnos']);
+  case 'tabla_alumnos':
+    require_once 'Controllers/AlumnoController.php';
+    $controller = new AlumnoController($templates);
+    $controller->mostrarTabla();
     break;
 
   case 'landing':
