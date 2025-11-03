@@ -1,9 +1,5 @@
 <?php
-
-require_once 'repositorios/RepositorioAlumno.php';
-require_once 'models/Alumno.php';
-require_once 'models/Estudio.php';
-
+require_once dirname(__DIR__) . '/autoloader.php';
 
 class AlumnoController {
   private $repo;

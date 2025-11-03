@@ -3,7 +3,7 @@ window.addEventListener('load', function () {
     // cargar los usuarios desde el json al cargar la pagina
     const tbody = document.querySelector('.tablaUsuarios tbody');
 
-    fetch('mockeos/alumnos.json')
+    fetch('api/apiAlumno.php')
         .then(res => res.json())
         .then(usuarios => {
             usuarios.forEach(usuario => {
@@ -26,11 +26,11 @@ window.addEventListener('load', function () {
         fila.appendChild(tdNombre);
 
         const tdape = document.createElement('td');
-        tdape.textContent = usuario.apellidos;
+        tdape.textContent = usuario.apellido1;
         fila.appendChild(tdape);
 
         const tdmail = document.createElement('td');
-        tdmail.textContent = usuario.mail;
+        tdmail.textContent = usuario.correo;
         fila.appendChild(tdmail);
 
         const tdAcciones = document.createElement('td');
@@ -75,7 +75,7 @@ window.addEventListener('load', function () {
                 .then(res => res.json())
                 .then(data => {
                     if (data.status === 'ok') {
-                    alert(`Detalles del usuario:\nID: ${data.id_borrado}\n ${data.mensaje}`);
+                        alert(`Detalles del usuario:\nID: ${data.id_borrado}\n ${data.mensaje}`);
                     }
                 })
                 .catch(err => {
@@ -86,41 +86,45 @@ window.addEventListener('load', function () {
 
 
 
-    //ver los detalles de los usuarios con el boton detalles
-    tbody.addEventListener('click', function (e) {
-        const modalManager = new ModalManager();
-        
-        if (e.target.classList.contains('btn-detalles')) {
-            const fila = e.target.closest('tr');
-            const id = e.target.dataset.id;
-            
-            modalManager.crearModal('<h2>Detalles del usuario</h2><p>Cargando...</p>');
-
-            fetch('mockeos/alumno12.json')
-                .then(res => res.json())
-                .then(data => {
-                    const usuario = data[0];
-                    alert(`Detalles del usuario:\nID: ${usuario.id}\nNombre: ${usuario.nombre}\nApellidos: ${usuario.apellidos}\nCorreo: ${usuario.mail}`);
-                })
-                .catch(err => {
-                    console.error('Error al cargar detalles del usuario:', err);
-                });
-        }
-    });
 
     const btnadd = document.getElementById('addUsuario');
 
     btnadd.addEventListener('click', function () {
-        fetch('mockeos/crearUsuario.json')
-            .then(res => res.json())
-            .then(data => {
-                if (data.creado === true) {
-                    const usuario = data.usuario;
-                    pintarTabla(usuario);
-            }})
-            .catch(err => {
-                console.error('Error al crear usuario:', err);
+        modalManager.crearModalDesdeUrl('assets/modales/modalRegistroAlumno.txt', function () {
+            let modalRaiz = document.querySelector('.modal-contenedor');
+            initRegistroAlumnoForm(modalRaiz); // Aquí se inicializa todo el JS
+            // cambiar estilo del modal para que sea creaer
+            let titulo = modalRaiz.querySelector('h2');
+            if (titulo) titulo.textContent = 'Añadir alumno';
+            let btnSubmit = modalRaiz.querySelector('button[type=submit]');
+            if (btnSubmit) btnSubmit.textContent = 'Crear';
+
+            let form = modalRaiz.querySelector('form');
+
+            // SOLO aquí añades el submit AJAX
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                let datos = new FormData(form);
+                fetch('api/apiAlumno.php', {
+                    method: 'POST',
+                    body: datos
+                })
+                .then(res => res.json())
+                .then(resp => {
+                    if(resp.status === "ok") {
+                        alert(resp.mensaje);
+                        pintarTabla(resp.alumno);
+                        modalManager.cerrarModal();
+                    } else {
+                        alert("Error: " + resp.mensaje);
+                    }
+                })
+                .catch(err => {
+                    alert("Fallo en petición AJAX");
+                });
             });
+        });
+            
     });
 
 

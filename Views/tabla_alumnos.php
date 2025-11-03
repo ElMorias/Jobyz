@@ -2,6 +2,7 @@
 
 <?php $this->start('css') ?>
 <link rel="stylesheet" href="assets/css/tabla_usuarios.css">
+<link rel="stylesheet" href="assets/css/registro.css">
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>
@@ -36,5 +37,8 @@
 <?php $this->stop() ?>
 
 <?php $this->start('js') ?>
+<script src="assets/js/ModalManager.js"></script>
+<script src="assets/js/registro_alumno.js"></script>
 <script src="assets/js/tabla_alumnos.js"></script>
+
 <?php $this->stop() ?>

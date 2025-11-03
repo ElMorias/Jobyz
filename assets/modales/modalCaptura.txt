@@ -1,0 +1,8 @@
+<div class="modal-camara-jobyz">
+  <video id="videoFoto" autoplay playsinline></video>
+  <div class="botones-camara">
+    <button id="capturarFotoBtn" class="btn-verde-lima">Capturar</button>
+    <button id="cancelarFotoBtn" class="btn-rojo">Cancelar</button>
+  </div>
+  <canvas id="canvasFoto" style="display:none;"></canvas>
+</div>

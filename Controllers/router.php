@@ -1,5 +1,6 @@
 <?php
-use League\Plates\Engine;
+require_once dirname(__DIR__) . '/autoloader.php';
+  use League\Plates\Engine;
 
 // no va con ../ poque se ejecuta desde index.php
 $templates = new Engine('Views');
@@ -21,7 +22,6 @@ switch ($page) {
     echo $templates->render('seleccion_registro', ['title' => '¿Quién eres?']);
     break;
   case 'tabla_alumnos':
-    require_once 'Controllers/AlumnoController.php';
     $controller = new AlumnoController($templates);
     $controller->mostrarTabla();
     break;

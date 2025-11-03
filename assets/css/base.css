@@ -1,4 +1,6 @@
 /* Tipografía base */
+@import url('https://fonts.googleapis.com/css?family=Raleway:700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Lato:400,300&display=swap');
 body {
   margin: 0;
   font-family: 'Lato', sans-serif;
@@ -18,8 +20,8 @@ a {
   font-weight: 600;
 }
 
-button, .cta-btn, .login-btn {
-  background-color: #215A63;
+button, .cta-btn, .login-btn { 
+  background-color: #A6E22E;
   color: white;
   padding: 0.5em 1em;
   border-radius: 6px;
@@ -28,6 +30,7 @@ button, .cta-btn, .login-btn {
   border: none;
   cursor: pointer;
 }
+
 
 /* Header */
 header {
@@ -76,31 +79,88 @@ footer {
   color: #3A3A3A;
 }
 
+/* estilos de los modales */
+
 .modal-fondo {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  inset: 0;
+  background: rgba(33, 90, 99, 0.46); /* Overlay principal, color Jobyz + opacidad */
+  backdrop-filter: blur(5px);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 9999;
+  justify-content: center;
+  animation: fadein-modal 0.24s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes fadein-modal {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-contenedor {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
+  background: #fff;
+  border-radius: 16px;
+  max-width: 96vw;
+  /* Ojo aquí: pon un máximo para la altura */
+  max-height: 88vh;
+  overflow-y: auto;
+  min-width: 310px;
+  min-height: 140px;
+  padding: 32px 28px 28px 28px;
+  box-shadow: 0 7px 32px rgba(41,71,88,0.13), 0 2px 12px #215a6370;
   position: relative;
-  max-width: 600px;
-  width: 90%;
+  animation: subir-modal 0.24s cubic-bezier(.34,1.56,.64,1);
+  font-family: 'Lato', Arial, sans-serif;
+}
+
+
+@keyframes subir-modal {
+  from { transform: translateY(40px) scale(0.98); opacity:0;}
+  to   { transform: none; opacity:1;}
 }
 
 .modal-cerrar {
   position: absolute;
-  top: 10px; right: 10px;
-  background: transparent;
+  top: 0.8em;
+  right: 0.7em;
   border: none;
-  font-size: 1.5rem;
+  background: none;
+  font-size: 2rem;
+  color: #ff0000;
+  font-weight: bold;
   cursor: pointer;
+  opacity: 0.62;
+  transition: opacity 0.17s, color 0.15s;
+  line-height: 1;
+  z-index: 11;
+}
+
+.modal-cerrar:hover {
+  color: #A6E22E;  /* Verde lima Jobyz para hover */
+  opacity: 1;
+  transform: scale(1.11);
+}
+
+@media (max-width:600px) {
+  .modal-contenedor {
+    min-width: unset;
+    width: 97vw;
+    padding: 14vw 3vw 9vw 3vw;
+  }
+}
+
+/* Opcional, para centrar contenido dentro del modal-contenedor y limpiar paddings */
+.modal-camara-jobyz > video, .modal-camara-jobyz > canvas {
+  display: block;
+  margin: 0 auto 1.2em auto;
+  max-width: 98%;
+  border-radius: 11px;
+}
+
+@media (max-width:600px) {
+  .modal-contenedor {
+    max-width:98vw;
+    max-height:96vh;
+    padding: 14vw 3vw 9vw 3vw;
+  }
 }

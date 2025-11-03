@@ -1,13 +1,11 @@
 class ModalManager {
   constructor() {
-    this.modal = null;
+    this.modals = [];
   }
+  
 
   //esto sirve si el contenido esta dentro de la pagina por ejeplo
   crearModal(contenidoHtml) {
-    // Si ya hay una modal abierta, la cerramos
-    if (this.modal) this.cerrarModal();
-
     // Crear fondo
     const fondo = document.createElement('div');
     fondo.classList.add('modal-fondo');
@@ -28,26 +26,29 @@ class ModalManager {
     fondo.appendChild(contenedor);
     document.body.appendChild(fondo);
 
-    this.modal = fondo;
+    this.modals.push(fondo);
   }
 
   //metodo que lo que necesita es la url del archivo que tiene el contenido
-  crearModalDesdeUrl(url) {
+crearModalDesdeUrl(url, callback) {
     fetch(url)
       .then(res => res.text())
       .then(html => {
         this.crearModal(html);
+        if (typeof callback === "function") callback();
       })
       .catch(err => {
         console.error('Error al cargar la plantilla:', err);
       });
-  }
+}
 
 
   cerrarModal() {
-    if (this.modal) {
-      this.modal.remove();
-      this.modal = null;
+    if (this.modals.length > 0) {
+      const fondo = this.modals.pop();
+      fondo.remove();
     }
   }
 }
+
+window.modalManager = new ModalManager();

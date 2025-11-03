@@ -50,4 +50,19 @@ class Alumno {
   public function __toString() {
     return "Alumno: {$this->nombre} {$this->apellido1} ({$this->dni})";
   }
+
+  public function toArray() {
+  return [
+    'id' => $this->getId(),
+    'nombre' => $this->getNombre(),
+    'apellido1' => $this->getApellido1(),
+    'apellido2' => $this->getApellido2(),
+    'fnacimiento' => $this->getFnacimiento(),
+    'curriculum' => $this->getCurriculum(),
+    'dni' => $this->getDni(),
+    'direccion' => $this->getDireccion(),
+    'foto' => $this->getFoto()
+
+  ];
+}
 }
