@@ -9,56 +9,53 @@ class RepositorioAlumno {
   }
 
   //Obtener un alumno completo por ID
-  public function getAlumnoCompleto($id) {
-    // 1. Obtener datos del alumno + correo
-    $sql = "SELECT a.*, u.correo
-            FROM Alumno a
-            JOIN Users u ON a.user_id = u.id
-            WHERE a.id = ?";
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute([$id]);
-    $datos = $stmt->fetch();
+  public function getAlumnoCompleto($alumnoId) {
+      // Obtener datos del alumno + usuario
+      $sql = "SELECT a.*, u.correo
+              FROM Alumno a
+              JOIN Users u ON a.user_id = u.id
+              WHERE a.id = ?";
+      $stmt = $this->db->prepare($sql);
+      $stmt->execute([$alumnoId]);
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      if (!$row) return null;
 
-    if (!$datos) return null;
+      // Crear objeto Alumno y settear propiedades
+      $alumno = new Alumno();
+      $alumno->setId($row['id']);
+      $alumno->setUserId($row['user_id']);
+      $alumno->setNombre($row['nombre']);
+      $alumno->setApellido1($row['apellido1']);
+      $alumno->setApellido2($row['apellido2']);
+      $alumno->setFnacimiento($row['fnacimiento']);
+      $alumno->setCurriculum($row['curriculum']);
+      $alumno->setDni($row['dni']);
+      $alumno->setTelefono($row['telefono']);
+      $alumno->setDireccion($row['direccion']);
+      $alumno->setFoto($row['foto']);
+      $alumno->setCorreo($row['correo']);
 
-    // 2. Construir objeto Alumno
-    $alumno = new Alumno();
-    $alumno->setId($datos['id']);
-    $alumno->setNombre($datos['nombre']);
-    $alumno->setApellido1($datos['apellido1']);
-    $alumno->setApellido2($datos['apellido2']);
-    $alumno->setFnacimiento($datos['fnacimiento']);
-    $alumno->setCurriculum($datos['curriculum']);
-    $alumno->setDni($datos['dni']);
-    $alumno->setDireccion($datos['direccion']);
-    $alumno->setFoto($datos['foto']);
-    $alumno->setUserId($datos['user_id']);
+      // Obtener estudios relacionados
+      $sqlEst = "SELECT * FROM Estudios WHERE alumno_id = ?";
+      $stmtEst = $this->db->prepare($sqlEst);
+      $stmtEst->execute([$alumnoId]);
+      $estudios = [];
+      foreach ($stmtEst->fetchAll(PDO::FETCH_ASSOC) as $rowE) {
+          $e = new Estudio();
+          $e->setId($rowE['id']);
+          $e->setAlumnoId($rowE['alumno_id']);
+          $e->setCicloId($rowE['ciclo_id']);
+          $e->setFechainicio($rowE['fechainicio']);
+          $e->setFechafin($rowE['fechafin']);
+          $estudios[] = $e;
+      }
+      $alumno->setEstudios($estudios);
 
-    // 3. Obtener estudios del alumno
-    $sqlEstudios = "SELECT e.*, c.nombre AS nombre_ciclo
-                    FROM Estudios e
-                    JOIN Ciclo c ON e.ciclo_id = c.id
-                    WHERE e.alumno_id = ?";
-    $stmtEstudios = $this->db->prepare($sqlEstudios);
-    $stmtEstudios->execute([$id]);
-    $estudios = $stmtEstudios->fetchAll();
-
-    foreach ($estudios as $e) {
-      $estudio = new Estudio();
-      $estudio->setId($e['id']);
-      $estudio->setCicloId($e['ciclo_id']);
-      $estudio->setNombreCiclo($e['nombre_ciclo']);
-      $estudio->setFechainicio($e['fechainicio']);
-      $estudio->setFechafin($e['fechafin']);
-      $alumno->addEstudio($estudio);
-    }
-
-    return $alumno;
+      return $alumno;
   }
-
-  // Obtener todos los alumnos (solo datos básicos)
+  // Obtener todos los alumnos (ojo lo he cambiado a ver si no falla), no tiene estudios
   public function getTodos() {
-    $sql = "SELECT a.id, a.nombre, a.apellido1, a.apellido2, u.correo
+    $sql = "SELECT a.*, u.correo
             FROM Alumno a
             JOIN Users u ON a.user_id = u.id";
     $stmt = $this->db->query($sql);
@@ -66,14 +63,24 @@ class RepositorioAlumno {
   }
 
   //Borrar alumno por ID
-  public function borrar($id) {
-    $sql = "DELETE FROM Alumno WHERE id = ?";
-    $stmt = $this->db->prepare($sql);
-    return $stmt->execute([$id]);
-  }
+    public function borrarPorAlumnoId($alumnoId) {
+        // Buscar el user_id asociado al alumno
+        $stmt = $this->db->prepare("SELECT user_id FROM Alumno WHERE id = ?");
+        $stmt->execute([$alumnoId]);
+        $userId = $stmt->fetchColumn();
+
+        if ($userId) {
+            // Borrar directamente el usuario (cascade hará el resto)
+            $stmtDel = $this->db->prepare("DELETE FROM Users WHERE id = ?");
+            $stmtDel->execute([$userId]);
+            return $stmtDel->rowCount() > 0;
+        }
+        return false;
+    }
+
 
   public function actualizar($id, $datos) {
-    $sql = "UPDATE Alumno SET nombre = ?, apellido1 = ?, apellido2 = ?, fnacimiento = ?, curriculum = ?, dni = ?, direccion = ?, foto = ? WHERE id = ?";
+    $sql = "UPDATE Alumno SET nombre = ?, apellido1 = ?, apellido2 = ?, fnacimiento = ?, curriculum = ?, dni = ?, telefono = ? ,direccion = ?, foto = ? WHERE id = ?";
     $stmt = $this->db->prepare($sql);
     return $stmt->execute([
       $datos['nombre'],
@@ -82,114 +89,15 @@ class RepositorioAlumno {
       $datos['fnacimiento'],
       $datos['curriculum'],
       $datos['dni'],
+      $datos['telefono'],
       $datos['direccion'],
       $datos['foto'],
       $id
     ]);
   }
 
-
-  // Crear alumno (requiere crear usuario primero)
-  /* public function crear($datos) {
-    $this->db->beginTransaction();
-
-    foreach(['correo','contrasena','rol_id','nombre','apellido1','apellido2','fnacimiento','dni','direccion'] as $key) {
-      if(!isset($datos[$key]) || $datos[$key]==='') {
-        echo json_encode(['status'=>'error','mensaje'=>"Falta el campo obligatorio: $key"]); exit;
-      }
-    }
-
-    file_put_contents("debug_datos.txt", print_r($datos, true));
-
-    try {
-      // Crear usuario
-      $sqlUser = "INSERT INTO Users (correo, contraseña, rol_id)
-                  VALUES (?, ?, ?)";
-      $stmtUser = $this->db->prepare($sqlUser);
-      $stmtUser->execute([
-        $datos['correo'],
-        $datos['contrasena'],
-        $datos['rol_id']
-      ]);
-      $userId = $this->db->lastInsertId();
-
-      
-      $fotoPath = null;
-      $cvPath = null;
-
-      // ---- Guardar FOTO ----
-      if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
-          $extension = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
-          $fotoPath = "assets/uploads/alumnos_foto/foto_" . $userId . "." . $extension;
-          move_uploaded_file($_FILES['foto']['tmp_name'], $fotoPath);
-      }
-
-      // ---- Guardar CURRICULUM ----
-      if (isset($_FILES['curriculum']) && $_FILES['curriculum']['error'] == 0) {
-          $extension = strtolower(pathinfo($_FILES['curriculum']['name'], PATHINFO_EXTENSION));
-          $cvPath = "assets/uploads/alumnos_cv/cv_" . $userId . "." . $extension;
-          move_uploaded_file($_FILES['curriculum']['tmp_name'], $cvPath);
-      }
-
-      // Crear alumno
-      $sqlAlumno = "INSERT INTO Alumno (nombre, apellido1, apellido2, fnacimiento, curriculum, dni, direccion, foto, user_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      $stmtAlumno = $this->db->prepare($sqlAlumno);
-      $stmtAlumno->execute([
-        $datos['nombre'],
-        $datos['apellido1'],
-        $datos['apellido2'],
-        $datos['fnacimiento'],
-        $cvPath,
-        $datos['dni'],
-        $datos['direccion'],
-        $fotoPath,
-        $userId
-      ]);
-
-      // Obtener el id del alumno insertado
-      $alumnoId = $this->db->lastInsertId();
-
-
-      $numEstudios = count($datos['familia']); // O el que quieras, si todos igual de largos
-
-      if(!empty($datos['familia'])){
-          for ($i = 0; $i < $numEstudios; $i++) {
-          $familia = $datos['familia'][$i];
-          $ciclo = $datos['ciclo'][$i];
-          $inicio = $datos['fechainicio'][$i];
-          $fin = $datos['fechafin'][$i];
-            
-          $sqlEst = "INSERT INTO Estudios (alumno_id, ciclo_id, fechainicio, fechafin) VALUES (?, ?, ?, ?)";
-          $stmtEst = $this->db->prepare($sqlEst);
-
-          $stmtEst->execute([
-            $alumnoId,
-            $ciclo,
-            $inicio,
-            $fin
-          ]);
-        }
-      }
-     
-       
-      $alumnoId = $this->db->lastInsertId();
-      $alumno = $this->getAlumnoCompleto($alumnoId); // esto trae el array completo
-      $this->db->commit();
-      return $alumno->toArray();
-
-    } catch (Exception $e) {
-       $this->db->rollBack();
-       echo json_encode([
-        'status' => 'error',
-        'mensaje' => $e->getMessage()
-      ]);
-      exit;
-    }
-  } */
-
   public function crear($datos) {
-    foreach(['correo','contrasena','rol_id','nombre','apellido1','apellido2','fnacimiento','dni','direccion'] as $campo){
+    foreach(['correo','contrasena','rol_id','nombre','apellido1','apellido2','fnacimiento','dni','telefono','direccion'] as $campo){
         if(!isset($datos[$campo]) || $datos[$campo]==='') {
             echo json_encode(['status'=>'error', 'mensaje'=>"Falta campo $campo"]);
             exit;
@@ -244,8 +152,8 @@ class RepositorioAlumno {
         }
 
         // Al hacer el INSERT en la tabla Alumno:
-        $sqlAlumno = "INSERT INTO Alumno (nombre, apellido1, apellido2, fnacimiento, curriculum, dni, direccion, foto, user_id)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sqlAlumno = "INSERT INTO Alumno (nombre, apellido1, apellido2, fnacimiento, curriculum, dni,telefono, direccion, foto, user_id)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmtAlumno = $this->db->prepare($sqlAlumno);
         $stmtAlumno->execute([
             $datos['nombre'],
@@ -254,6 +162,7 @@ class RepositorioAlumno {
             $datos['fnacimiento'],
             $cvPathRel,
             $datos['dni'],
+            $datos['telefono'],
             $datos['direccion'],
             $fotoPathRel,
             $userId
@@ -267,7 +176,8 @@ class RepositorioAlumno {
             $familia = $_POST['familia'][$i];
             $ciclo = $_POST['ciclo'][$i];
             $fechainicio = $_POST['fechainicio'][$i];
-            $fechafin = $_POST['fechafin'][$i];
+            $fechafin = empty($_POST['fechafin'][$i]) ? null : $_POST['fechafin'][$i];
+
 
             $sqlEst = "INSERT INTO Estudios (alumno_id, ciclo_id, fechainicio, fechafin)
                       VALUES (?, ?, ?, ?)";
@@ -283,13 +193,15 @@ class RepositorioAlumno {
 
         $this->db->commit();
         // Devuelvo ONLY datos puros, nada de objetos:
-        return [
+        /*return [
             'id' => $alumnoId,
             'nombre' => $datos['nombre'],
             'apellido1' => $datos['apellido1'],
             'apellido2' => $datos['apellido2'],
             'correo' => $datos['correo']
-        ];
+        ];*/
+        $alumno = $this->getAlumnoCompleto($alumnoId);
+        return $alumno;
     } catch (Exception $e) {
         $this->db->rollBack();
         echo json_encode(['status'=>'error','mensaje'=>$e->getMessage()]); exit;

@@ -1,0 +1,34 @@
+<div id="modal-detalles" class="modal-detalles">
+  <form>
+  <img id="detalle-foto" style="max-width:150px;">
+
+    <label>Correo:
+      <input type="email" id="modal-correo" disabled>
+    </label>
+    <label>Nombre:
+      <input type="text" id="modal-nombre" disabled>
+    </label>
+    <label>Primer apellido:
+      <input type="text" id="modal-apellido1" disabled>
+    </label>
+    <label>Segundo apellido:
+      <input type="text" id="modal-apellido2" disabled>
+    </label>
+    <label>Fecha de nacimiento:
+      <input type="date" id="modal-fnacimiento" disabled>
+    </label>
+    <label>Currículum:
+      <input type="text" id="modal-curriculum" disabled>
+    </label>
+    <label>DNI:
+      <input type="text" id="modal-dni" disabled>
+    </label>
+    <label>Teléfono:
+      <input type="tel" id="modal-telefono" disabled>
+    </label>
+    <label>Dirección:
+      <input type="text" id="modal-direccion" disabled>
+    </label>
+    <button type="button" id="cerrar">Cerrar</button>
+  </form>
+</div>

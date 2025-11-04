@@ -1,0 +1,55 @@
+<div id="modal-modificar" class="modal-modificar">
+  <form action="" method="POST" id="form-editar-alumno" class="form-editar-alumno" enctype="multipart/form-data">
+    <input type="hidden" name="id" id="modal-id">
+    <div class="form-bloque">
+        <h3>Datos Personales</h3>
+        <label>Correo:
+        <input type="email" name="correo" id="modal-correo" required>
+        </label>
+        <label>Contraseña:
+        <input type="password" name="contrasena" id="modal-contrasena" disabled>
+        </label>
+        <label>Nombre:
+        <input type="text" name="nombre" id="modal-nombre" required>
+        </label>
+        <label>Primer apellido:
+        <input type="text" name="apellido1" id="modal-apellido1" required>
+        </label>
+        <label>Segundo apellido:
+        <input type="text" name="apellido2" id="modal-apellido2">
+        </label>
+        <label>Fecha de nacimiento:
+        <input type="date" name="fnacimiento" id="modal-fnacimiento" required>
+        </label>
+        <label>DNI:
+        <input type="text" name="dni" id="modal-dni" required>
+        </label>
+        <label>Dirección:
+        <input type="text" name="direccion" id="modal-direccion" required>
+        </label>
+        <label>Teléfono:
+        <input type="tel" name="telefono" id="modal-telefono">
+        </label>
+    </div>
+    <div class="form-bloque">
+      <h3>Documentos</h3>
+      <div class="form-group">
+        <label for="curriculum">Currículum actual:
+          <a id="curriculum-link" href="#" target="_blank" style="display:none;">Ver curriculum actual</a>
+        </label>
+        <label for="curriculum">Currículum (PDF nuevo):
+          <input type="file" id="curriculum" name="curriculum" accept="application/pdf">
+        </label>
+      </div>
+      <h3>Foto de perfil</h3>
+      <div style="display:flex; gap:1em; align-items: center;">
+        <input type="file" id="fotoFile" name="foto" accept="image/*">
+        <button type="button" id="tomarFotoBtn" class="btn-verde-lima">Tomar foto</button>
+      </div>
+      <div id="preview-foto" style="margin-top: 12px;"></div>
+    </div>
+
+    <button type="button" id="cerrar">Cerrar</button>
+    <button type="submit" id="actualizar">Guardar Cambios</button>
+  </form>
+</div>

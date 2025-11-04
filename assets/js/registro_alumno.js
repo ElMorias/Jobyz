@@ -81,6 +81,30 @@ function initRegistroAlumnoForm(raiz) {
         }
     }
 
+    const formRegistro = document.getElementById('form-registrar-alumno');
+
+    // SOLO aquí añades el submit AJAX
+    formRegistro.addEventListener('submit', function (e) {
+        e.preventDefault();
+        let datos = new FormData(formRegistro);
+        fetch('api/apiAlumno.php', {
+            method: 'POST',
+            body: datos
+        })
+        .then(res => res.json())
+        .then(resp => {
+            if(resp.status === "ok") {
+                alert(resp.mensaje);
+                window.location.href = 'index.php?page=login';
+            } else {
+                alert("Error: " + resp.mensaje);
+            }
+        })
+        .catch(err => {
+            alert("Fallo en petición AJAX");
+        });
+    });
+
     // ---- Foto y Cámara ----
     let streamActivo = null;
     const btnTomarFoto = raiz.querySelector('#tomarFotoBtn');
@@ -148,6 +172,8 @@ function initRegistroAlumnoForm(raiz) {
             }
         });
     }
+
+
 }
 
 // Uso en modal, tras cargar el modal (en el callback de crearModalDesdeUrl):

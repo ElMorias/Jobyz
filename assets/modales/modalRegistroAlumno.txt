@@ -1,5 +1,5 @@
 <form action="" method="POST" id="form-registro-alumno" class="form-registro-alumno" enctype="multipart/form-data">
-  <h2>Registro de Alumno</h2>
+  <h2>Añadir Alumno</h2>
   <div class="form-bloque">
     <h3>Datos de Cuenta</h3>
     <div class="form-group">
@@ -40,6 +40,10 @@
       <label for="dni">DNI</label>
       <input type="text" id="dni" name="dni">
     </div>
+     <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input type="tel" id="telefono" name="telefono">
+    </div>
     <div class="form-group">
       <label for="direccion">Dirección</label>
       <input type="text" id="direccion" name="direccion">
@@ -66,5 +70,5 @@
     <div id="preview-foto" style="margin-top: 12px;"></div>
   </div>
 
-  <button type="submit" class="btn-registro">Registrar alumno</button>
+  <button type="submit" class="btn-registro">Crear alumno</button>
 </form>

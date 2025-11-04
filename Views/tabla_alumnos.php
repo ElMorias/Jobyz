@@ -1,8 +1,8 @@
 <?php $this->layout('base_simple', ['title' => 'Usuarios registrados']) ?>
 
 <?php $this->start('css') ?>
-<link rel="stylesheet" href="assets/css/tabla_usuarios.css">
-<link rel="stylesheet" href="assets/css/registro.css">
+  <link rel="stylesheet" href="assets/css/tabla_usuarios.css">
+  <link rel="stylesheet" href="assets/css/registro.css">
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>
@@ -24,8 +24,8 @@
       <tr>
         <th>ID</th>
         <th>Nombre</th>
-        <th>Apellidos</th>
         <th>Correo</th>
+        <th>Teléfono</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -37,8 +37,8 @@
 <?php $this->stop() ?>
 
 <?php $this->start('js') ?>
-<script src="assets/js/ModalManager.js"></script>
-<script src="assets/js/registro_alumno.js"></script>
-<script src="assets/js/tabla_alumnos.js"></script>
+  <script src="assets/js/ModalManager.js"></script>
+  <script src="assets/js/registro_alumno.js"></script>
+  <script src="assets/js/tabla_alumnos.js"></script>
 
 <?php $this->stop() ?>

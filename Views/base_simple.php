@@ -9,17 +9,17 @@
   <?= $this->section('css') ?>
 </head>
 <body>
+  <div class="wrapper">
+    <!-- Header -->
+    <?= $this->insert('partials/header_simple') ?>
 
-  <!-- Header -->
-  <?= $this->insert('partials/header_simple') ?>
+    <main>
+      <?= $this->section('contenido') ?>
+    </main>
 
-  <main>
-    <?= $this->section('contenido') ?>
-  </main>
-
-  <!-- Footer -->
-  <?= $this->insert('partials/footer_simple') ?>
-
+    <!-- Footer -->
+    <?= $this->insert('partials/footer_simple') ?>
+  </div>
   <?= $this->section('js') ?>
 </body>
 </html>

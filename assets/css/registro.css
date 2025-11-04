@@ -12,23 +12,30 @@
 body {
   background: var(--color-teal);
   font-family: 'Lato', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 .registro-container {
   width: 100%;
- background-color: var(--color-teal);
- margin: 0px;
+  background-color: var(--color-teal);
+  margin: 0;
+  padding: 40px 16px;
+  box-sizing: border-box;
 }
 
 .form-registro-alumno {
-  max-width: 480px;
+  max-width: 960px;
   background: var(--color-blanco);
-  margin: 40px auto;
-  padding: 32px 26px 20px 26px;
+  margin: 0 auto;
+  padding: 32px;
   border-radius: 10px;
-  box-shadow: 0 4px 18px #000000;
-  font-family: 'Lato', Arial, sans-serif;
+  box-shadow: 0 4px 18px #00000040;
   border: 1px solid var(--color-gris-claro);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  font-family: 'Lato', Arial, sans-serif;
 }
 
 .form-registro-alumno h2 {
@@ -41,11 +48,13 @@ body {
 }
 
 .form-bloque {
-  margin-bottom: 2em;
   border-bottom: 1px solid var(--color-gris-claro);
   padding-bottom: 1em;
 }
-.form-bloque:last-child { border: none; }
+.form-bloque:last-child {
+  border: none;
+}
+
 .form-bloque h3 {
   color: var(--color-teal);
   font-size: 1.15rem;
@@ -55,10 +64,17 @@ body {
   letter-spacing: 0.02em;
 }
 
+/* Agrupación en dos columnas */
+.form-datos-personales {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
 .form-group {
-  margin-bottom: 1.45em;
   display: flex;
   flex-direction: column;
+  margin-bottom: 1.45em;
 }
 
 .form-group label {
@@ -87,6 +103,33 @@ body {
   outline: none;
 }
 
+/* Dirección ocupa toda la fila */
+.form-group[style*="grid-column: span 2"] {
+  grid-column: span 2;
+}
+
+/* Botón añadir estudio */
+#btn-agregar-estudio {
+  margin-top: 1em;
+}
+
+/* Documentos y foto */
+.form-documentos {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.foto-contenedor {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+}
+
+#preview-foto {
+  margin-top: 12px;
+}
+
 .btn-registro {
   background: var(--color-verde-lima);
   color: var(--color-blanco);
@@ -103,7 +146,8 @@ body {
   transition: background 0.15s, box-shadow 0.22s;
 }
 
-.btn-registro:hover, .btn-registro:focus {
+.btn-registro:hover,
+.btn-registro:focus {
   background: #1a4a52;
   box-shadow: 0 4px 18px #215A6340;
 }
@@ -115,14 +159,11 @@ input[type="file"] {
   border: none;
 }
 
-
-footer{
+footer {
   background-color: #ffffff;
 }
-
 
 ::-webkit-input-placeholder { color: var(--color-gris-oscuro); opacity: .7; }
 ::-moz-placeholder          { color: var(--color-gris-oscuro); opacity: .7; }
 :-ms-input-placeholder      { color: var(--color-gris-oscuro); opacity: .7; }
 ::placeholder               { color: var(--color-gris-oscuro); opacity: .7; }
-

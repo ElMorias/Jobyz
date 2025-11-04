@@ -13,17 +13,18 @@
 </head>
 
 <body>
-  <!-- Headerr -->
-  <?= $this->insert('partials/header') ?>
+  <div class="wrapper">
+    <!-- Headerr -->
+    <?= $this->insert('partials/header') ?>
 
-  <!-- contenido -->
-  <?= $this->section('welcome') ?>
-  <?= $this->section('listado') ?>
-  <?= $this->section('contenido') ?>
+    <!-- contenido -->
+    <?= $this->section('welcome') ?>
+    <?= $this->section('listado') ?>
+    <?= $this->section('contenido') ?>
 
-  <!-- Footer -->
-  <?= $this->insert('partials/footer') ?>
-
+    <!-- Footer -->
+    <?= $this->insert('partials/footer') ?>
+  </div>
   <!-- Sección para Js -->
   <?= $this->section('js') ?>
 </body>

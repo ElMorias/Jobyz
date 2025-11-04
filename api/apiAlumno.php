@@ -21,16 +21,16 @@ switch ($_SERVER['REQUEST_METHOD']) {
     $alumno = $repo->crear($datos);
         echo json_encode([
             'status'=>'ok',
-            'alumno'=>$alumno,
+            'alumno'=>$alumno->toArray(),
             'mensaje'=>'Alumno creado correctamente'
       ]);
-      
+
     break;
 
   case 'DELETE':
     $datos = json_decode(file_get_contents("php://input"), true);
     if (isset($datos['id'])) {
-      $ok = $repo->borrar($datos['id']);
+      $ok = $repo->borrarPorAlumnoId($datos['id']);
       if ($ok) {
         echo json_encode(['status' => 'ok', 'mensaje' => 'Alumno borrado']);
       } else {
@@ -68,7 +68,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 function getAlumnos($repo) {
   if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    return $repo->getAlumnoCompleto($id);
+    return $repo->getAlumnoCompleto($id)->toArray();
   } else {
     return $repo->getTodos();
   }
