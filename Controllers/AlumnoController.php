@@ -12,6 +12,10 @@ class AlumnoController {
 
   // @Route("tabla_alumnos", "GET")
   public function mostrarTabla() {
-    echo $this->templates->render('tabla_alumnos', ['title' => 'Usuarios registrados']);
+    echo $this->templates->render('../admin/tabla_alumnos', ['title' => 'Usuarios registrados']);
+  }
+
+  public function registrarAlumno(){
+    echo $this->templates->render('../registro_alumno', ['title' => 'Registro de alumno']);
   }
 }

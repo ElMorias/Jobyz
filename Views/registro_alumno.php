@@ -1,7 +1,6 @@
 <?php $this->layout('base_simple', ['title' => 'Registro de Alumno']) ?>
 
 <?php $this->start('css') ?>
-<link rel="stylesheet" href="assets/css/registro.css">
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>

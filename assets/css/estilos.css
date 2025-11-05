@@ -17,7 +17,7 @@ html, body {
   height: 100%;
   margin: 0;
   font-family: 'Lato', Arial, sans-serif;
-  background-color: var(--color-blanco);
+  background-color: var(--color-teal);
   color: var(--color-gris-oscuro);
 }
 
@@ -76,6 +76,13 @@ nav ul {
 nav a, .back-home {
   color: var(--color-teal);
   font-weight: 600;
+}
+/* ---Main--- */
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--color-teal);
 }
 
 /* --- Footer --- */
@@ -164,11 +171,18 @@ footer, .simple-footer {
 
 /* --- VISTAS ESPECÍFICAS --- */
 .registro-container {
-  width: 100%;
-  background-color: var(--color-teal);
-  margin: 0;
-  padding: 40px 16px;
-  box-sizing: border-box;
+    display: flex;
+    width: 80%;
+    height: auto;
+    background-color: var(--color-blanco);
+    margin: 0;
+    padding: 40px 16px;
+    box-sizing: border-box;
+    /* justify-content: center; */
+    flex-direction: column;
+    border-radius: 20px;
+    box-shadow: 0 0 10px #000000;
+    margin-top: 25px;
 }
 
 .form-registro-alumno {
@@ -272,7 +286,7 @@ footer, .simple-footer {
 }
 
 /* Tabla de usuarios */
-.tablaUsuariosContainer {
+.tablaUsuariosContainer, .tablaEmpresaContainer {
   max-width: 900px;
   margin: 3rem auto;
   padding: 2rem;
@@ -281,31 +295,36 @@ footer, .simple-footer {
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
   font-family: 'Segoe UI', sans-serif;
 }
-.tablaUsuariosContainer h1 {
+.tablaUsuariosContainer h1, .tablaEmpresaContainer h1 {
   color: var(--color-teal);
   margin-bottom: 1rem;
   text-align: center;
 }
-.tablaUsuarios {
+.tablaUsuarios, .tablaEmpresas {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
 }
 .tablaUsuarios th,
-.tablaUsuarios td {
+.tablaUsuarios td,
+.tablaEmpresas th,
+.tablaEmpresas td {
   padding: 0.75rem;
   border: 1px solid #ccc;
   text-align: left;
 }
-.tablaUsuarios th {
+.tablaUsuarios th,
+.tablaEmpresas th {
   background-color: var(--color-teal);
   color: var(--color-blanco);
 }
-.tablaUsuarios tbody tr:hover {
+.tablaUsuarios tbody tr:hover,
+.tablaEmpresas tbody tr:hover {
   background-color: #f0f8e2;
 }
-.tablaUsuarios tbody tr:nth-child(odd) {
-  background-color: #f7fbe6;
+.tablaUsuarios tbody tr:nth-child(odd),
+.tablaEmpresas tbody tr:nth-child(odd) {
+  background-color: var(--color-gris-claro);
 }
 /* Botones de acción usuarios */
 .btnBorrar, .btnVer, .btnEditar, .btn-detalles {

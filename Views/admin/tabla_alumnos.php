@@ -1,13 +1,12 @@
 <?php $this->layout('base_simple', ['title' => 'Usuarios registrados']) ?>
 
 <?php $this->start('css') ?>
-  <link rel="stylesheet" href="assets/css/tabla_usuarios.css">
-  <link rel="stylesheet" href="assets/css/registro.css">
+
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>
 <section class="tablaUsuariosContainer">
-  <h1>Listado de usuarios</h1>
+  <h1>Listado de Alumnos</h1>
 
   <div class="accionesUsuarios">
     <div class="busqueda">

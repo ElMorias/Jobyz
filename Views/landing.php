@@ -1,7 +1,6 @@
 <?php $this->layout('base', ['title' => 'Jobyz – Portal de Empleo']) ?>
 
 <?php $this->start('css') ?>
-<link rel="stylesheet" href="assets/css/landing.css">
 <?php $this->stop() ?>
 
 

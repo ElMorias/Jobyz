@@ -70,7 +70,7 @@ class RepositorioAlumno {
         $userId = $stmt->fetchColumn();
 
         if ($userId) {
-            // Borrar directamente el usuario (cascade hará el resto)
+            // Borrar directamente el usuario
             $stmtDel = $this->db->prepare("DELETE FROM Users WHERE id = ?");
             $stmtDel->execute([$userId]);
             return $stmtDel->rowCount() > 0;
@@ -79,22 +79,60 @@ class RepositorioAlumno {
     }
 
 
-  public function actualizar($id, $datos) {
-    $sql = "UPDATE Alumno SET nombre = ?, apellido1 = ?, apellido2 = ?, fnacimiento = ?, curriculum = ?, dni = ?, telefono = ? ,direccion = ?, foto = ? WHERE id = ?";
-    $stmt = $this->db->prepare($sql);
-    return $stmt->execute([
-      $datos['nombre'],
-      $datos['apellido1'],
-      $datos['apellido2'],
-      $datos['fnacimiento'],
-      $datos['curriculum'],
-      $datos['dni'],
-      $datos['telefono'],
-      $datos['direccion'],
-      $datos['foto'],
-      $id
-    ]);
-  }
+    public function actualizar($id, $datos) {
+        // Obtener el alumno anterior
+        $alumnoAnterior = $this->getAlumnoCompleto($id);
+        $userId = $alumnoAnterior->getUserId();
+
+        // Para la foto y el cv
+        $dirRelFoto = 'assets/uploads/alumnos_foto/';
+        $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
+        $dirRelCv = 'assets/uploads/alumnos_cv/';
+        $dirAbsCv = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelCv;
+
+        // FOTO
+        $fotoPathRel = null;
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === 0) {
+            $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+            $nombreFoto = 'foto_' . $userId . '.' . $ext;
+            $fotoPathAbs = $dirAbsFoto . $nombreFoto;
+            $fotoPathRel = $dirRelFoto . $nombreFoto;
+            move_uploaded_file($_FILES['foto']['tmp_name'], $fotoPathAbs);
+        } else {
+            // Mantener foto anterior si no se sube nueva
+            $fotoPathRel = $alumnoAnterior->getFoto();
+        }
+
+        // CURRICULUM
+        $cvPathRel = null;
+        if (isset($_FILES['curriculum']) && $_FILES['curriculum']['error'] === 0) {
+            $ext = strtolower(pathinfo($_FILES['curriculum']['name'], PATHINFO_EXTENSION));
+            $nombreCv = 'cv_' . $userId . '.' . $ext;
+            $cvPathAbs = $dirAbsCv . $nombreCv;
+            $cvPathRel = $dirRelCv . $nombreCv;
+            move_uploaded_file($_FILES['curriculum']['tmp_name'], $cvPathAbs);
+        } else {
+            // Mantener cv anterior si no se sube nuevo
+            $cvPathRel = $alumnoAnterior->getCurriculum();
+        }
+
+        $sql = "UPDATE Alumno SET nombre = ?, apellido1 = ?, apellido2 = ?, fnacimiento = ?, curriculum = ?, dni = ?, telefono = ?, direccion = ?, foto = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            $datos['nombre'],
+            $datos['apellido1'],
+            $datos['apellido2'],
+            $datos['fnacimiento'],
+            $cvPathRel,
+            $datos['dni'],
+            $datos['telefono'],
+            $datos['direccion'],
+            $fotoPathRel,
+            $id
+        ]);
+
+    }
+
 
   public function crear($datos) {
     foreach(['correo','contrasena','rol_id','nombre','apellido1','apellido2','fnacimiento','dni','telefono','direccion'] as $campo){
@@ -183,7 +221,7 @@ class RepositorioAlumno {
                       VALUES (?, ?, ?, ?)";
             $stmtEst = $this->db->prepare($sqlEst);
             $stmtEst->execute([
-                $alumnoId,      // o el id que corresponda
+                $alumnoId,     
                 $ciclo,
                 $fechainicio,
                 $fechafin

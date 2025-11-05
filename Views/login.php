@@ -1,7 +1,6 @@
 <?php $this->layout('base_simple', ['title' => 'Iniciar sesión']) ?>
 
 <?php $this->start('css') ?>
-<link rel="stylesheet" href="assets/css/login.css">
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>

@@ -1,7 +1,6 @@
 <?php $this->layout('base_simple', ['title' => '¿Quién eres?']) ?>
 
 <?php $this->start('css') ?>
-<link rel="stylesheet" href="assets/css/seleccion_registro.css">
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>

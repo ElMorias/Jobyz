@@ -18,13 +18,25 @@ switch ($_SERVER['REQUEST_METHOD']) {
   case 'POST':
     $datos = $_POST;
 
-    $alumno = $repo->crear($datos);
+    if (!empty($_POST['id'])) {
+        $id = $_POST['id'];
+        $ok = $repo->actualizar($id, $datos);
+        if ($ok) {
+           $usuario = $repo->getAlumnoCompleto($id)->toArray(); 
+            echo json_encode(['status' => 'ok', 'mensaje' => 'Alumno actualizado', 'alumno' => $usuario]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'mensaje' => 'No se pudo actualizar']);
+        }
+        break;
+    } else{
+      $alumno = $repo->crear($datos);
         echo json_encode([
             'status'=>'ok',
             'alumno'=>$alumno->toArray(),
             'mensaje'=>'Alumno creado correctamente'
       ]);
-
+    }
     break;
 
   case 'DELETE':
