@@ -14,54 +14,14 @@ window.addEventListener('load', function () {
             console.error('Error al cargar usuarios:', err);
         });
 
-    function pintarTabla(usuario) {
-        const fila = document.createElement('tr');
-        fila.id = 'fila-' + usuario.id;
-
-        const tdId = document.createElement('td');
-        tdId.textContent = usuario.id;
-        fila.appendChild(tdId);
-
-        const tdNombre = document.createElement('td');
-        tdNombre.textContent = nombreCompleto(usuario);
-        fila.appendChild(tdNombre);
-
-        const tdmail = document.createElement('td');
-        tdmail.textContent = usuario.correo;
-        fila.appendChild(tdmail);
-
-        const tdtel = document.createElement('td');
-        tdtel.textContent = usuario.telefono;
-        fila.appendChild(tdtel);
-
-        const tdAcciones = document.createElement('td');
-
-        // Botón Detalles
-        const btnDetalles = document.createElement('button');
-        btnDetalles.textContent = 'Detalles';
-        btnDetalles.classList.add('btn-detalles');
-        btnDetalles.dataset.id = usuario.id;
-
-        // Botón Modificar
-        const btnModificar = document.createElement('button');
-        btnModificar.textContent = 'Modificar';
-        btnModificar.classList.add('btn-modificar');
-        btnModificar.dataset.id = usuario.id;
-
-        // Botón Borrar
-        const btnBorrar = document.createElement('button');
-        btnBorrar.textContent = 'Borrar';
-        btnBorrar.classList.add('btn-borrar');
-        btnBorrar.dataset.id = usuario.id;
-
-        // Añadir los botones al td
-        tdAcciones.appendChild(btnDetalles);
-        tdAcciones.appendChild(btnModificar);
-        tdAcciones.appendChild(btnBorrar);
-
-        fila.appendChild(tdAcciones);
-
-        tbody.appendChild(fila);
+   function pintarTabla(usuarios) {      
+        if (Array.isArray(usuarios)) {
+            usuarios.forEach(usuario => {
+                tbody.appendChild(crearFila(usuario));
+            });
+        } else {
+            tbody.appendChild(crearFila(usuarios));
+        }
     }
 
     function crearFila(usuario) {
@@ -140,7 +100,6 @@ window.addEventListener('load', function () {
                     .then(res => res.json())
                     .then(resp => {
                         if (resp.status === "ok") {
-                            alert(resp.mensaje);
                             fila.remove();
                             modalManager.cerrarModal();
                         } else {
@@ -182,6 +141,7 @@ window.addEventListener('load', function () {
                         document.getElementById('modal-dni').value = alumno.dni || '';
                         document.getElementById('modal-telefono').value = alumno.telefono || '';
                         document.getElementById('modal-direccion').value = alumno.direccion || '';
+                        document.getElementById('modal-validado').value = alumno.validado || '';
                         document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
                         
                     });
@@ -310,7 +270,6 @@ window.addEventListener('load', function () {
                 .then(res => res.json())
                 .then(resp => {
                     if(resp.status === "ok") {
-                        alert(resp.mensaje);
                         pintarTabla(resp.alumno);
                         modalManager.cerrarModal();
                     } else {
@@ -325,6 +284,19 @@ window.addEventListener('load', function () {
             
     });
 
+
+
+    //-------------modal para la carga masiva------------------//
+
+    const btnCargaMasiva = document.getElementById('addMasivo');
+
+    btnCargaMasiva.addEventListener('click', function () {
+        modalManager.crearModalDesdeUrl('assets/modales/modalCargaMas.txt', function () {
+            let modalRaiz = document.querySelector('.modal-contenedor');
+            initCargaMasiva(modalRaiz); // Aquí se inicializa todo el JS
+
+        });             
+    });
 
 
 });

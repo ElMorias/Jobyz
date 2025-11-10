@@ -1,0 +1,27 @@
+<form id="formCargaMasivaAlumnos">
+  <div>
+    <div id="carga-fallos" style="margin-top:1em;"></div>
+    <label for="familia">Familia profesional:</label>
+    <select id="familia" class="familia" name="familia" required>
+      <option value="">Selecciona familia</option>
+      <!-- Opciones cargadas dinámicamente por JS -->
+    </select>
+  </div>
+  <div>
+    <label for="ciclo">Ciclo formativo:</label>
+    <select id="ciclo" class="ciclo" name="ciclo" required disabled>
+      <option value="">Selecciona ciclo</option>
+      <!-- Opciones cargadas dinámicamente por JS -->
+    </select>
+  </div>
+  <div>
+    <label for="csvAlumnos">CSV de alumnos:</label>
+    <input type="file" id="csvAlumnos" class="csvAlumnos" accept=".csv" required>
+  </div>
+  <div style="margin:1em 0;">
+    <button type="button" id="btnPrevisualizar" class="btnPrevisualizar">Previsualizar</button>
+    <button type="button" id="btnCancelarCarga" class="btnCancelarCarga">Cancelar</button>
+    <button type="submit" id="btnSubirAlumnos" class="btnSubirAlumnos" style="display:none">Subir seleccionados</button>
+  </div>
+  <div id="previewCSV" class="previewCSV" style="margin-top:1em;"></div>
+</form>

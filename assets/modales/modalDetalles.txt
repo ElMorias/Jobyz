@@ -2,6 +2,10 @@
   <form>
   <img id="detalle-foto" style="max-width:150px;">
 
+    <label>validado:
+      <input type="number" id="modal-validado" disabled>
+    </label>
+
     <label>Correo:
       <input type="email" id="modal-correo" disabled>
     </label>

@@ -178,6 +178,152 @@ function initRegistroAlumnoForm(raiz) {
 
 }
 
+
+function initCargaMasiva(raiz){
+    const selectFamilia = raiz.querySelector('#familia');
+    const selectCiclo = raiz.querySelector('#ciclo');
+    const inputCSV = raiz.querySelector('#csvAlumnos');
+    const btnPreview = raiz.querySelector('#btnPrevisualizar');
+    const btnSubir = raiz.querySelector('#btnSubirAlumnos');
+    const previewDiv = raiz.querySelector('#previewCSV');
+    const form = raiz.querySelector('#formCargaMasivaAlumnos');
+    const btnCancelar = raiz.querySelector('#btnCancelarCarga');
+    let parsedRows = [];
+
+    // Familias
+    fetch("api/apiFamilia.php")
+        .then(res => res.json())
+        .then(familias => {
+            selectFamilia.innerHTML = '<option value="">Selecciona familia</option>';
+            familias.forEach(f =>
+                selectFamilia.innerHTML += `<option value="${f.id}">${f.nombre}</option>`
+            );
+        });
+
+    // Ciclos
+    selectFamilia.addEventListener('change', function () {
+        const famId = selectFamilia.value;
+        selectCiclo.innerHTML = '<option value="">Selecciona ciclo</option>';
+        selectCiclo.disabled = !famId;
+        if (!famId) return;
+        fetch('api/apiCiclo.php?familia_id=' + famId)
+            .then(res => res.json())
+            .then(ciclos => {
+                ciclos.forEach(c =>
+                    selectCiclo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`
+                );
+            });
+    });
+    selectCiclo.disabled = true;
+
+    // Preview
+    btnPreview.addEventListener('click', function (e) {
+        e.preventDefault();
+        const file = inputCSV.files[0];
+        if (!file) return alert('Selecciona un archivo CSV primero.');
+            const reader = new FileReader();
+            reader.onload = evt => {
+                const lines = evt.target.result.split(/\r?\n/);
+                parsedRows = [];
+                let html = `<table style="width:100%"><thead>
+                    <tr>
+                        <th>Subir</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Correo</th>
+                    </tr>
+                    </thead><tbody>`;
+                lines.forEach((line, idx) => {
+                    if (!line.trim()) return;
+                    const [nombre, apellido, correo, dni] = line.split(',');
+                    if (!nombre || !apellido || !correo || !dni) return;
+                    parsedRows.push({nombre, apellido, correo, dni});
+                    html += `<tr>
+                        <td><input type="checkbox" class="fila-checkbox" data-idx="${idx}" checked></td>
+                        <td><input type="text" class="input-nombre" value="${nombre}" data-idx="${idx}"></td>
+                        <td><input type="text" class="input-apellido" value="${apellido}" data-idx="${idx}"></td>
+                        <td><input type="email" class="input-correo" value="${correo}" data-idx="${idx}"></td>
+                        <td><input type="hidden" class="input-dni" value="${dni}" data-idx="${idx}"></td>
+                    </tr>`;
+            });
+
+            html += "</tbody></table>";
+            previewDiv.innerHTML = html;
+            btnSubir.style.display = "inline-block";
+        };
+        reader.readAsText(file);
+    });
+
+    // Subir seleccionados al backend (con inputs editables en cada celda)
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const checkboxes = previewDiv.querySelectorAll('.fila-checkbox');
+        const seleccionados = [];
+        checkboxes.forEach((ck) => {
+            if (ck.checked) {
+                const idx = ck.getAttribute('data-idx');
+                const nombre = previewDiv.querySelector(`.input-nombre[data-idx="${idx}"]`).value;
+                const apellido = previewDiv.querySelector(`.input-apellido[data-idx="${idx}"]`).value;
+                const correo = previewDiv.querySelector(`.input-correo[data-idx="${idx}"]`).value;
+                const dni = previewDiv.querySelector(`.input-dni[data-idx="${idx}"]`).value;
+                seleccionados.push({nombre, apellido, correo, dni});
+            }
+        });
+        const familia = selectFamilia.value;
+        const ciclo = selectCiclo.value;
+        if (!familia || !ciclo) return alert('Familia y ciclo obligatorios.');
+        if (!seleccionados.length) return alert('Debes seleccionar al menos un usuario.');
+
+        fetch('api/apiAlumno.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                usuarios: seleccionados,
+                familia, ciclo
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            // Mostrar fallos en el div del modal
+            const divFallos = document.getElementById('carga-fallos');
+            divFallos.innerHTML = '';
+            if (data.errores && data.errores.length) {
+                let html = `<div style="color:red;font-weight:bold;margin-bottom:6px;">No se pudieron cargar:</div><ul>`;
+                data.errores.forEach(email => {
+                    html += `<li>${email}</li>`;
+                });
+                html += "</ul>";
+                divFallos.innerHTML = html;
+            }
+
+            // Pintar tabla con los alumnos insertados
+            if (data.ok && data.alumnos && data.alumnos.length) {
+                pintarTabla(alumnos);
+                
+            }
+
+            if (data.ok) {
+                btnSubir.style.display = 'none';
+                // NO cierres el modal aquí si quieres que vean los fallos.
+            } else {
+                alert('Error cargando: ' + (data.error || ''));
+            }
+        });
+    });
+
+
+
+    // Cancelar modal
+    btnCancelar.onclick = function () {
+        form.reset();
+        selectCiclo.innerHTML = '<option value="">Selecciona ciclo</option>';
+        previewDiv.innerHTML = '';
+        btnSubir.style.display = 'none';
+        modalManager.cerrarModal();
+    };
+
+}
+
 // Uso en modal, tras cargar el modal (en el callback de crearModalDesdeUrl):
 // let modalRaiz = document.querySelector('.modal-contenedor');
 // initRegistroAlumnoForm(modalRaiz);

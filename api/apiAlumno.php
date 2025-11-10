@@ -1,9 +1,4 @@
 <?php
-ob_start();
-header('Content-Type: application/json');
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 require_once dirname(__DIR__) . '/autoloader.php';
 header('Content-Type: application/json');
@@ -16,27 +11,58 @@ switch ($_SERVER['REQUEST_METHOD']) {
     break;
 
   case 'POST':
-    $datos = $_POST;
-
-    if (!empty($_POST['id'])) {
-        $id = $_POST['id'];
-        $ok = $repo->actualizar($id, $datos);
-        if ($ok) {
-           $usuario = $repo->getAlumnoCompleto($id)->toArray(); 
-            echo json_encode(['status' => 'ok', 'mensaje' => 'Alumno actualizado', 'alumno' => $usuario]);
-        } else {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'mensaje' => 'No se pudo actualizar']);
-        }
-        break;
-    } else{
-      $alumno = $repo->crear($datos);
-        echo json_encode([
-            'status'=>'ok',
-            'alumno'=>$alumno->toArray(),
-            'mensaje'=>'Alumno creado correctamente'
-      ]);
+    // Recoge JSON o form-data automáticamente
+    $input = file_get_contents('php://input');
+    $datos = [];
+    if ($input) {
+      $try = json_decode($input, true);
+      // Si el contenido es JSON: úsalo
+      if (is_array($try)) {
+          $datos = $try;
+      } else {
+          $datos = $_POST;
+      }
+    } else {
+      $datos = $_POST;
     }
+
+    // Si hay usuarios → carga masiva
+    if (!empty($datos['usuarios'])) {
+      $usuarios = $datos['usuarios'];
+      $familia = $datos['familia'] ?? null;
+      $ciclo = $datos['ciclo'] ?? null;
+      $res = $repo->cargaMasiva($usuarios, $familia, $ciclo);
+
+      echo json_encode([
+          'ok'         => $res['ok'] ?? false,
+          'insertados' => $res['insertados'] ?? 0,
+          'fallos'     => $res['fallos'] ?? 0,
+          'errores'    => $res['fallosEmails'] ?? []
+      ]);
+      break;
+    }
+
+    // Edición (update)
+    if (!empty($datos['id'])) {
+      $id = $datos['id'];
+      $ok = $repo->actualizar($id, $datos);
+      if ($ok) {
+          $usuario = $repo->getAlumnoCompleto($id)->toArray();
+          echo json_encode(['status' => 'ok', 'mensaje' => 'Alumno actualizado', 'alumno' => $usuario]);
+      } else {
+          http_response_code(400);
+          echo json_encode(['status' => 'error', 'mensaje' => 'No se pudo actualizar']);
+      }
+      break;
+    }
+
+    // Registro (alta normal)
+    $alumno = $repo->crear($datos);
+    echo json_encode([
+      'status'=>'ok',
+      'alumno'=>$alumno->toArray(),
+      'mensaje'=>'Alumno creado correctamente'
+    ]);
     break;
 
   case 'DELETE':

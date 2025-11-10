@@ -10,6 +10,7 @@ class Alumno {
   private $telefono;
   private $direccion;
   private $foto;
+  private $validado;
   private $user_id;
   private $correo;
   private $estudios = [];
@@ -43,6 +44,9 @@ class Alumno {
 
   public function getFoto() { return $this->foto; }
   public function setFoto($foto) { $this->foto = $foto; }
+
+  public function getValidado() {return $this->validado;}
+   public function setValidado($validado) { $this->validado = $validado; }
 
   public function getUserId() { return $this->user_id; }
   public function setUserId($user_id) { $this->user_id = $user_id; }

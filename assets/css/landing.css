@@ -1,0 +1,111 @@
+/* --- LANDING PAGE --- */
+
+.div-landing {
+  background-color: var(--color-blanco);
+  color: var(--color-gris-oscuro);
+  padding: 2em 1.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 3em;
+  font-family: 'Lato', sans-serif;
+}
+
+/* --- Bloques separados por línea fina --- */
+.div-landing section {
+  border-bottom: 1px solid var(--color-gris-claro);
+  padding-bottom: 2em;
+}
+
+/* --- HERO --- */
+.hero-landing {
+  text-align: center;
+  padding-top: 1em;
+}
+.hero-landing h1 {
+  font-size: 2em;
+  font-family: 'Raleway', sans-serif;
+  color: var(--color-teal);
+  margin-bottom: 0.6em;
+}
+.hero-landing p {
+  font-size: 1.1em;
+  margin-bottom: 1.2em;
+  max-width: 600px;
+  margin-inline: auto;
+}
+.hero-landing .cta-btn {
+  margin: 0.4em;
+  display: inline-block;
+}
+
+/* --- DESCRIPCIÓN --- */
+.descripcion-landing h2 {
+  font-size: 1.6em;
+  font-family: 'Raleway', sans-serif;
+  color: var(--color-teal);
+  margin-bottom: 0.6em;
+}
+.descripcion-landing p {
+  font-size: 1em;
+  max-width: 700px;
+  margin-bottom: 1.4em;
+}
+.beneficios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+.beneficio {
+  background-color: var(--color-gris-claro);
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  font-weight: bold;
+  color: var(--color-teal);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* --- EMPRESAS --- */
+.empresas-landing h2 {
+  font-size: 1.5em;
+  font-family: 'Raleway', sans-serif;
+  color: var(--color-teal);
+  margin-bottom: 0.6em;
+}
+.lista-empresas {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1em 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.6em;
+}
+.lista-empresas li {
+  background-color: var(--color-gris-claro);
+  padding: 0.5em 0.8em;
+  border-radius: 6px;
+  font-weight: 600;
+  color: var(--color-teal);
+  text-align: center;
+}
+.ver-todas {
+  display: inline-block;
+  margin-top: 1em;
+  font-weight: bold;
+  color: var(--color-teal);
+  border-bottom: 1px solid var(--color-teal);
+  transition: color 0.2s, border-color 0.2s;
+}
+.ver-todas:hover {
+  color: var(--color-hover-teal);
+  border-color: var(--color-hover-teal);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .beneficios {
+    flex-direction: column;
+  }
+  .lista-empresas {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+}

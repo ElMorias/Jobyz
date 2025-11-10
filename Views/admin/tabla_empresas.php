@@ -38,11 +38,11 @@
         <td><?= htmlspecialchars($empresa['pcontactoemail']) ?></td>
         <td><?= htmlspecialchars($empresa['tlfcontacto']) ?></td>
         <td>
-          <a href="?page=detalles_empresa&id=<?= htmlspecialchars($empresa['id']) ?>" class="btn">Detalles</a>
-          <a href="?page=editar_empresa&id=<?= htmlspecialchars($empresa['id']) ?>" class="btn">Modificar</a>
+          <a href="?page=detalles_empresa&id=<?= htmlspecialchars($empresa['id']) ?>" class="btn-tabla btn-detalles">Detalles</a>
+          <a href="?page=editar_empresa&id=<?= htmlspecialchars($empresa['id']) ?>" class="btn-tabla btn-modificar">Modificar</a>
           <form method="POST" action="?page=borrar_empresa" style="display:inline">
             <input type="hidden" name="id" value="<?= htmlspecialchars($empresa['id']) ?>">
-            <button type="submit" class="btn btn-borrar">Borrar</button>
+            <button type="submit" class="btn-tabla btn-borrar">Borrar</button>
           </form>
         </td>
       </tr>
@@ -77,7 +77,7 @@
           <td>
             <form method="POST" action="?page=validar_empresa" style="display:inline">
               <input type="hidden" name="id" value="<?= htmlspecialchars($empresa['id']) ?>">
-              <button type="submit" class="btn">Validar</button>
+              <button type="submit" class="btn-tabla btn-validar">Validar</button>
             </form>
           </td>
         </tr>

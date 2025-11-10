@@ -8,7 +8,7 @@
   --color-gris-oscuro: #3A3A3A;
   --color-gris-claro: #E5E5E5;
   --color-blanco: #FFFFFF;
-  --color-verde-lima: #A6E22E;
+  --color-verde-lima: #8bcf03;
   --color-hover-teal: #1a4a52;
 }
 
@@ -77,13 +77,6 @@ nav a, .back-home {
   color: var(--color-teal);
   font-weight: 600;
 }
-/* ---Main--- */
-main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: var(--color-teal);
-}
 
 /* --- Footer --- */
 footer, .simple-footer {
@@ -93,7 +86,6 @@ footer, .simple-footer {
   text-align: center;
   font-size: 0.9em;
   color: #777;
-  margin-top: 2rem;
 }
 
 /* --- Wrapper --- */
@@ -105,6 +97,806 @@ footer, .simple-footer {
 .wrapper > *:not(footer) {
   flex: 1;
 }
+
+/* --- TABLAS --- */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  background: var(--color-blanco);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0px 4px 28px #215a6322;
+}
+th, td {
+  padding: 0.75em 1em;
+  text-align: left;
+}
+
+th {
+  background: var(--color-teal);
+  color: var(--color-blanco);
+  font-family: 'Raleway', sans-serif;
+  font-size: 1em;
+}
+
+tr:nth-child(even) {
+  background: #f8fafb;
+}
+tr:hover {
+  background: var(--color-gris-claro);
+}
+
+input, select, textarea {
+  border: 1px solid var(--color-gris-claro);
+  border-radius: 6px;
+  padding: 0.5em 0.8em;
+  font-family: inherit;
+  background: var(--color-blanco);
+  transition: border 0.16s, box-shadow 0.20s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 2px #215a6341;
+}
+
+/* --- FORMULARIOS BÁSICOS --- */
+form {
+  background: var(--color-blanco);
+  border-radius: 12px;
+  padding: 2em 2em 1.4em 2em;
+  max-width: 1100px;
+  margin: 2em auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.1em;
+}
+
+form label {
+  font-weight: bold;
+  color: var(--color-teal);
+  margin-bottom: 0.3em;
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.08em;
+  letter-spacing: 0.02em;
+}
+
+form input,
+form select,
+form textarea {
+  border: 1px solid gray;
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  font-size: 1em;
+  background: var(--color-blanco);
+  color: var(--color-gris-oscuro);
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border 0.17s, box-shadow 0.18s;
+  width: 100%;
+  margin-bottom: 0.2em;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 2px #215a6341;
+  outline: none;
+}
+
+form textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 240px;
+  line-height: 1.5;
+}
+
+form .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.6em;
+}
+
+form .form-actions {
+  text-align: right;
+  margin-top: 1.2em;
+}
+
+form input[type="submit"],
+form button[type="submit"] {
+  min-width: 110px;
+  background: var(--color-verde-lima);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 7px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: bold;
+  padding: 0.55em 0.9em;
+  letter-spacing: 0.02em;
+  font-size: 1.12em;
+  transition: background 0.16s;
+}
+form input[type="submit"]:hover,
+form button[type="submit"]:hover {
+  background: var(--color-hover-teal);
+}
+
+form input[type="checkbox"], 
+form input[type="radio"] {
+  width: auto;
+  accent-color: var(--color-teal);
+  margin-right: 0.3em;
+  cursor: pointer;
+}
+form .ayuda, form small, form .help-text {
+  color: #555;
+  font-size: 0.91em;
+  margin-top: 2px;
+  opacity: .86;
+  font-weight: normal;
+}
+
+/* --- LOGIN CONTAINER --- */
+.login-container {
+  max-width: 500px;
+  margin: 5em auto;
+  padding: 2.5em 2em;
+  background: var(--color-blanco);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(33,90,99,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  font-family: 'Lato', sans-serif;
+}
+
+/* --- TÍTULO --- */
+.login-container h1 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.8em;
+  color: var(--color-teal);
+  text-align: center;
+  margin-bottom: 0.5em;
+}
+
+/* --- FORMULARIO --- */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4em;
+}
+
+.login-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form label {
+  font-weight: bold;
+  color: var(--color-teal);
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.05em;
+  margin-bottom: 0.3em;
+}
+
+.login-form input {
+  padding: 0.6em 1em;
+  border: 1px solid var(--color-gris-claro);
+  border-radius: 8px;
+  font-size: 1em;
+  background: var(--color-blanco);
+  color: var(--color-gris-oscuro);
+  transition: border 0.17s, box-shadow 0.18s;
+}
+
+.login-form input:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 2px #215a6341;
+  outline: none;
+}
+
+/* --- BOTÓN --- */
+.login-btn {
+  background-color: var(--color-verde-lima);
+  color: var(--color-blanco);
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.login-btn:hover {
+  background: var(--color-hover-teal);
+}
+
+/* --- ENLACES LOGIN --- */
+.forgot-password {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95em;
+  margin-top: 0.5em;
+}
+
+.forgot-password a {
+  color: var(--color-teal);
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.forgot-password a:hover {
+  color: var(--color-hover-teal);
+}
+
+
+/* ---SELECCIÓN DE REGISTRO --- */
+.elige-tipo-container {
+  max-width: 600px;
+  margin: 5em auto;
+  padding: 2.5em 2em;
+  background: var(--color-blanco);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(33,90,99,0.08);
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.elige-tipo-container h1 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.8em;
+  color: var(--color-teal);
+  margin-bottom: 0.3em;
+}
+
+.elige-tipo-container p {
+  font-size: 1.05em;
+  color: var(--color-gris-oscuro);
+  margin-bottom: 1em;
+}
+
+/* --- BOTONES DE TIPO --- */
+.tipo-opciones {
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+  flex-wrap: wrap;
+}
+
+.btn-tipo {
+  background: var(--color-verde-lima);
+  color: var(--color-blanco);
+  font-family: 'Raleway', sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 0.8em 1.6em;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s ease;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(33,90,99,0.1);
+}
+
+.btn-tipo:hover {
+  background: var(--color-hover-teal);
+}
+
+/* --- FORMULARIOS EN GENERAL-ESPECIFICOS --- */
+/* --- CONTENEDOR GENERAL --- */
+.registro-container {
+  max-width: 1200px;
+  margin: 3em auto;
+  padding: 2em 3em;
+  background: var(--color-blanco);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(33,90,99,0.08);
+  font-family: 'Lato', sans-serif;
+}
+
+/* --- FORMULARIOS BASE --- */
+form.form-registrar-empresa,
+form.form-registro-alumno {
+  max-width: unset;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+form h2 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 2em;
+  color: var(--color-teal);
+  text-align: center;
+  margin-bottom: 0.5em;
+}
+
+/* --- BLOQUES --- */
+.form-bloque {
+  background: #f9f9f9;
+  padding: 1.5em;
+  border-radius: 12px;
+  border: 1px solid var(--color-gris-claro);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.form-bloque h3 {
+  font-size: 1.2em;
+  font-family: 'Raleway', sans-serif;
+  color: var(--color-teal);
+  margin-bottom: 0.6em;
+}
+
+/* --- FILAS Y GRUPOS --- */
+.form-row {
+  display: flex;
+  gap: 1.5em;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.4em;
+  color: var(--color-teal);
+  font-family: 'Raleway', sans-serif;
+}
+
+.form-group input {
+  padding: 0.6em 1em;
+  border: 1px solid var(--color-gris-claro);
+  border-radius: 8px;
+  font-size: 1em;
+  background: var(--color-blanco);
+  color: var(--color-gris-oscuro);
+  transition: border 0.17s, box-shadow 0.18s;
+}
+
+.form-group input:focus {
+  border-color: var(--color-teal);
+  box-shadow: 0 0 0 2px #215a6341;
+  outline: none;
+}
+
+/* --- COLUMNAS EMPRESA --- */
+.form-columnas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2em;
+}
+
+/* --- GRILLA ALUMNO --- */
+.form-datos-personales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5em;
+}
+
+/* --- ESTUDIOS --- */
+#bloque-estudios #estudios-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-top: 1em;
+}
+
+#btn-agregar-estudio {
+  margin-top: 1em;
+  align-self: flex-start;
+}
+
+/* --- BOTONES --- */
+.btn-verde-lima,
+.btn-registro {
+  background: var(--color-verde-lima);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: bold;
+  padding: 0.7em 1.4em;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-verde-lima:hover,
+.btn-registro:hover {
+  background: var(--color-hover-teal);
+}
+
+.btn-registro {
+  align-self: flex-end;
+}
+
+/* --- DOCUMENTOS / FOTO --- */
+.form-documentos {
+  background: #f9f9f9;
+  padding: 1.5em;
+  border-radius: 12px;
+  border: 1px solid var(--color-gris-claro);
+}
+
+.foto-contenedor input[type="file"] {
+  border: 1px solid var(--color-gris-claro);
+  padding: 0.5em;
+  border-radius: 6px;
+  background: var(--color-blanco);
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+}
+
+#preview-foto {
+  margin-top: 1em;
+  min-height: 100px;
+  border: 1px dashed var(--color-gris-claro);
+  border-radius: 8px;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.9em;
+}
+
+/* --- ERRORES --- */
+.form-error {
+  background: #ffeaea;
+  color: #d22;
+  border: 1px solid #faabab;
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  margin-bottom: 1.2em;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+/* --- DETALLES-READONLY ---*/
+input[readonly] {
+  background-color: #f4f4f4;
+  color: var(--color-gris-oscuro);
+  border: 1px solid var(--color-gris-claro);
+  cursor: default;
+}
+
+/* --- TABLA DE ALUMNOS Y EMPRESAS --- */
+.tablaUsuariosContainer {
+  max-width: 1200px;
+  margin: 3em auto;
+  padding: 2em 3em;
+  background: var(--color-blanco);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(33,90,99,0.08);
+  font-family: 'Lato', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.tablaUsuariosContainer h1 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 2em;
+  color: var(--color-teal);
+  text-align: center;
+}
+
+/* --- ACCIONES --- */
+.accionesUsuarios {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.busqueda {
+  display: flex;
+  gap: 0.6em;
+  flex-wrap: wrap;
+}
+
+.busqueda input {
+  padding: 0.6em 1em;
+  border: 1px solid var(--color-gris-claro);
+  border-radius: 8px;
+  font-size: 1em;
+  background: var(--color-blanco);
+  color: var(--color-gris-oscuro);
+  min-width: 220px;
+}
+
+.busqueda button,
+#addUsuario,
+#addMasivo {
+  background: var(--color-verde-lima);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: bold;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.busqueda button:hover,
+#addUsuario:hover,
+#addMasivo:hover {
+  background: var(--color-hover-teal);
+}
+
+/* --- TABLA --- */
+.tablaUsuarios {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  box-shadow: 0 2px 8px rgba(33,90,99,0.05);
+}
+
+.tablaUsuarios thead {
+  background: var(--color-teal);
+  color: var(--color-blanco);
+}
+
+.tablaUsuarios th,
+.tablaUsuarios td {
+  padding: 0.9em 1em;
+  text-align: left;
+  border-bottom: 1px solid var(--color-gris-claro);
+}
+
+.tablaUsuarios tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* --- ACCIONES CELDA --- */
+.tablaUsuarios td:last-child {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+
+.tablaUsuarios .btn-accion {
+  background: var(--color-teal);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 6px;
+  padding: 0.4em 0.8em;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tablaUsuarios .btn-accion:hover {
+  background: var(--color-hover-teal);
+}
+
+/* --- BOTONES DE ACCIÓN EN TABLA --- */
+.tablaUsuarios .btn-detalles {
+  background: #2a7ae2; /* azul */
+  color: #fff;
+}
+
+.tablaUsuarios .btn-modificar {
+  background: #f4b400; /* amarillo */
+  color: #fff;
+}
+
+.tablaUsuarios .btn-borrar {
+  background: #d93025; /* rojo */
+  color: #fff;
+}
+
+.tablaUsuarios .btn-detalles:hover {
+  background: #1a5fc2;
+}
+
+.tablaUsuarios .btn-modificar:hover {
+  background: #d9a000;
+}
+
+.tablaUsuarios .btn-borrar:hover {
+  background: #b71c1c;
+}
+
+/* --- TABLA DE EMPRESA --- */
+/* --- CONTENEDOR PRINCIPAL --- */
+.tablaEmpresaContainer {
+  max-width: 1200px;
+  margin: 3em auto;
+  padding: 2em 3em;
+  background: var(--color-blanco);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(33,90,99,0.08);
+  font-family: 'Lato', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.tablaEmpresaContainer h1,
+.tablaEmpresaContainer h2 {
+  font-family: 'Raleway', sans-serif;
+  font-size: 2em;
+  color: var(--color-teal);
+  text-align: center;
+}
+
+/* --- ACCIONES --- */
+.accionesEmpresa {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.busqueda form {
+  display: flex;
+  gap: 0.6em;
+  flex-wrap: wrap;
+}
+
+.busqueda input {
+  padding: 0.6em 1em;
+  border: 1px solid var(--color-gris-claro);
+  border-radius: 8px;
+  font-size: 1em;
+  background: var(--color-blanco);
+  color: var(--color-gris-oscuro);
+  min-width: 220px;
+}
+
+.busqueda button,
+#addEmpresa {
+  background: var(--color-verde-lima);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: bold;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.busqueda button:hover,
+#addEmpresa:hover {
+  background: var(--color-hover-teal);
+}
+
+.busqueda a {
+  color: var(--color-teal);
+  font-weight: 600;
+  text-decoration: underline;
+  font-size: 0.95em;
+}
+
+/* --- TABLA --- */
+.tablaEmpresas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  box-shadow: 0 2px 8px rgba(33,90,99,0.05);
+}
+
+.tablaEmpresas thead {
+  background: var(--color-teal);
+  color: var(--color-blanco);
+}
+
+.tablaEmpresas th,
+.tablaEmpresas td {
+  padding: 0.9em 1em;
+  text-align: left;
+  border-bottom: 1px solid var(--color-gris-claro);
+}
+
+.tablaEmpresas tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* --- ACCIONES CELDA --- */
+.tablaEmpresas td:last-child {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* --- BOTONES COMPACTOS PARA TABLA --- */
+.btn-tabla {
+  display: inline-block;
+  padding: 0.3em 0.7em;
+  font-size: 1.2em;
+  border-radius: 6px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: 'Raleway', sans-serif;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+/* --- COLORES PERSONALIZADOS --- */
+.btn-detalles {
+  background: #2a7ae2;
+  color: #fff;
+}
+
+.btn-detalles:hover {
+  background: #1a5fc2;
+}
+
+.btn-modificar {
+  background: #f4b400;
+  color: #fff;
+}
+
+.btn-modificar:hover {
+  background: #d9a000;
+}
+
+.btn-borrar {
+  background: #d93025;
+  color: #fff;
+}
+
+.btn-borrar:hover {
+  background: #b71c1c;
+}
+
+
+
+
+
+
+
+/* --- UTILIDADES --- */
+
+.msg-success {
+  color: #1fa669;
+  background: #ecf9ed;
+  padding: 0.4em 1em;
+  border-radius: 7px;
+  margin: 1em 0;
+  border: 1px solid #b6e8ca;
+  font-weight: bold;
+}
+.msg-error {
+  color: #d22;
+  background: #ffeaea;
+  padding: 0.4em 1em;
+  border-radius: 7px;
+  margin: 1em 0;
+  border: 1px solid #faabab;
+  font-weight: bold;
+}
+
 
 /* --- MODALES --- */
 .modal-fondo {
@@ -157,9 +949,11 @@ footer, .simple-footer {
 }
 .modal-cerrar:hover {
   color: var(--color-verde-lima);
+  background-color:transparent;
   opacity: 1;
   transform: scale(1.11);
 }
+
 @media (max-width:600px) {
   .modal-contenedor {
     min-width: unset;
@@ -167,328 +961,16 @@ footer, .simple-footer {
     max-height:96vh;
     padding: 14vw 3vw 9vw 3vw;
   }
-}
-
-/* --- VISTAS ESPECÍFICAS --- */
-.registro-container {
-    display: flex;
-    width: 80%;
-    height: auto;
-    background-color: var(--color-blanco);
-    margin: 0;
-    padding: 40px 16px;
-    box-sizing: border-box;
-    /* justify-content: center; */
+  .tipo-opciones {
     flex-direction: column;
-    border-radius: 20px;
-    box-shadow: 0 0 10px #000000;
-    margin-top: 25px;
+    gap: 1em;
+  }
+
 }
 
-.form-registro-alumno {
-  max-width: 960px;
-  background: var(--color-blanco);
-  margin: 0 auto;
-  padding: 32px;
-  border-radius: 10px;
-  box-shadow: 0 4px 18px #00000040;
-  border: 1px solid var(--color-gris-claro);
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  font-family: 'Lato', Arial, sans-serif;
-}
-.form-registro-alumno h2, .form-bloque h3 {
-  color: var(--color-teal);
-  font-family: 'Raleway', Arial, sans-serif;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-}
-
-.form-bloque {
-  border-bottom: 1px solid var(--color-gris-claro);
-  padding-bottom: 1em;
-}
-.form-bloque:last-child {
-  border: none;
-}
-
-.form-datos-personales {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.45em;
-}
-.form-group label {
-  font-size: 1.01rem;
-  color: var(--color-gris-oscuro);
-  margin-bottom: 6px;
-  font-family: 'Lato', Arial, sans-serif;
-  font-weight: 400;
-}
-.form-group input,
-.form-group select {
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--color-gris-claro);
-  font-size: 1rem;
-  background: #FAFBFC;
-  transition: border 0.18s;
-  color: var(--color-gris-oscuro);
-  font-family: inherit;
-}
-.form-group input:focus,
-.form-group select:focus {
-  border-color: var(--color-teal);
-  outline: none;
-}
-.form-group[style*="grid-column: span 2"] {
-  grid-column: span 2;
-}
-#btn-agregar-estudio {
-  margin-top: 1em;
-}
-.form-documentos {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-.foto-contenedor {
-  display: flex;
-  gap: 1em;
-  align-items: center;
-}
-#preview-foto {
-  margin-top: 12px;
-}
-.btn-registro {
-  background: var(--color-verde-lima);
-  color: var(--color-blanco);
-  font-family: 'Raleway', Arial, sans-serif;
-  font-weight: 700;
-  padding: 13px 0;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.14rem;
-  width: 100%;
-  box-shadow: 0 2px 10px #215A6320;
-  cursor: pointer;
-  margin: 23px 0 0 0;
-  transition: background 0.15s, box-shadow 0.22s;
-}
-.btn-registro:hover, .btn-registro:focus {
-  background: var(--color-hover-teal);
-  box-shadow: 0 4px 18px #215A6340;
-}
-
-/* Tabla de usuarios */
-.tablaUsuariosContainer, .tablaEmpresaContainer {
-  max-width: 900px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background-color: var(--color-blanco);
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  font-family: 'Segoe UI', sans-serif;
-}
-.tablaUsuariosContainer h1, .tablaEmpresaContainer h1 {
-  color: var(--color-teal);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-.tablaUsuarios, .tablaEmpresas {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-.tablaUsuarios th,
-.tablaUsuarios td,
-.tablaEmpresas th,
-.tablaEmpresas td {
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  text-align: left;
-}
-.tablaUsuarios th,
-.tablaEmpresas th {
-  background-color: var(--color-teal);
-  color: var(--color-blanco);
-}
-.tablaUsuarios tbody tr:hover,
-.tablaEmpresas tbody tr:hover {
-  background-color: #f0f8e2;
-}
-.tablaUsuarios tbody tr:nth-child(odd),
-.tablaEmpresas tbody tr:nth-child(odd) {
-  background-color: var(--color-gris-claro);
-}
-/* Botones de acción usuarios */
-.btnBorrar, .btnVer, .btnEditar, .btn-detalles {
-  background-color: #B4E900;
-  border: none;
-  padding: 0.4rem 0.7rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  color: var(--color-teal);
-  margin-right: 0.3rem;
-  transition: background-color 0.3s ease;
-}
-.btnBorrar:hover, .btnVer:hover, .btnEditar:hover, .btn-detalles:hover {
-  background-color: #A0D800;
-}
-.btn-modificar {
-  background-color: #FFD700;
-  color: var(--color-teal);
-}
-.btn-borrar {
-  background-color: #FF4D4D;
-  color: var(--color-blanco);
-}
-.btn-modificar:hover {
-  background-color: #E6C200;
-}
-.btn-borrar:hover {
-  background-color: #E60000;
-}
-
-/* --- Login --- */
-.login-container {
-  max-width: 400px;
-  margin: 4rem auto;
-  padding: 2rem;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-.login-container h1 {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-.login-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-.login-form input {
-  width: 100%;
-  padding: 0.75em;
-  margin-bottom: 1.5em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.forgot-password {
-  text-align: center;
-  margin-top: 1rem;
-}
-.forgot-password a {
-  color: #555;
-  text-decoration: underline;
-}
-
-/* --- Landing --- */
-.hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4em 2em;
-  background-color: #F9F9F9;
-}
-.hero-text {
-  max-width: 50%;
-}
-.hero h1 {
-  font-size: 2.5em;
-  margin-bottom: 0.5em;
-}
-.hero p {
-  font-size: 1.2em;
-  margin-bottom: 1em;
-}
-.descripcion {
-  padding: 3em 2em;
-  background-color: var(--color-blanco);
-}
-.descripcion h2 {
-  font-size: 2em;
-  margin-bottom: 1em;
-}
-.beneficios {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1em;
-  margin-top: 1em;
-}
-.beneficio {
-  background-color: var(--color-gris-claro);
-  padding: 1em;
-  border-radius: 6px;
-}
-.empresas {
-  padding: 3em 2em;
-  background-color: #F9F9F9;
-}
-.lista-empresas {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1em;
-}
-.lista-empresas li {
-  background-color: var(--color-blanco);
-  padding: 1em;
-  border: 1px solid var(--color-gris-claro);
-  border-radius: 6px;
-  text-align: center;
-}
-.ver-todas {
-  display: inline-block;
-  margin-top: 1em;
-}
-
-/* --- Selección registro --- */
-.elige-tipo-container {
-  max-width: 500px;
-  margin: 4rem auto;
-  padding: 2rem;
-  background-color: var(--color-teal);
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  text-align: center;
-  font-family: 'Segoe UI', sans-serif;
-}
-.elige-tipo-container h1 {
-  color: var(--color-blanco);
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-.elige-tipo-container p {
-  color: #e0e0e0;
-  margin-bottom: 2rem;
-}
-.tipo-opciones {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-.btn-tipo {
-  display: inline-block;
-  padding: 1rem 2rem;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 1rem;
-  background-color: #B4E900;
-  color: var(--color-teal);
-  transition: background-color 0.3s ease;
-}
-.btn-tipo:hover {
-  background-color: #A0D800;
+@media (max-width: 700px) {
+  .descripcion, .empresas { max-width:100vw; padding:1.1em;}
+  .beneficios { flex-direction:column; gap:.6em;}
 }
 
 /* --- Responsive --- */
@@ -514,7 +996,50 @@ footer, .simple-footer {
   .container {
     padding: 1rem;
   }
+  .form-columnas {
+    flex-direction: column;
+  }
+  .form-columnas .form-bloque {
+    flex: 1 1 100%;
+  }
+  .form-columnas {
+    grid-template-columns: 1fr;
+  }
+  .form-datos-personales {
+    grid-template-columns: 1fr;
+  }
+  .accionesUsuarios {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tablaUsuarios td:last-child {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+    .accionesEmpresa {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tablaEmpresas td:last-child {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
 }
+
+@media (max-width: 900px) {
+  .hero { flex-direction:column; gap:1.2em; padding:2em .6em;}
+  .hero-text { align-items:center; text-align:center;}
+  .hero-image { width:100vw; margin-top:.7em; min-height:90px;}
+}
+
+@media (max-width: 1024px) {
+  .form-columnas .form-bloque {
+    flex: 1 1 calc(50% - 2em);
+  }
+}
+
 ::-webkit-input-placeholder { color: var(--color-gris-oscuro); opacity: .7; }
 ::-moz-placeholder { color: var(--color-gris-oscuro); opacity: .7; }
 :-ms-input-placeholder { color: var(--color-gris-oscuro); opacity: .7; }

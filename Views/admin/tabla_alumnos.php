@@ -14,7 +14,7 @@
       <button id="filtrarUsuarios">Filtrar</button>
     </div>
     <button id="addUsuario">Añadir</button>
-    <button id="addUsuario">Añadir varios</button>
+    <button id="addMasivo">Añadir varios</button>
   </div>
 
 

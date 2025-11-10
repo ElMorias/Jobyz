@@ -1,6 +1,7 @@
 <div id="modal-modificar" class="modal-modificar">
   <form action="" method="POST" id="form-editar-alumno" class="form-editar-alumno" enctype="multipart/form-data">
     <input type="hidden" name="id" id="modal-id">
+    <input type="hidden" name="validado" id="modal-validado" value=1>
     <div class="form-bloque">
         <h3>Datos Personales</h3>
         <label>Correo:

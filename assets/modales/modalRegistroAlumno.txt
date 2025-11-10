@@ -16,6 +16,7 @@
     </div>
 
       <input type="hidden" name="rol_id" value="2">
+      <input type="hidden" name="validado" value=1>
   </div>
 
   <div class="form-bloque">
