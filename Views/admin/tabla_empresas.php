@@ -15,7 +15,6 @@
       </form>
     </div>
     <a href="?page=crear_empresa" class="btn" id="addEmpresa">Añadir</a>
-    <a href="registro_masivo_empresas.php" class="btn" id="addEmpresa">Añadir varias</a>
   </div>
 
   <table class="tablaEmpresas">
@@ -40,7 +39,7 @@
         <td>
           <a href="?page=detalles_empresa&id=<?= htmlspecialchars($empresa['id']) ?>" class="btn-tabla btn-detalles">Detalles</a>
           <a href="?page=editar_empresa&id=<?= htmlspecialchars($empresa['id']) ?>" class="btn-tabla btn-modificar">Modificar</a>
-          <form method="POST" action="?page=borrar_empresa" style="display:inline">
+          <form method="POST" action="?page=borrar_empresa" class="form-borrar-empre">
             <input type="hidden" name="id" value="<?= htmlspecialchars($empresa['id']) ?>">
             <button type="submit" class="btn-tabla btn-borrar">Borrar</button>
           </form>
@@ -75,7 +74,7 @@
           <td><?= htmlspecialchars($empresa['pcontactoemail']) ?></td>
           <td><?= htmlspecialchars($empresa['tlfcontacto']) ?></td>
           <td>
-            <form method="POST" action="?page=validar_empresa" style="display:inline">
+            <form method="POST" action="?page=validar_empresa" class="form-borrar-empre">
               <input type="hidden" name="id" value="<?= htmlspecialchars($empresa['id']) ?>">
               <button type="submit" class="btn-tabla btn-validar">Validar</button>
             </form>

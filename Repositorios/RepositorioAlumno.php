@@ -63,6 +63,12 @@ class RepositorioAlumno {
     return $stmt->fetchAll();
   }
 
+    public function getAlumnoIdPorUserId($user_id){
+        $stmt = $this->db->prepare("SELECT id FROM alumno WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchColumn() ?: null;
+    }
+
   //Borrar alumno por ID
     public function borrarPorAlumnoId($alumnoId) {
         // Buscar el user_id asociado al alumno

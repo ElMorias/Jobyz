@@ -66,7 +66,7 @@ class Alumno {
     return [
       'id' => $this->getId(),
       'user_id' => $this->getUserId(),
-      'correo' => $this->getCorreo(),  // si lo tienes
+      'correo' => $this->getCorreo(),
       'nombre' => $this->getNombre(),
       'apellido1' => $this->getApellido1(),
       'apellido2' => $this->getApellido2(),

@@ -11,7 +11,43 @@ $page = $_GET['page'] ?? 'landing';
 switch ($page) {
   case 'login':
     $controller = new LoginController($templates);
-    $controller->mostrarLogin();
+    if(isset($_POST['usuario'])){
+      $controller -> login();
+    }else{
+      $controller->mostrarLogin();
+    }
+    break;
+  case 'logout':
+    $controller = new LoginController($templates);
+      $controller -> logout();
+    break;
+  case 'panel_admin':
+    $controller = new AdminController($templates);
+    $controller -> mostrarPanel();
+    break;
+  case 'ofertas':
+    $controller = new OfertaController($templates);
+    $controller->mostrarOfertas();
+    break;
+  case 'nueva_oferta':
+    $controller = new OfertaController($templates);
+    $controller->nuevaOferta();
+    break;
+   case 'modificar_oferta':
+    $controller = new OfertaController($templates);
+    $controller->modificarOferta();
+    break;
+  case 'solicitudes_oferta':
+    $controller = new OfertaController($templates);
+    $controller->solicitudesOferta();
+    break;
+  case 'solicitudes':
+    $controller = new SolicitudController($templates);
+    $controller->mostrarSolicitudes();
+    break;
+  case 'solicitar_oferta':
+    $controller = new SolicitudController($templates);
+    $controller->solicitarOferta();
     break;
   case 'registro_alumno':
     $controller = new AlumnoController($templates);

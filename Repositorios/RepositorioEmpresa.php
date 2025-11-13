@@ -34,6 +34,14 @@ class RepositorioEmpresa {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getEmpresaIdPorUserId($user_id){
+        $stmt = $this->db->prepare("SELECT id FROM empresa WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        $id = $stmt->fetchColumn();
+        return $id;
+    }
+
+
     //------------Funcion para crear una empresa-----------------//
     public function crearEmpresa($datos, $files = []) {
         try {

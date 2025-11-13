@@ -141,15 +141,9 @@ window.addEventListener('load', function () {
                         document.getElementById('modal-dni').value = alumno.dni || '';
                         document.getElementById('modal-telefono').value = alumno.telefono || '';
                         document.getElementById('modal-direccion').value = alumno.direccion || '';
-                        document.getElementById('modal-validado').value = alumno.validado || '';
                         document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
                         
                     });
-
-                    document.getElementById('cerrar').onclick = function () {
-                        modalManager.cerrarModal();
-                    };
-
             });
         }
     });
@@ -223,7 +217,7 @@ window.addEventListener('load', function () {
                             console.log(resp.mensaje);
                             const filaAntigua = document.getElementById('fila-' + resp.alumno.id);
                             if (filaAntigua) {
-                                const nuevaFila = crearFila(resp.alumno); // tu función tipo pintarTabla pero devuelve la fila sin añadirla a tbody
+                                const nuevaFila = crearFila(resp.alumno);
                                 filaAntigua.parentNode.replaceChild(nuevaFila, filaAntigua);
                             } else {
                                 pintarTabla(resp.alumno);

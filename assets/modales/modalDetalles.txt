@@ -1,38 +1,60 @@
-<div id="modal-detalles" class="modal-detalles">
-  <form>
-  <img id="detalle-foto" style="max-width:150px;">
+<form class="modal-form">
 
-    <label>validado:
-      <input type="number" id="modal-validado" disabled>
-    </label>
+  <div class="form-bloque">
+    <div class="form-group foto-contenedor">
+      <label>Foto:</label>
+      <img id="detalle-foto" style="max-width:150px; border-radius: 8px;">
+    </div>
 
-    <label>Correo:
-      <input type="email" id="modal-correo" disabled>
-    </label>
-    <label>Nombre:
-      <input type="text" id="modal-nombre" disabled>
-    </label>
-    <label>Primer apellido:
-      <input type="text" id="modal-apellido1" disabled>
-    </label>
-    <label>Segundo apellido:
-      <input type="text" id="modal-apellido2" disabled>
-    </label>
-    <label>Fecha de nacimiento:
-      <input type="date" id="modal-fnacimiento" disabled>
-    </label>
-    <label>Currículum:
-      <input type="text" id="modal-curriculum" disabled>
-    </label>
-    <label>DNI:
-      <input type="text" id="modal-dni" disabled>
-    </label>
-    <label>Teléfono:
-      <input type="tel" id="modal-telefono" disabled>
-    </label>
-    <label>Dirección:
-      <input type="text" id="modal-direccion" disabled>
-    </label>
-    <button type="button" id="cerrar">Cerrar</button>
-  </form>
-</div>
+    <div class="form-datos-personales">
+      <div class="form-group">
+        <label for="modal-correo">Correo</label>
+        <input type="email" id="modal-correo" readonly>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-bloque">
+    <div class="form-datos-personales">
+      <div class="form-group">
+        <label for="modal-nombre">Nombre</label>
+        <input type="text" id="modal-nombre" readonly>
+      </div>
+      <div class="form-group">
+        <label for="modal-apellido1">Primer apellido</label>
+        <input type="text" id="modal-apellido1" readonly>
+      </div>
+      <div class="form-group">
+        <label for="modal-apellido2">Segundo apellido</label>
+        <input type="text" id="modal-apellido2" readonly>
+      </div>
+      <div class="form-group">
+        <label for="modal-fnacimiento">Fecha de nacimiento</label>
+        <input type="date" id="modal-fnacimiento" readonly>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-bloque">
+    <div class="form-datos-personales">
+      <div class="form-group">
+        <label for="modal-curriculum">Currículum</label>
+        <input type="text" id="modal-curriculum" readonly>
+      </div>
+      <div class="form-group">
+        <label for="modal-dni">DNI</label>
+        <input type="text" id="modal-dni" readonly>
+      </div>
+      <div class="form-group">
+        <label for="modal-telefono">Teléfono</label>
+        <input type="tel" id="modal-telefono" readonly>
+      </div>
+      <div class="form-group">
+        <label for="modal-direccion">Dirección</label>
+        <input type="text" id="modal-direccion" readonly>
+      </div>
+    </div>
+  </div>
+
+
+</form>

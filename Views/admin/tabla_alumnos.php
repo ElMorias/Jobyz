@@ -13,8 +13,10 @@
       <input type="text" id="buscadorUsuarios" placeholder="Buscar Alumno...">
       <button id="filtrarUsuarios">Filtrar</button>
     </div>
-    <button id="addUsuario">Añadir</button>
-    <button id="addMasivo">Añadir varios</button>
+    <div>
+      <button id="addUsuario">Añadir</button>
+      <button id="addMasivo">Añadir varios</button>
+    </div>
   </div>
 
 

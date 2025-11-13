@@ -231,6 +231,7 @@ function initCargaMasiva(raiz){
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Correo</th>
+                        <th></th>
                     </tr>
                     </thead><tbody>`;
                 lines.forEach((line, idx) => {
@@ -304,7 +305,6 @@ function initCargaMasiva(raiz){
 
             if (data.ok) {
                 btnSubir.style.display = 'none';
-                // NO cierres el modal aquí si quieres que vean los fallos.
             } else {
                 alert('Error cargando: ' + (data.error || ''));
             }

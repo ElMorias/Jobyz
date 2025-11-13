@@ -7,15 +7,18 @@
 <section class="login-container">
   <h1>Accede a tu cuenta</h1>
 
-  <form action="/Controllers/login.php" method="POST" class="login-form">
+  <div class="error"><?php if(isset($error) && $error){ echo htmlspecialchars($error); } ?></div>
+
+
+  <form action="" method="POST" class="login-form">
     <div class="form-group">
-      <label for="username">Nombre de usuario</label>
-      <input type="text" id="username" name="username" required>
+      <label for="usuario">Nombre de usuario</label>
+      <input type="text" id="usuario" name="usuario" required>
     </div>
 
     <div class="form-group">
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" required>
+      <label for="contraseña">Contraseña</label>
+      <input type="password" id="contraseña" name="contraseña" required>
     </div>
 
     <button type="submit" class="login-btn">Entrar</button>

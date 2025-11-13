@@ -1,56 +1,95 @@
-<div id="modal-modificar" class="modal-modificar">
-  <form action="" method="POST" id="form-editar-alumno" class="form-editar-alumno" enctype="multipart/form-data">
-    <input type="hidden" name="id" id="modal-id">
-    <input type="hidden" name="validado" id="modal-validado" value=1>
-    <div class="form-bloque">
-        <h3>Datos Personales</h3>
-        <label>Correo:
-        <input type="email" name="correo" id="modal-correo" required>
-        </label>
-        <label>Contraseña:
-        <input type="password" name="contrasena" id="modal-contrasena" disabled>
-        </label>
-        <label>Nombre:
-        <input type="text" name="nombre" id="modal-nombre" required>
-        </label>
-        <label>Primer apellido:
-        <input type="text" name="apellido1" id="modal-apellido1" required>
-        </label>
-        <label>Segundo apellido:
-        <input type="text" name="apellido2" id="modal-apellido2">
-        </label>
-        <label>Fecha de nacimiento:
-        <input type="date" name="fnacimiento" id="modal-fnacimiento" required>
-        </label>
-        <label>DNI:
-        <input type="text" name="dni" id="modal-dni" required>
-        </label>
-        <label>Dirección:
-        <input type="text" name="direccion" id="modal-direccion" required>
-        </label>
-        <label>Teléfono:
-        <input type="tel" name="telefono" id="modal-telefono">
-        </label>
-    </div>
-    <div class="form-bloque">
-      <h3>Documentos</h3>
+<form action="" method="POST" id="form-editar-alumno" class="modal-form" enctype="multipart/form-data">
+  <input type="hidden" name="id" id="modal-id">
+  <input type="hidden" name="validado" id="modal-validado" value="1">
+
+  <!--Bloque 1: Correo, contraseña, nombre -->
+  <div class="form-bloque">
+    <h3>Identificación</h3>
+    <div class="form-datos-personales">
       <div class="form-group">
-        <label for="curriculum">Currículum actual:
-          <a id="curriculum-link" href="#" target="_blank" style="display:none;">Ver curriculum actual</a>
-        </label>
-        <label for="curriculum">Currículum (PDF nuevo):
-          <input type="file" id="curriculum" name="curriculum" accept="application/pdf">
-        </label>
+        <label for="modal-correo">Correo</label>
+        <input type="email" name="correo" id="modal-correo" required>
       </div>
-      <h3>Foto de perfil</h3>
-      <div style="display:flex; gap:1em; align-items: center;">
-        <input type="file" id="fotoFile" name="foto" accept="image/*">
-        <button type="button" id="tomarFotoBtn" class="btn-verde-lima">Tomar foto</button>
+      <div class="form-group">
+        <label for="modal-contrasena">Contraseña</label>
+        <input type="password" name="contrasena" id="modal-contrasena" disabled>
       </div>
-      <div id="preview-foto" style="margin-top: 12px;"></div>
+      <div class="form-group">
+        <label for="modal-nombre">Nombre</label>
+        <input type="text" name="nombre" id="modal-nombre" required>
+      </div>
+    </div>
+  </div>
+
+  <!--Bloque 2: Apellidos y fecha -->
+  <div class="form-bloque">
+    <h3>Datos personales</h3>
+    <div class="form-datos-personales">
+      <div class="form-group">
+        <label for="modal-apellido1">Primer apellido</label>
+        <input type="text" name="apellido1" id="modal-apellido1" required>
+      </div>
+      <div class="form-group">
+        <label for="modal-apellido2">Segundo apellido</label>
+        <input type="text" name="apellido2" id="modal-apellido2">
+      </div>
+      <div class="form-group">
+        <label for="modal-fnacimiento">Fecha de nacimiento</label>
+        <input type="date" name="fnacimiento" id="modal-fnacimiento" required>
+      </div>
+    </div>
+  </div>
+
+  <!--Bloque 3: DNI, dirección, teléfono -->
+  <div class="form-bloque">
+    <h3>Contacto</h3>
+    <div class="form-datos-personales">
+      <div class="form-group">
+        <label for="modal-dni">DNI</label>
+        <input type="text" name="dni" id="modal-dni" required>
+      </div>
+      <div class="form-group">
+        <label for="modal-direccion">Dirección</label>
+        <input type="text" name="direccion" id="modal-direccion" required>
+      </div>
+      <div class="form-group">
+        <label for="modal-telefono">Teléfono</label>
+        <input type="tel" name="telefono" id="modal-telefono">
+      </div>
+    </div>
+  </div>
+
+  <!--Documentos -->
+  <div class="form-bloque">
+    <h3>Documentos</h3>
+    <div class="form-datos-personales">
+      <div class="form-group">
+        <label for="curriculum">Currículum actual</label>
+        <a id="curriculum-link" href="#" target="_blank" style="display:none;">Ver curriculum actual</a>
+      </div>
+      <div class="form-group">
+        <label for="curriculum">Currículum (PDF nuevo)</label>
+        <input type="file" id="curriculum" name="curriculum" accept="application/pdf">
+      </div>
     </div>
 
-    <button type="button" id="cerrar">Cerrar</button>
-    <button type="submit" id="actualizar">Guardar Cambios</button>
-  </form>
-</div>
+    <h3>Foto de perfil</h3>
+    <div class="form-datos-personales">
+      <div class="form-group foto-contenedor">
+        <label for="fotoFile">Subir foto</label>
+        <input type="file" id="fotoFile" name="foto" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label>&nbsp;</label>
+        <button type="button" id="tomarFotoBtn" class="btn-verde-lima">Tomar foto</button>
+      </div>
+    </div>
+    <div id="preview-foto" style="margin-top: 12px;"></div>
+  </div>
+
+  <!--Acciones -->
+  <div class="form-actions">
+    <button type="button" id="cerrar" class="btn-verde-lima">Cerrar</button>
+    <button type="submit" id="actualizar" class="btn-verde-lima">Guardar Cambios</button>
+  </div>
+</form>

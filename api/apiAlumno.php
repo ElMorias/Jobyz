@@ -11,12 +11,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
     break;
 
   case 'POST':
-    // Recoge JSON o form-data automáticamente
+    // Recoge JSON o formdata
     $input = file_get_contents('php://input');
     $datos = [];
     if ($input) {
       $try = json_decode($input, true);
-      // Si el contenido es JSON: úsalo
+      
       if (is_array($try)) {
           $datos = $try;
       } else {
@@ -26,7 +26,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
       $datos = $_POST;
     }
 
-    // Si hay usuarios → carga masiva
+    
     if (!empty($datos['usuarios'])) {
       $usuarios = $datos['usuarios'];
       $familia = $datos['familia'] ?? null;

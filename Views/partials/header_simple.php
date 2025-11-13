@@ -1,4 +1,6 @@
 <header class="simple-header">
-  <div class="logo"><img src="assets/Images/Logo/Jobyz_v3_lateral-removebg-preview.png" alt="logo"></div>
-  <a href="/Jobyz/" class="back-home">← Volver al inicio</a>
+  <nav class="navbar">
+    <a href="/Jobyz/index.php"><img src="assets\Images\Logo\Jobyz_v3_lateral-removebg-preview.png" class="nav-logo" alt="Jobyz Logo"></a>
+    <a href="/Jobyz/index.php?page=login" class="nav-btn login-btn">Iniciar sesión</a>
+  </nav>
 </header>
