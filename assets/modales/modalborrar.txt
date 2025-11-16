@@ -1,4 +1,4 @@
-<div id="modal-borrar" style="position:fixed">
+<div id="modal-borrar">
   <p>¿Seguro que quieres eliminar?</p>
   <button type="button" id="confirmar">Sí</button>
   <button type="button" id="cancelar">No</button>

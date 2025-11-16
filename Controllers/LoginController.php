@@ -19,32 +19,44 @@ class LoginController {
     echo $this->templates->render('../seleccion_registro', ['title' => '¿Quién eres?']);
   }
 
-  public function login(){
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+  public function login() {
+    if (session_status() === PHP_SESSION_NONE) session_start();
 
     $correo = $_POST['usuario'];
     $contraseña = $_POST['contraseña'];
-
     $usuario = $this->repo->findUser($correo);
 
-    if ($usuario && ($contraseña == $usuario->getContraseña())) {
-      // Autenticación correcta, guardar en sesión
-      $_SESSION['user_id'] = $usuario ->getId();
-      $_SESSION['correo'] = $usuario-> getCorreo();
-      $_SESSION['rol_id'] = $usuario->getRolId();
-      
-      header('Location: index.php?page=landing');
-      
+    $error = '';
+
+    if ($usuario && password_verify($contraseña, $usuario->getContraseña())) {
+        // Primero, comprobar el caso de EMPRESA sin validar
+        if ($usuario->getRolId() == 3) {
+            $repoEmpre = new RepositorioEmpresa();
+            $estado = $repoEmpre->getEmpresaValidadaporUserId($usuario->getId());
+            if (empty($estado) || $estado == 0) {
+                $error = 'La empresa no ha sido validada por el administrador';
+            }
+        }
+        
+        // Si NO hay error, guardar en sesión y redirigir
+        if (!$error) {
+            $_SESSION['user_id'] = $usuario->getId();
+            $_SESSION['correo']  = $usuario->getCorreo();
+            $_SESSION['rol_id']  = $usuario->getRolId();
+            header('Location: index.php?page=solicitudes');
+            exit;
+        }
     } else {
-      // Error de login
-      echo $this->templates->render('../login', [
-        'title' => 'Iniciar sesión',
-        'error' => 'Correo o contraseña inválidos'
-      ]);
+        $error = 'Usuario y/o contraseña inválidas';
     }
+
+    // Mostrar login con error en caso de empresa NO validada o usuario/clave inválida
+    echo $this->templates->render('../login', [
+        'title' => 'Iniciar sesión',
+        'error' => $error
+    ]);
   }
+
 
   public function logout(){
     if (session_status() === PHP_SESSION_NONE) {

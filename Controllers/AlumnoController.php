@@ -26,4 +26,8 @@ class AlumnoController {
   public function registrarAlumno(){
     echo $this->templates->render('../registro_alumno', ['title' => 'Registro de alumno']);
   }
+
+  public function mostrarPerfil(){
+    echo $this->templates->render('../perfil_alumno', ['title' => 'Perfil del alumno']);
+  }
 }

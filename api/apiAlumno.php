@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 
 require_once dirname(__DIR__) . '/autoloader.php';
 header('Content-Type: application/json');
@@ -104,12 +107,31 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function getAlumnos($repo) {
-  if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    return $repo->getAlumnoCompleto($id)->toArray();
-  } else {
-    return $repo->getTodos();
-  }
+    if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+        return $repo->getAlumnoCompleto($id)->toArray();
+    } elseif (isset($_GET['yo'])) {
+        // Solo para perfil propio
+        $userId = $_SESSION['user_id'];
+        $id = $repo->getAlumnoIdPorUserId($userId);
+        if (!$userId) {
+            http_response_code(401); // No autorizado
+            return ['error' => 'No autenticado'];
+        }
+        //datos básicos
+        $alumno = $repo->getAlumnoCompleto($id)->toArray();
+        
+        // ---  estudios con nombres ---
+        $repoEstudios = new RepositorioEstudio();
+        $estudios = $repoEstudios->getPorAlumnoIdConNombres($id); // método con JOIN a ciclo y familia
+        $alumno['estudios'] = $estudios;
+        
+        return $alumno; // Ahora el alumno tiene array 'estudios' listo para el frontend
+    } else {
+        return $repo->getTodos();
+    }
 }
+
+
 
 ?>

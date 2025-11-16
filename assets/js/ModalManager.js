@@ -47,6 +47,9 @@ crearModalDesdeUrl(url, callback) {
     if (this.modals.length > 0) {
       const fondo = this.modals.pop();
       fondo.remove();
+      if (typeof recargarAlumnos === 'function') {
+        recargarAlumnos();
+      }
     }
   }
 }

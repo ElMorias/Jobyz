@@ -1,6 +1,7 @@
 <?php $this->layout('base_simple', ['title' => '¿Quién eres?']) ?>
 
 <?php $this->start('css') ?>
+ <link rel="stylesheet" href="assets/css/login.css">
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>
@@ -9,10 +10,10 @@
   <p>Selecciona tu perfil para continuar con el registro.</p>
 
   <div class="tipo-opciones">
-    <a href="/Jobyz/index.php?page=registro_alumno" class="btn-tipo alumno">
+    <a href="/Jobyz/index.php?page=registro_alumno" class="btn">
       Soy alumno
     </a>
-    <a href="/Jobyz/index.php?page=registro_empresa" class="btn-tipo empresa">
+    <a href="/Jobyz/index.php?page=registro_empresa" class="btn">
       Soy empresa
     </a>
   </div>

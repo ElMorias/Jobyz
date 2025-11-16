@@ -1,137 +1,228 @@
-window.addEventListener('load', function () {
+let listaAlumnos = []; // global apra la busqueda dinamica
+let alumnosFiltrados = [];
+let paginaActual = 1;
+const alumnosPorPagina = 10;
 
- //----------------- cargar los usuarios desde el json al cargar la pagina --------------------------//
-    const tbody = document.querySelector('.tablaUsuarios tbody');
+document.addEventListener('DOMContentLoaded', function () {
+    
+    recargarAlumnos();
 
-    fetch('api/apiAlumno.php')
-        .then(res => res.json())
-        .then(usuarios => {
-            usuarios.forEach(usuario => {
-                pintarTabla(usuario);
-            });
-        })
-        .catch(err => {
-            console.error('Error al cargar usuarios:', err);
-        });
-
-   function pintarTabla(usuarios) {      
-        if (Array.isArray(usuarios)) {
-            usuarios.forEach(usuario => {
-                tbody.appendChild(crearFila(usuario));
-            });
-        } else {
-            tbody.appendChild(crearFila(usuarios));
-        }
-    }
-
-    function crearFila(usuario) {
-        const fila = document.createElement('tr');
-        fila.id = 'fila-' + usuario.id;
-
-        const tdId = document.createElement('td');
-        tdId.textContent = usuario.id;
-        fila.appendChild(tdId);
-
-        const tdNombre = document.createElement('td');
-        tdNombre.textContent = nombreCompleto(usuario);
-        fila.appendChild(tdNombre);
-
-        const tdmail = document.createElement('td');
-        tdmail.textContent = usuario.correo;
-        fila.appendChild(tdmail);
-
-        const tdtel = document.createElement('td');
-        tdtel.textContent = usuario.telefono;
-        fila.appendChild(tdtel);
-
-        const tdAcciones = document.createElement('td');
-
-        // Botón Detalles
-        const btnDetalles = document.createElement('button');
-        btnDetalles.textContent = 'Detalles';
-        btnDetalles.classList.add('btn-detalles');
-        btnDetalles.dataset.id = usuario.id;
-
-        // Botón Modificar
-        const btnModificar = document.createElement('button');
-        btnModificar.textContent = 'Modificar';
-        btnModificar.classList.add('btn-modificar');
-        btnModificar.dataset.id = usuario.id;
-
-        // Botón Borrar
-        const btnBorrar = document.createElement('button');
-        btnBorrar.textContent = 'Borrar';
-        btnBorrar.classList.add('btn-borrar');
-        btnBorrar.dataset.id = usuario.id;
-
-        // Añadir los botones al td
-        tdAcciones.appendChild(btnDetalles);
-        tdAcciones.appendChild(btnModificar);
-        tdAcciones.appendChild(btnBorrar);
-
-        fila.appendChild(tdAcciones);
-
-        return fila;
-    }
-
-
-    function nombreCompleto(usuario) {
-        return `${usuario.nombre} ${usuario.apellido1} ${usuario.apellido2 || ''}`.trim();
-    }
-
-//----------------- gestionar el modal de borrar usuario --------------------------//
-
-    //borrar los datos de un usuario
-    tbody.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-borrar')) {
-            const fila = e.target.closest('tr');
-            const id = e.target.dataset.id;
-            modalManager.crearModalDesdeUrl('assets/modales/modalborrar.txt', function () {
-
-                let btnConfirmar = document.getElementById('confirmar');
-                let btnCancelar = document.getElementById('cancelar');
-
-                btnConfirmar.onclick = function () {
-                    
-                    fetch(`api/apiAlumno.php`, {
-                        method: 'DELETE',
-                        body: JSON.stringify({ id: id })
+    // Añadir alumno
+    const btnAdd = document.getElementById('addUsuario');
+    if (btnAdd) {
+        btnAdd.addEventListener('click', function () {
+            modalManager.crearModalDesdeUrl('assets/modales/modalRegistroAlumno.txt', function () {
+                let modalRaiz = document.querySelector('.modal-contenedor');
+                initRegistroAlumnoForm(modalRaiz);
+                let form = modalRaiz.querySelector('form');
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    let datos = new FormData(form);
+                    fetch('api/apiAlumno.php', {
+                        method: 'POST',
+                        body: datos
                     })
                     .then(res => res.json())
                     .then(resp => {
                         if (resp.status === "ok") {
-                            fila.remove();
+                            recargarAlumnos();
                             modalManager.cerrarModal();
                         } else {
                             alert("Error: " + resp.mensaje);
                         }
                     })
-                    .catch(err => {
-                        console.error("Fallo en petición AJAX", err);
-                        alert("Fallo en petición AJAX");
-                    });
-                
+                    .catch(() => alert("Fallo en petición AJAX"));
+                });
+            });
+        });
+    }
+
+    // Carga masiva
+    const btnCargaMasiva = document.getElementById('addMasivo');
+    if (btnCargaMasiva) {
+        btnCargaMasiva.addEventListener('click', function () {
+            modalManager.crearModalDesdeUrl('assets/modales/modalCargaMas.txt', function () {
+                let modalRaiz = document.querySelector('.modal-contenedor');
+                initCargaMasiva(modalRaiz);
+            });
+        });
+    }
+});
+
+function recargarAlumnos() {
+    fetch('api/apiAlumno.php')
+        .then(res => res.json())
+        .then(usuarios => {
+            if (!Array.isArray(usuarios)) usuarios = [];
+            listaAlumnos = usuarios;
+            alumnosFiltrados = [...listaAlumnos];
+            paginaActual = 1;
+            renderAlumnos(alumnosFiltrados);
+        })
+        .catch(err => {
+            listaAlumnos = [];
+            renderAlumnos([]);
+        });
+}
+
+
+// busqueda dinamica //
+document.getElementById('buscador-alumnos').addEventListener('input', function () {
+    const texto = this.value.trim().toLowerCase();
+    alumnosFiltrados = listaAlumnos.filter(u => {
+        const nombreCompleto = ((u.nombre || '') + ' ' + (u.apellido1 || '') + ' ' + (u.apellido2 || '')).toLowerCase();
+        const correo = (u.correo || '').toLowerCase();
+        return nombreCompleto.includes(texto) || correo.includes(texto);
+    });
+    paginaActual = 1;
+    renderAlumnos(alumnosFiltrados);
+});
+
+function renderAlumnos(usuarios) {
+    const cont = document.getElementById('contenedor-alumnos');
+    cont.innerHTML = '';
+
+    // ---- PAGINACIÓN ----
+    if (typeof alumnosFiltrados === 'undefined' || alumnosFiltrados.length === 0) alumnosFiltrados = usuarios;
+    const totalPaginas = Math.ceil(usuarios.length / alumnosPorPagina) || 1;
+    if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+    if (paginaActual < 1) paginaActual = 1;
+    const desde = (paginaActual - 1) * alumnosPorPagina;
+    const hasta = paginaActual * alumnosPorPagina;
+    const alumnosPagina = usuarios.slice(desde, hasta);
+
+    let html = `
+        <table id="tabla-alumnos" class="tablaUsuarios">
+            <thead>
+                <tr>
+                    <th>ID <span id="boton-ordenar-id" class="boton-ordenar">⇅</span></th>
+                    <th>Nombre completo <span id="boton-ordenar-nombre" class="boton-ordenar">⇅</span></th>
+                    <th>Email <span id="boton-ordenar-correo" class="boton-ordenar">⇅</span></th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    alumnosPagina.forEach(usuario => {
+        html += `
+            <tr data-id="${usuario.id}">
+                <td>${usuario.id}</td>
+                <td>${usuario.nombre} ${usuario.apellido1} ${usuario.apellido2 || ''}</td>
+                <td>${usuario.correo}</td>
+                <td>${usuario.telefono}</td>
+                <td>
+                    <button class="btn-tabla btn-detalles">Detalles</button>
+                    <button class="btn-tabla btn-modificar">Modificar</button>
+                    <button class="btn-tabla btn-borrar">Borrar</button>
+                </td>
+            </tr>
+        `;
+    });
+    html += '</tbody></table>';
+
+    // ---- PAGINACIÓN BOTONES ----
+    html += `<div class="tabla-paginacion">`;
+    html += `<button id="btn-previa" ${paginaActual === 1 ? 'disabled' : ''}>Ant</button>`;
+    html += `<span> Página ${paginaActual} de ${totalPaginas} </span>`;
+    html += `<button id="btn-siguiente" ${paginaActual === totalPaginas ? 'disabled' : ''}>Sig</button>`;
+    html += `</div>`;
+
+    if (!usuarios.length)
+        html += `<p class="ofertas-vacio">No hay alumnos registrados.</p>`;
+
+    cont.innerHTML = html;
+
+    // --- Ordenar filas  --- //
+    let ordenIdAsc = true;
+    let ordenNombreAsc = true;
+    let ordenCorreoAsc = true;
+
+    const tabla = document.getElementById('tabla-alumnos');
+
+    document.getElementById('boton-ordenar-id').onclick = function() {
+        ordenarPorColumna(tabla, 0, ordenIdAsc);
+        ordenIdAsc = !ordenIdAsc;
+    };
+    document.getElementById('boton-ordenar-nombre').onclick = function() {
+        ordenarPorColumna(tabla, 1, ordenNombreAsc);
+        ordenNombreAsc = !ordenNombreAsc;
+    };
+    document.getElementById('boton-ordenar-correo').onclick = function() {
+        ordenarPorColumna(tabla, 2, ordenCorreoAsc);
+        ordenCorreoAsc = !ordenCorreoAsc;
+    };
+
+    addAlumnoListeners();
+
+    // ---- Listeners de paginación ----
+    document.getElementById('btn-previa').onclick = function () {
+        if (paginaActual > 1) {
+            paginaActual--;
+            renderAlumnos(usuarios);
+        }
+    };
+    document.getElementById('btn-siguiente').onclick = function () {
+        if (paginaActual < totalPaginas) {
+            paginaActual++;
+            renderAlumnos(usuarios);
+        }
+    };
+}
+
+
+// Función genérica de ordenación
+function ordenarPorColumna(tabla, indiceCol, ascendente) {
+    let filas = Array.from(tabla.tBodies[0].rows);
+    filas.sort(function(a, b) {
+        let valA = a.cells[indiceCol].innerText.trim().toLowerCase();
+        let valB = b.cells[indiceCol].innerText.trim().toLowerCase();
+        if (ascendente) {
+            return valA.localeCompare(valB);
+        } else {
+            return valB.localeCompare(valA);
+        }
+    });
+    filas.forEach(fila => tabla.tBodies[0].appendChild(fila));
+}
+
+function addAlumnoListeners() {
+    // Borrar
+    document.querySelectorAll('.btn-borrar').forEach(btn => {
+        btn.onclick = function () {
+            const id = this.closest('tr').dataset.id;
+            modalManager.crearModalDesdeUrl('assets/modales/modalborrar.txt', function () {
+                let btnConfirmar = document.getElementById('confirmar');
+                let btnCancelar = document.getElementById('cancelar');
+                btnConfirmar.onclick = function () {
+                    fetch('api/apiAlumno.php', {
+                        method: 'DELETE',
+                        body: JSON.stringify({ id })
+                    }).then(res => res.json())
+                      .then(resp => {
+                          if (resp.status === "ok") {
+                              recargarAlumnos();
+                              modalManager.cerrarModal();
+                          } else {
+                              alert("Error: " + resp.mensaje);
+                          }
+                      });
                 };
-                
                 btnCancelar.onclick = function () {
                     modalManager.cerrarModal();
                 };
-
             });
-        }
+        };
     });
 
-
-//----------------gestionar el modal de ver detalles usuario --------------------------//
-
-    tbody.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-detalles')) {
-            const id = e.target.dataset.id;
+    // Detalles
+    document.querySelectorAll('.btn-detalles').forEach(btn => {
+        btn.onclick = function () {
+            const id = this.closest('tr').dataset.id;
             modalManager.crearModalDesdeUrl('assets/modales/modalDetalles.txt', function () {
-                fetch('api/apiAlumno.php?id=' + id, { method: 'GET' })
+                fetch('api/apiAlumno.php?id=' + id)
                     .then(res => res.json())
                     .then(alumno => {
-                        console.log(alumno);
                         document.getElementById('modal-correo').value = alumno.correo || '';
                         document.getElementById('modal-nombre').value = alumno.nombre || '';
                         document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
@@ -142,24 +233,21 @@ window.addEventListener('load', function () {
                         document.getElementById('modal-telefono').value = alumno.telefono || '';
                         document.getElementById('modal-direccion').value = alumno.direccion || '';
                         document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
-                        
                     });
             });
-        }
+        };
     });
 
-    //----------------gestionar el modal de modificar usuario --------------------------//
-
-   tbody.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-modificar')) {
-            const id = e.target.dataset.id;
+    // Modificar
+    document.querySelectorAll('.btn-modificar').forEach(btn => {
+        btn.onclick = function () {
+            const id = this.closest('tr').dataset.id;
             modalManager.crearModalDesdeUrl('assets/modales/modalModificar.txt', function () {
                 let modalRaiz = document.querySelector('.modal-contenedor');
-                initRegistroAlumnoForm(modalRaiz); // Aquí se inicializa todo el JS
+                initRegistroAlumnoForm(modalRaiz);
                 let form = modalRaiz.querySelector('form');
-
-                // Rellenar los campos con datos actuales
-                fetch('api/apiAlumno.php?id=' + id, { method: 'GET' })
+                // Carga datos actuales
+                fetch('api/apiAlumno.php?id=' + id)
                     .then(res => res.json())
                     .then(alumno => {
                         document.getElementById('modal-id').value = alumno.id || '';
@@ -175,12 +263,11 @@ window.addEventListener('load', function () {
 
                         // Foto actual
                         document.getElementById('preview-foto').innerHTML = alumno.foto
-                        ? `<img src="${alumno.foto}" style="max-width:150px;">`
-                        : '';
+                            ? `<img src="${alumno.foto}" style="max-width:150px;">`
+                            : '';
 
-                        // Curriculum actual
                         let enlaceCurriculum = document.getElementById('curriculum-link');
-                        if(alumno.curriculum){
+                        if (alumno.curriculum) {
                             enlaceCurriculum.href = alumno.curriculum;
                             enlaceCurriculum.style.display = 'inline';
                         } else {
@@ -189,46 +276,34 @@ window.addEventListener('load', function () {
                         }
                     });
 
-                // Preview instantánea al elegir archivo de foto nuevo
-                form.foto.addEventListener('change', function(e){
+                // Preview de nueva foto
+                form.foto.addEventListener('change', function (e) {
                     const file = e.target.files[0];
-                    if(file){
+                    if (file) {
                         let reader = new FileReader();
-                        reader.onload = function(evt){
-                            document.getElementById('preview-foto').innerHTML =
-                                `<img src="${evt.target.result}" style="max-width:150px;">`;
+                        reader.onload = function (evt) {
+                            document.getElementById('preview-foto').innerHTML = `<img src="${evt.target.result}" style="max-width:150px;">`;
                         };
                         reader.readAsDataURL(file);
                     }
                 });
 
-                // Enviar formulario con archivos y datos
+                // Guardar cambios
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
                     let data = new FormData(form);
-
                     fetch('api/apiAlumno.php', {
-                        method: 'POST', 
+                        method: 'POST',
                         body: data
                     })
                     .then(res => res.json())
                     .then(resp => {
                         if(resp.status === "ok") {
-                            console.log(resp.mensaje);
-                            const filaAntigua = document.getElementById('fila-' + resp.alumno.id);
-                            if (filaAntigua) {
-                                const nuevaFila = crearFila(resp.alumno);
-                                filaAntigua.parentNode.replaceChild(nuevaFila, filaAntigua);
-                            } else {
-                                pintarTabla(resp.alumno);
-                            }
+                            recargarAlumnos();
                             modalManager.cerrarModal();
                         } else {
                             alert("Error: " + resp.mensaje);
                         }
-                    })
-                    .catch(err => {
-                        alert("Fallo en petición AJAX");
                     });
                 });
 
@@ -237,60 +312,6 @@ window.addEventListener('load', function () {
                     modalManager.cerrarModal();
                 };
             });
-        }
+        };
     });
-
-
-
-    //----------------- gestionar el modal de añadir usuario --------------------------//
-
-    const btnadd = document.getElementById('addUsuario');
-
-    btnadd.addEventListener('click', function () {
-        modalManager.crearModalDesdeUrl('assets/modales/modalRegistroAlumno.txt', function () {
-            let modalRaiz = document.querySelector('.modal-contenedor');
-            initRegistroAlumnoForm(modalRaiz); // Aquí se inicializa todo el JS
-
-            let form = modalRaiz.querySelector('form');
-
-            // SOLO aquí añades el submit AJAX
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                let datos = new FormData(form);
-                fetch('api/apiAlumno.php', {
-                    method: 'POST',
-                    body: datos
-                })
-                .then(res => res.json())
-                .then(resp => {
-                    if(resp.status === "ok") {
-                        pintarTabla(resp.alumno);
-                        modalManager.cerrarModal();
-                    } else {
-                        alert("Error: " + resp.mensaje);
-                    }
-                })
-                .catch(err => {
-                    alert("Fallo en petición AJAX");
-                });
-            });
-        });
-            
-    });
-
-
-
-    //-------------modal para la carga masiva------------------//
-
-    const btnCargaMasiva = document.getElementById('addMasivo');
-
-    btnCargaMasiva.addEventListener('click', function () {
-        modalManager.crearModalDesdeUrl('assets/modales/modalCargaMas.txt', function () {
-            let modalRaiz = document.querySelector('.modal-contenedor');
-            initCargaMasiva(modalRaiz); // Aquí se inicializa todo el JS
-
-        });             
-    });
-
-
-});
+}

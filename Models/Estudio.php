@@ -1,7 +1,7 @@
 <?php
 class Estudio {
   private $id;
-  private $alumno_id;     // <- Añadido
+  private $alumno_id;
   private $ciclo_id;
   private $fechainicio;
   private $fechafin;

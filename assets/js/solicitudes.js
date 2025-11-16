@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    debugger;
   recargarSolicitudes();
 });
 
@@ -67,7 +66,7 @@ function renderSolicitudes(rol, solicitudes) {
           <td>${s.fecha_solicitud}</td>
           <td>
             <button class="btn-tabla btn-aceptar">Aceptar</button>
-            <button class="btn-tabla btn-rechazar">Rechazar</button>
+            <button class="btn-tabla btn-rechaza btn-borrar">Rechazar</button>
           </td>
         </tr>
       `;

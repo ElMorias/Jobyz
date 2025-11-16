@@ -1,5 +1,8 @@
 <?php
 require_once dirname(__DIR__) . '/autoloader.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 class OfertaController {
     private $templates;
@@ -21,9 +24,11 @@ class OfertaController {
 
         // Borrar oferta (admin o empresa)
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['borrar'])) {
-            $this->repo->borrar((int)$_POST['id']);
-            header('Location: index.php?page=ofertas');
-            exit;
+            if ( $rol_id != 2){
+                $this->repo->borrar((int)$_POST['id']);
+                header('Location: index.php?page=ofertas');
+                exit;
+            }    
         }
 
         if ($rolId == 3) {
@@ -41,9 +46,6 @@ class OfertaController {
 
     // Crear nueva oferta (solo para empresa)
     public function nuevaOferta() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         $empresaRepo = new RepositorioEmpresa();
         $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id']);
 
@@ -73,13 +75,10 @@ class OfertaController {
 
     // Modificar oferta (solo empresa dueña)
     public function modificarOferta() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         $empresaRepo = new RepositorioEmpresa();
         $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id']);
         $id = $_GET['id'] ?? null;
-        var_dump($id);
+        
         if ($_SESSION['rol_id'] != 3 || !$id) {
             header('Location: index.php?page=ofertas');
             exit;
@@ -111,9 +110,6 @@ class OfertaController {
 
     // Ver detalle de una oferta (solo admin), id SIEMPRE por $_GET
     public function detalleOferta() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         $id = $_GET['id'] ?? null;
         if ($_SESSION['rol_id'] != 1 || !$id || !is_numeric($id)) {
             header('Location: index.php?page=ofertas');
@@ -128,9 +124,6 @@ class OfertaController {
 
     //solicitudes de una oferta
     public function solicitudesOferta() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         $empresaRepo = new RepositorioEmpresa();
         $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id']);
         

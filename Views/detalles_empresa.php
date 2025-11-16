@@ -54,7 +54,7 @@
       <h3>Logo / Imagen</h3>
       <div class="foto-contenedor">
         <?php if (!empty($empresa['foto'])): ?>
-          <img src="<?= htmlspecialchars($empresa['foto']) ?>" alt="Logo de la empresa" style="max-width:150px;">
+          <img src="<?= htmlspecialchars($empresa['foto']) ?>" alt="Logo de la empresa"">
         <?php else: ?>
           <span>No hay logo disponible.</span>
         <?php endif; ?>

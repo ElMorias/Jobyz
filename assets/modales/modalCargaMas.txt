@@ -19,8 +19,8 @@
     <input type="file" id="csvAlumnos" class="csvAlumnos" accept=".csv" required>
   </div>
   <div style="margin:1em 0;">
-    <button type="button" id="btnPrevisualizar" class="btnPrevisualizar">Previsualizar</button>
-    <button type="button" id="btnCancelarCarga" class="btnCancelarCarga">Cancelar</button>
+    <button type="button" id="btnPrevisualizar" class="btnPrevisualizar btn-detalles">Previsualizar</button>
+    <button type="button" id="btnCancelarCarga" class="btnCancelarCarga btn-borrar">Cancelar</button>
     <button type="submit" id="btnSubirAlumnos" class="btnSubirAlumnos" style="display:none">Subir seleccionados</button>
   </div>
   <div id="previewCSV" class="previewCSV" style="margin-top:1em;"></div>

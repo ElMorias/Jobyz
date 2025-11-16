@@ -10,8 +10,10 @@
 
   <div class="accionesUsuarios">
     <div class="busqueda">
-      <input type="text" id="buscadorUsuarios" placeholder="Buscar Alumno...">
-      <button id="filtrarUsuarios">Filtrar</button>
+      <form action="" class="form-no-form">
+         <input type="text" id="buscador-alumnos" placeholder="Buscar Alumno...">
+      </form>
+      
     </div>
     <div>
       <button id="addUsuario">Añadir</button>
@@ -20,20 +22,7 @@
   </div>
 
 
-  <table class="tablaUsuarios">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Correo</th>
-        <th>Teléfono</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Las filas se insertan dinámicamente desde JS -->
-    </tbody>
-  </table>
+  <div id="contenedor-alumnos"></div>
 </section>
 <?php $this->stop() ?>
 

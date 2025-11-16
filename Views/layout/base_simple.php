@@ -15,11 +15,7 @@
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
     }
-    if (empty($_SESSION)) {
-        echo "Sesión vacía, logout correcto";
-    } else {
-        var_dump($_SESSION);
-    }
+
       $rolId = isset($_SESSION['rol_id']) ? $_SESSION['rol_id'] : null;
 
       if (!$rolId) {
@@ -57,7 +53,7 @@
 
 
     <!-- Footer -->
-    <?= $this->insert('../partials/footer_simple') ?>
+    <?= $this->insert('../partials/footer') ?>
   </div>
   <?= $this->section('js') ?>
 </body>

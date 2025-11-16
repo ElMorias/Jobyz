@@ -34,12 +34,57 @@ class RepositorioEmpresa {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getPorUserId($userId) {
+        $stmt = $this->db->prepare("SELECT e.*, u.correo
+                                    FROM empresa e JOIN users u ON e.user_id = u.id
+                                    WHERE e.user_id = ?");
+        $stmt->execute([$userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getEmpresaIdPorUserId($user_id){
         $stmt = $this->db->prepare("SELECT id FROM empresa WHERE user_id = ?");
         $stmt->execute([$user_id]);
         $id = $stmt->fetchColumn();
         return $id;
     }
+
+    public function getEmpresaValidadaporUserId($user_id){
+        $stmt = $this->db->prepare("SELECT validada FROM empresa WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        $validada = $stmt->fetchColumn();
+        return $validada;
+    }
+
+    public function getEmpresasPaginadoFiltrado($pagina, $porPagina, $orden, $sentido, $buscar) {
+        $camposOrden = ['id', 'nombre', 'cif', 'pcontactoemail', 'tlfcontacto'];
+        if (!in_array($orden, $camposOrden)) $orden = 'id';
+        $sentido = (strtoupper($sentido) === 'DESC') ? 'DESC' : 'ASC';
+        $offset = ($pagina - 1) * $porPagina;
+        $params = [];
+        $where = '';
+        if ($buscar !== '') {
+            $where = "WHERE nombre LIKE :buscar";
+            $params[':buscar'] = "%{$buscar}%";
+        }
+        $sqlTotal = "SELECT COUNT(*) FROM empresa $where";
+        $stmtTotal = $this->db->prepare($sqlTotal);
+        $stmtTotal->execute($params);
+        $totalEmpresas = $stmtTotal->fetchColumn();
+        $sql = "SELECT * FROM empresa $where ORDER BY $orden $sentido LIMIT :lim OFFSET :off";
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $k=>$v) $stmt->bindValue($k, $v);
+        $stmt->bindValue(':lim', $porPagina, PDO::PARAM_INT);
+        $stmt->bindValue(':off', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $empresas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $totalPaginas = max(1, ceil($totalEmpresas/$porPagina));
+        return [
+            'empresas' => $empresas,
+            'totalPaginas' => $totalPaginas
+        ];
+    }
+
 
 
     //------------Funcion para crear una empresa-----------------//
@@ -49,11 +94,11 @@ class RepositorioEmpresa {
 
             // 1. Insertar el usuario
             $sqlUser = "INSERT INTO users (correo, contraseña, rol_id) VALUES (?, ?, ?)";
-            $stmtUser = $this->db->prepare($sqlUser);
+            $hash = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
             $stmtUser->execute([
-            $datos['correo'],
-            $datos['contrasena'],
-            $datos['rol_id'] ?? 3
+                $datos['correo'],
+                $hash,
+                $datos['rol_id']
             ]);
             
             // Recuperar el user_id generado
@@ -134,7 +179,6 @@ class RepositorioEmpresa {
             $id
         ]);
     }
-
 
     //---------------------------DELETE-------------------------------//
    public function borrarPorEmpresaId($empresa_id) {

@@ -53,9 +53,17 @@ switch ($page) {
     $controller = new AlumnoController($templates);
     $controller->registrarAlumno();
     break;
+    case 'perfil_alumno':
+    $controller = new AlumnoController($templates);
+    $controller->mostrarPerfil();
+    break;
   case 'registro_empresa':
     $controller = new EmpresaController($templates);
     $controller->registrarEmpresa();
+    break;
+    case 'perfil_empresa':
+    $controller = new EmpresaController($templates);
+    $controller->editarPerfilEmpresa();
     break;
   case 'seleccion_registro':
     $controller = new LoginController($templates);

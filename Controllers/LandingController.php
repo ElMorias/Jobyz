@@ -1,5 +1,9 @@
 <?php
 require_once dirname(__DIR__) . '/autoloader.php';
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
 
 class LandingController {
   private $templates;
@@ -9,7 +13,12 @@ class LandingController {
   }
 
   public function mostrarLanding() {
-    echo $this->templates->render('../landing', ['title' => 'Bienvenido a Jobyz']);
+    if(isset($_SESSION['correo'])){
+      echo $this->templates->render('../landing_logueado', ['title' => 'Bienvenido a Jobyz']);
+    }else{
+      echo $this->templates->render('../landing', ['title' => 'Bienvenido a Jobyz']);
+    }
+    
   }
 }
 

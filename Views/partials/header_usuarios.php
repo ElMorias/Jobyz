@@ -12,7 +12,12 @@
       <div class="menu-dropdown">
         <a href="/Jobyz/index.php?page=solicitudes">Ver solicitudes</a>
         <a href="/Jobyz/index.php?page=ofertas">Ver ofertas</a>
-        <a href="/Jobyz/index.php?page=perfil">Ver perfil</a>
+        <?php if($_SESSION['rol_id'] == 2 ) { ?>
+          <a href="/Jobyz/index.php?page=perfil_alumno">Ver perfil</a>
+        <?php } else { ?>
+          <a href="/Jobyz/index.php?page=perfil_empresa">Ver perfil</a>
+        <?php } ?>
+        
         <a href="/Jobyz/index.php?page=logout">Cerrar sesión</a>
       </div>
     </div>

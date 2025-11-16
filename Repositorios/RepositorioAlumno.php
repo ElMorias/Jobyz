@@ -91,6 +91,14 @@ class RepositorioAlumno {
         $alumnoAnterior = $this->getAlumnoCompleto($id);
         $userId = $alumnoAnterior->getUserId();
 
+         if (!empty($datos['contrasena'])) {
+            $hash = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
+            // Actualiza la contraseña en la tabla de usuarios
+            $sqlUser = "UPDATE users SET contraseña = ? WHERE id = ?";
+            $stmtUser = $this->db->prepare($sqlUser);
+            $stmtUser->execute([$hash, $userId]);
+        }
+
         // Para la foto y el cv
         $dirRelFoto = 'assets/uploads/alumnos_foto/';
         $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
@@ -123,9 +131,11 @@ class RepositorioAlumno {
             $cvPathRel = $alumnoAnterior->getCurriculum();
         }
 
+
+
         $sql = "UPDATE Alumno SET nombre = ?, apellido1 = ?, apellido2 = ?, fnacimiento = ?, curriculum = ?, dni = ?, telefono = ?, direccion = ?, foto = ?, validado = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
+        $stmt->execute([
             $datos['nombre'],
             $datos['apellido1'],
             $datos['apellido2'],
@@ -138,6 +148,29 @@ class RepositorioAlumno {
             $datos['validado'],
             $id
         ]);
+
+        // Array con todos los estudios recibidos del formulario
+        $numEstudios = isset($_POST['familia']) ? count($_POST['familia']) : 0;
+
+        for ($i = 0; $i < $numEstudios; $i++) {
+            $familia = $_POST['familia'][$i];
+            $ciclo = $_POST['ciclo'][$i];
+            $fechainicio = $_POST['fechainicio'][$i];
+            $fechafin = empty($_POST['fechafin'][$i]) ? null : $_POST['fechafin'][$i];
+
+
+            $sqlEst = "INSERT INTO Estudios (alumno_id, ciclo_id, fechainicio, fechafin)
+                    VALUES (?, ?, ?, ?)";
+            $stmtEst = $this->db->prepare($sqlEst);
+            $stmtEst->execute([
+                $id,     
+                $ciclo,
+                $fechainicio,
+                $fechafin
+            ]);
+        }
+
+        return true;
 
     }
 
@@ -153,9 +186,10 @@ class RepositorioAlumno {
         try {
             $sqlUser = "INSERT INTO Users (correo, contraseña, rol_id) VALUES (?, ?, ?)";
             $stmtUser = $this->db->prepare($sqlUser);
+            $hash = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
             $stmtUser->execute([
                 $datos['correo'],
-                $datos['contrasena'],
+                $hash,
                 $datos['rol_id']
             ]);
 
@@ -287,7 +321,8 @@ class RepositorioAlumno {
                     continue;
                 }
 
-                $contrasena = "temp_pass";
+                $contrasena = password_hash("temp_pass", PASSWORD_DEFAULT);
+
 
                 $userStmt = $this->db->prepare("INSERT INTO users (correo, contraseña, rol_id) VALUES (?, ?, ?)");
                 if (!$userStmt->execute([$correo, $contrasena, $rolAlumno])) {

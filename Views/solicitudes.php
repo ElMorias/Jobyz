@@ -1,7 +1,6 @@
 <?php $this->layout('base_simple', ['title' => 'Solicitudes']) ?>
 
 <?php $this->start('css') ?>
-/* Todo el CSS que te recomendé antes para tablas/cards aquí */
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>

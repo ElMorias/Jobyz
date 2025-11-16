@@ -81,11 +81,13 @@ function initRegistroAlumnoForm(raiz) {
         }
     }
 
-    const formRegistro = document.getElementById('form-registrar-alumno');
+
+    const formRegistro = document.getElementById('form-registro-alumno');
 
     if (formRegistro){
        
         formRegistro.addEventListener('submit', function (e) {
+            debugger;
             e.preventDefault();
             let datos = new FormData(formRegistro);
             fetch('api/apiAlumno.php', {
@@ -160,7 +162,7 @@ function initRegistroAlumnoForm(raiz) {
                 input.files = dt.files;
             });
     }
-    // ---- Preview de archivo foto ----
+    // ---- Preview de archivo foto ---- //
     const inputFileFoto = raiz.querySelector('#fotoFile');
     const previewFoto = raiz.querySelector('#preview-foto');
     if (inputFileFoto) {
@@ -174,6 +176,17 @@ function initRegistroAlumnoForm(raiz) {
             }
         });
     }
+
+    // ---- Salir de la página ---- //
+    const salir = document.getElementById("btn-salir");
+
+    if (salir){
+        salir.addEventListener('click', function(e){
+            window.location.href= "index.php?page=landing";
+        });
+    }
+    
+
 
 
 }
@@ -227,7 +240,7 @@ function initCargaMasiva(raiz){
                 parsedRows = [];
                 let html = `<table style="width:100%"><thead>
                     <tr>
-                        <th>Subir</th>
+                        <th>Subir  <input type="checkbox" id="check-todos" checked></th>
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Correo</th>
@@ -251,6 +264,15 @@ function initCargaMasiva(raiz){
             html += "</tbody></table>";
             previewDiv.innerHTML = html;
             btnSubir.style.display = "inline-block";
+
+            // Checkbox toggle para seleccionar/des-seleccionar todas las filas
+            const checkTodos = document.getElementById('check-todos');
+            if (checkTodos) {
+                checkTodos.addEventListener('change', function () {
+                    const checks = previewDiv.querySelectorAll('.fila-checkbox');
+                    checks.forEach(ck => ck.checked = checkTodos.checked);
+                });
+            }
         };
         reader.readAsText(file);
     });
@@ -299,13 +321,10 @@ function initCargaMasiva(raiz){
 
             // Pintar tabla con los alumnos insertados
             if (data.ok && data.alumnos && data.alumnos.length) {
-                pintarTabla(alumnos);
-                
+                recargarAlumnos();
             }
 
-            if (data.ok) {
-                btnSubir.style.display = 'none';
-            } else {
+            if (!data.ok) {
                 alert('Error cargando: ' + (data.error || ''));
             }
         });

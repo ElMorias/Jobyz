@@ -28,6 +28,6 @@
     </label>
     <br>
     <button type="submit" class="btn-principal">Crear oferta</button>
-    <a href="index.php?page=ofertas" class="btn-secundario">Volver</a>
+    <a href="index.php?page=ofertas" class="btn-secundario btn">Volver</a>
 </form>
 <?php $this->stop() ?>
