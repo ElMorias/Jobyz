@@ -69,6 +69,34 @@ class RepositorioAlumno {
         return $stmt->fetchColumn() ?: null;
     }
 
+    public function existeDni($dni) {
+        $sql = "SELECT COUNT(*) FROM alumno WHERE dni = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$dni]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeDniExceptoId($dni, $id) {
+        $sql = "SELECT COUNT(*) FROM alumno WHERE dni = ? AND id != ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$dni, $id]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeTelefono($telefono) {
+        $sql = "SELECT COUNT(*) FROM alumno WHERE telefono = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$telefono]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeTelefonoExceptoId($telefono, $id) {
+        $sql = "SELECT COUNT(*) FROM alumno WHERE telefono = ? AND id != ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$telefono, $id]);
+        return $stmt->fetchColumn() > 0;
+    }
+    
   //Borrar alumno por ID
     public function borrarPorAlumnoId($alumnoId) {
         // Buscar el user_id asociado al alumno

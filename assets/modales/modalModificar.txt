@@ -1,63 +1,64 @@
+<div id="modal-errores"></div>
 <form action="" method="POST" id="form-editar-alumno" class="modal-form" enctype="multipart/form-data">
   <input type="hidden" name="id" id="modal-id">
   <input type="hidden" name="validado" id="modal-validado" value="1">
 
-  <!--Bloque 1: Correo, contraseña, nombre -->
-  <div class="form-bloque">
-    <h3>Identificación</h3>
-    <div class="form-datos-personales">
-      <div class="form-group">
-        <label for="modal-correo">Correo</label>
-        <input type="email" name="correo" id="modal-correo" required>
-      </div>
-      <div class="form-group">
-        <label for="modal-contrasena">Contraseña</label>
-        <input type="password" name="contrasena" id="modal-contrasena" disabled>
-      </div>
-      <div class="form-group">
-        <label for="modal-nombre">Nombre</label>
-        <input type="text" name="nombre" id="modal-nombre" required>
-      </div>
+<!--Bloque 1: Correo, contraseña, nombre -->
+<div class="form-bloque">
+  <h3>Identificación</h3>
+  <div class="form-datos-personales">
+    <div class="form-group">
+      <label for="modal-correo">Correo</label>
+      <input type="email" name="correo" id="modal-correo" required readonly maxlength="80">
+    </div>
+    <div class="form-group">
+      <label for="modal-contrasena">Contraseña</label>
+      <input type="password" name="contrasena" id="modal-contrasena" minlength="6" maxlength="60" readonly>
+    </div>
+    <div class="form-group">
+      <label for="modal-nombre">Nombre</label>
+      <input type="text" name="nombre" id="modal-nombre" required pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
     </div>
   </div>
+</div>
 
-  <!--Bloque 2: Apellidos y fecha -->
-  <div class="form-bloque">
-    <h3>Datos personales</h3>
-    <div class="form-datos-personales">
-      <div class="form-group">
-        <label for="modal-apellido1">Primer apellido</label>
-        <input type="text" name="apellido1" id="modal-apellido1" required>
-      </div>
-      <div class="form-group">
-        <label for="modal-apellido2">Segundo apellido</label>
-        <input type="text" name="apellido2" id="modal-apellido2">
-      </div>
-      <div class="form-group">
-        <label for="modal-fnacimiento">Fecha de nacimiento</label>
-        <input type="date" name="fnacimiento" id="modal-fnacimiento" required>
-      </div>
+<!--Bloque 2: Apellidos y fecha -->
+<div class="form-bloque">
+  <h3>Datos personales</h3>
+  <div class="form-datos-personales">
+    <div class="form-group">
+      <label for="modal-apellido1">Primer apellido</label>
+      <input type="text" name="apellido1" id="modal-apellido1" required pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label for="modal-apellido2">Segundo apellido</label>
+      <input type="text" name="apellido2" id="modal-apellido2" pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label for="modal-fnacimiento">Fecha de nacimiento</label>
+      <input type="date" name="fnacimiento" id="modal-fnacimiento" required>
     </div>
   </div>
+</div>
 
-  <!--Bloque 3: DNI, dirección, teléfono -->
-  <div class="form-bloque">
-    <h3>Contacto</h3>
-    <div class="form-datos-personales">
-      <div class="form-group">
-        <label for="modal-dni">DNI</label>
-        <input type="text" name="dni" id="modal-dni" required>
-      </div>
-      <div class="form-group">
-        <label for="modal-direccion">Dirección</label>
-        <input type="text" name="direccion" id="modal-direccion" required>
-      </div>
-      <div class="form-group">
-        <label for="modal-telefono">Teléfono</label>
-        <input type="tel" name="telefono" id="modal-telefono">
-      </div>
+<!--Bloque 3: DNI, dirección, teléfono -->
+<div class="form-bloque">
+  <h3>Contacto</h3>
+  <div class="form-datos-personales">
+    <div class="form-group">
+      <label for="modal-dni">DNI</label>
+      <input type="text" name="dni" id="modal-dni" required pattern="^[0-9]{8}[A-Za-z]$" maxlength="9" title="Debe tener formato 12345678A">
+    </div>
+    <div class="form-group">
+      <label for="modal-direccion">Dirección</label>
+      <input type="text" name="direccion" id="modal-direccion" required maxlength="80">
+    </div>
+    <div class="form-group">
+      <label for="modal-telefono">Teléfono</label>
+      <input type="tel" name="telefono" id="modal-telefono" required pattern="^[0-9]{9}$" maxlength="9" title="Debe tener 9 dígitos">
     </div>
   </div>
+</div>
 
   <!--Documentos -->
   <div class="form-bloque">

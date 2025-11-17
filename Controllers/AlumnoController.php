@@ -30,4 +30,10 @@ class AlumnoController {
   public function mostrarPerfil(){
     echo $this->templates->render('../perfil_alumno', ['title' => 'Perfil del alumno']);
   }
+
+  public function exportarAlumnoPDF() {
+    $alumnos = $this->repo->getTodos(); // Reemplaza por tu método real
+    PdfAlumnos::exportAlumnos($alumnos);
+    exit;
+  }
 }

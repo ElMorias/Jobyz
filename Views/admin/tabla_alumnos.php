@@ -18,6 +18,7 @@
     <div>
       <button id="addUsuario">Añadir</button>
       <button id="addMasivo">Añadir varios</button>
+      <button type="button" id="exportarAlumnosBtn" class="btn">Descargar Alumnos PDF</button>
     </div>
   </div>
 

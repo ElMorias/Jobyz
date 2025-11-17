@@ -30,6 +30,18 @@ class RepositorioUser {
         return $id;
     }
 
+    public function existeCorreo($correo) {
+        $sql = "SELECT COUNT(*) FROM users WHERE correo = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$correo]);
+        return $stmt->fetchColumn() > 0;
+    }
+    public function existeCorreoExceptoId($correo, $id) {
+        $sql = "SELECT COUNT(*) FROM users WHERE correo = ? AND id != ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$correo, $id]);
+        return $stmt->fetchColumn() > 0;
+    }
 
 }
 ?>

@@ -2,7 +2,7 @@ class ModalManager {
   constructor() {
     this.modals = [];
   }
-  
+
 
   //esto sirve si el contenido esta dentro de la pagina por ejeplo
   crearModal(contenidoHtml) {
@@ -30,7 +30,7 @@ class ModalManager {
   }
 
   //metodo que lo que necesita es la url del archivo que tiene el contenido
-crearModalDesdeUrl(url, callback) {
+  crearModalDesdeUrl(url, callback) {
     fetch(url)
       .then(res => res.text())
       .then(html => {
@@ -40,7 +40,7 @@ crearModalDesdeUrl(url, callback) {
       .catch(err => {
         console.error('Error al cargar la plantilla:', err);
       });
-}
+  }
 
 
   cerrarModal() {

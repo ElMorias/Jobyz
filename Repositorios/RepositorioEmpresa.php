@@ -21,8 +21,49 @@ class RepositorioEmpresa {
     public function validarEmpresa($id) {
     $stmt = $this->db->prepare('UPDATE empresa SET validada = 1 WHERE id = ?');
     return $stmt->execute([$id]);
-}
+    }
 
+    public function existeCorreo($correo) {
+        $sql = "SELECT COUNT(*) FROM empresa WHERE pcontactoemail = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$correo]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeCorreoExceptoId($correo, $id) {
+        $sql = "SELECT COUNT(*) FROM empresa WHERE pcontactoemail = ? AND id != ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$correo, $id]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeCif($cif) {
+        $sql = "SELECT COUNT(*) FROM empresa WHERE cif = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$cif]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeCifExceptoId($cif, $id) {
+        $sql = "SELECT COUNT(*) FROM empresa WHERE cif = ? AND id != ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$cif, $id]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeTelefono($telefono) {
+        $sql = "SELECT COUNT(*) FROM empresa WHERE tlfcontacto = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$telefono]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function existeTelefonoExceptoId($telefono, $id) {
+        $sql = "SELECT COUNT(*) FROM empresa WHERE tlfcontacto = ? AND id != ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$telefono, $id]);
+        return $stmt->fetchColumn() > 0;
+    }
 
 
     //--------------------------FINDBYID-----------------------------------------//
@@ -93,9 +134,9 @@ class RepositorioEmpresa {
             $this->db->beginTransaction();
 
             // 1. Insertar el usuario
-            $sqlUser = "INSERT INTO users (correo, contraseña, rol_id) VALUES (?, ?, ?)";
+            $stmt = $this->db->prepare("INSERT INTO users (correo, contraseña, rol_id) VALUES (?, ?, ?)");
             $hash = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
-            $stmtUser->execute([
+            $stmt->execute([
                 $datos['correo'],
                 $hash,
                 $datos['rol_id']

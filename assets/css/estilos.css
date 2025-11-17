@@ -21,23 +21,30 @@
 }
 
 /* --- Tipografía base --- */
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   font-family: 'Lato', Arial, sans-serif;
   background-color: var(--color-teal);
   color: var(--color-gris-oscuro);
 }
+
 a {
   text-decoration: none;
+  text-align: center;
   color: var(--color-teal);
   font-weight: 600;
 }
-h1, h2, h3 {
+
+h1,
+h2,
+h3 {
   font-family: 'Raleway', sans-serif;
   font-weight: 700;
   color: var(--color-teal);
 }
+
 main {
   flex: 1;
   display: flex;
@@ -50,9 +57,12 @@ main {
 
 /* --- Botón base y variaciones --- */
 .btn,
-button, .cta-btn, .login-btn {
+button,
+.cta-btn,
+.login-btn {
   background-color: var(--color-verde-lima);
   max-width: fit-content;
+  min-width: 120px;
   color: var(--color-blanco);
   padding: 0.5em 1em;
   border-radius: 6px;
@@ -63,6 +73,7 @@ button, .cta-btn, .login-btn {
   cursor: pointer;
   transition: background 0.15s, box-shadow 0.22s;
 }
+
 button:hover,
 .cta-btn:hover,
 .login-btn:hover,
@@ -82,9 +93,24 @@ button:hover,
   top: 0;
   z-index: 1000;
 }
-.nav-logo { width: 190px; height: auto; }
-.icono-header { width: 24px; height: 24px; object-fit: contain; vertical-align: middle; }
-.nav-actions { display: flex; gap: 1.3em; }
+
+.nav-logo {
+  width: 190px;
+  height: auto;
+}
+
+.icono-header {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 1.3em;
+}
+
 .header-ul {
   display: flex;
   flex-direction: row;
@@ -101,7 +127,9 @@ button:hover,
   position: relative;
   display: inline-block;
 }
-.profile-icon, .notif-icon {
+
+.profile-icon,
+.notif-icon {
   background: none;
   border: none;
   cursor: pointer;
@@ -109,11 +137,15 @@ button:hover,
   border-radius: 50%;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition: background .13s;
 }
-.profile-icon:hover, .notif-icon:hover {
+
+.profile-icon:hover,
+.notif-icon:hover {
   background: var(--color-gris-claro);
 }
+
 .menu-dropdown {
   display: none;
   position: absolute;
@@ -126,13 +158,27 @@ button:hover,
   z-index: 300;
   animation: fadeIn .15s;
 }
+
+.menu-dropdown a {
+  text-align: start;
+}
+
 .menu-dropdown.active {
   display: block;
 }
+
 @keyframes fadeIn {
-  from { opacity:0; transform:translateY(-5px);}
-  to { opacity:1; transform:translateY(0);}
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .menu-dropdown a {
   display: block;
   padding: .8em 1em;
@@ -142,12 +188,14 @@ button:hover,
   font-weight: 600;
   border-radius: 4px;
 }
+
 .menu-dropdown a:hover {
   background: var(--color-gris-claro);
 }
 
 /* --- Footer --- */
-footer, .simple-footer {
+footer,
+.simple-footer {
   padding: 1rem;
   background-color: var(--color-blanco);
   border-top: 1px solid var(--color-gris-claro);
@@ -162,6 +210,7 @@ footer, .simple-footer {
   display: flex;
   flex-direction: column;
 }
+
 .main-wrapper {
   display: flex;
   align-items: stretch;
@@ -173,6 +222,7 @@ footer, .simple-footer {
   display: flex;
   min-height: 84.4vh;
 }
+
 .admin-menu {
   min-width: 220px;
   background: var(--color-blanco);
@@ -180,20 +230,24 @@ footer, .simple-footer {
   padding: 2em 1.2em 2em 2em;
   box-sizing: border-box;
 }
+
 .admin-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+
 .admin-menu li {
   margin-bottom: 1em;
   padding-bottom: .4em;
 }
-.admin-menu ul li + li {
+
+.admin-menu ul li+li {
   border-top: 1px solid var(--color-box-shadow);
   margin-top: 0.7em;
   padding-top: 0.7em;
 }
+
 .admin-menu a {
   color: var(--color-teal);
   text-decoration: none;
@@ -201,9 +255,11 @@ footer, .simple-footer {
   font-size: 1.08em;
   transition: color .13s;
 }
+
 .admin-menu a:hover {
   color: var(--color-verde-lima);
 }
+
 .admin-layout .contenido {
   flex: 1;
   min-width: 0;
@@ -223,13 +279,15 @@ footer, .simple-footer {
   width: 93%;
   text-align: center;
 }
+
 .panel-box h2 {
-  color:  var(--color-teal);
+  color: var(--color-teal);
   margin-bottom: 0.95em;
   font-size: 2em;
   font-weight: 800;
   letter-spacing: -1px;
 }
+
 .panel-box p {
   color: var(--color-gris-oscuro);
   font-size: 1.15em;
@@ -238,7 +296,9 @@ footer, .simple-footer {
 }
 
 /* --- TABLAS --- */
-table, .tablaUsuarios, .tablaEmpresas {
+table,
+.tablaUsuarios,
+.tablaEmpresas {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
@@ -248,26 +308,41 @@ table, .tablaUsuarios, .tablaEmpresas {
   box-shadow: 0 4px 28px var(--color-box-shadow);
   font-size: 0.95em;
 }
-th, td, .tablaUsuarios th, .tablaUsuarios td, .tablaEmpresas th, .tablaEmpresas td {
+
+th,
+td,
+.tablaUsuarios th,
+.tablaUsuarios td,
+.tablaEmpresas th,
+.tablaEmpresas td {
   padding: 0.75em 1em;
   text-align: left;
 }
-th, .tablaUsuarios thead, .tablaEmpresas thead {
+
+th,
+.tablaUsuarios thead,
+.tablaEmpresas thead {
   background: var(--color-teal);
   color: var(--color-blanco);
   font-family: 'Raleway', sans-serif;
   font-size: 1em;
 }
+
 .tablaEmpresas th a {
   color: var(--color-blanco);
   text-decoration: none;
 }
+
 tr:nth-child(even) {
   background: var(--color-gris-claro);
 }
-tr:hover, .tablaUsuarios tbody tr:hover, .tablaEmpresas tbody tr:hover {
+
+tr:hover,
+.tablaUsuarios tbody tr:hover,
+.tablaEmpresas tbody tr:hover {
   background: var(--color-gris-claro);
 }
+
 .tablaUsuarios td:last-child,
 .tablaEmpresas td:last-child {
   display: flex;
@@ -280,22 +355,29 @@ tr:hover, .tablaUsuarios tbody tr:hover, .tablaEmpresas tbody tr:hover {
   background: var(--color-teal);
   color: var(--color-blanco);
 }
+
 .btn-accion:hover {
   background: var(--color-hover-teal);
 }
+
 .btn-detalles {
   background: var(--color-info);
   color: var(--color-blanco);
 }
+
 .btn-modificar {
   background: var(--color-warning);
   color: var(--color-blanco);
 }
+
 .btn-borrar {
   background: var(--color-error);
   color: var(--color-blanco);
 }
-.btn-detalles:hover, .btn-modificar:hover, .btn-borrar:hover {
+
+.btn-detalles:hover,
+.btn-modificar:hover,
+.btn-borrar:hover {
   filter: brightness(0.95);
 }
 
@@ -305,23 +387,28 @@ tr:hover, .tablaUsuarios tbody tr:hover, .tablaEmpresas tbody tr:hover {
   font-size: 1.1em;
   user-select: none;
 }
+
 .boton-ordenar:hover {
   color: var(--color-info);
   text-decoration: underline;
 }
+
 .tabla-paginacion {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin:12px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
 }
+
 .tabla-paginacion button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* --- FORMULARIOS Y ELEMENTOS INPUT --- */
-input, select, textarea {
+input,
+select,
+textarea {
   border: 1px solid var(--color-gris-claro);
   border-radius: 6px;
   padding: 0.5em 0.8em;
@@ -329,11 +416,15 @@ input, select, textarea {
   background: var(--color-blanco);
   transition: border 0.16s, box-shadow 0.20s;
 }
-input:focus, select:focus, textarea:focus {
+
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--color-teal);
   box-shadow: 0 0 0 2px var(--color-hover-teal);
 }
+
 form {
   background: var(--color-blanco);
   border-radius: 12px;
@@ -345,6 +436,7 @@ form {
   flex-direction: column;
   gap: 1.1em;
 }
+
 form label {
   font-weight: bold;
   color: var(--color-teal);
@@ -353,7 +445,10 @@ form label {
   font-size: 1.08em;
   letter-spacing: 0.02em;
 }
-form input, form select, form textarea {
+
+form input,
+form select,
+form textarea {
   border: 1px solid var(--color-gris-borde);
   padding: 0.6em 1em;
   border-radius: 8px;
@@ -366,24 +461,32 @@ form input, form select, form textarea {
   width: 100%;
   margin-bottom: 0.2em;
 }
+
 form .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 0.6em;
 }
+
 form .form-actions {
   text-align: right;
   margin-top: 1.2em;
 }
 
-form input[type="submit"]:hover, form button[type="submit"]:hover {
+form input[type="submit"]:hover,
+form button[type="submit"]:hover {
   background: var(--color-hover-teal);
 }
-form input[type="checkbox"], form input[type="radio"] {
+
+form input[type="checkbox"],
+form input[type="radio"] {
   width: auto;
   accent-color: var(--color-teal);
 }
-form .ayuda, form small, form .help-text {
+
+form .ayuda,
+form small,
+form .help-text {
   color: var(--color-gris-oscuro);
   font-size: 0.91em;
   margin-top: 2px;
@@ -391,133 +494,157 @@ form .ayuda, form small, form .help-text {
   font-weight: normal;
 }
 
-input:disabled, select:disabled, textarea:disabled {
+input:disabled,
+select:disabled,
+textarea:disabled {
   background: var(--color-blanco);
   color: #bbb !important;
   opacity: 0.82;
   cursor: not-allowed;
 }
 
-/* --- ESPECIFICOS ---*/ 
+/* --- ESPECIFICOS ---*/
 
 /* --- LOGIN --- */
-.login-container, .elige-tipo-container{
-    background-color: var(--color-blanco);
-    max-width:600px;
-    min-width: 600px;
-    box-shadow: 6px 6px 8px var(--color-box-shadow);
-    border-radius: 12px;
-    margin: 2em 2em;
-    padding: 2em 2em;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+.login-container,
+.elige-tipo-container {
+  background-color: var(--color-blanco);
+  max-width: 600px;
+  min-width: 600px;
+  box-shadow: 6px 6px 8px var(--color-box-shadow);
+  border-radius: 12px;
+  margin: 2em 2em;
+  padding: 2em 2em;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
-.login-container h1, .elige-tipo-container h1, .elige-tipo-container p{
-    text-align: center;
+
+.login-container h1,
+.elige-tipo-container h1,
+.elige-tipo-container p {
+  text-align: center;
 }
-.login-form{
-    align-items: center;
+
+.login-form {
+  align-items: center;
 }
-.forgot-password{
-    text-align: center;
+
+.forgot-password {
+  text-align: center;
 }
-.forgot-password a{
-    margin: 1em 1em;
+
+.forgot-password a {
+  margin: 1em 1em;
 }
-.tipo-opciones{
-    display: flex;
-    gap: 2em;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
+
+.tipo-opciones {
+  display: flex;
+  gap: 2em;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
 }
 
 
 
 /*--- CRUD DE ADMIN DE ALUMNO-EMPRESA ---*/
-.tablaUsuariosContainer, .tablaEmpresaContainer{
-    background-color: var(--color-blanco);
-    padding: 2em 2em;
-    border-radius: 20px;
-    box-shadow: 6px 6px 8px var(--color-box-shadow);
+.tablaUsuariosContainer,
+.tablaEmpresaContainer {
+  background-color: var(--color-blanco);
+  padding: 2em 2em;
+  border-radius: 20px;
+  box-shadow: 6px 6px 8px var(--color-box-shadow);
 }
 
-.accionesUsuarios, .accionesEmpresa{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 2em 2em;
+.accionesUsuarios,
+.accionesEmpresa {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 2em 2em;
 }
-.form-no-form{
-    flex-direction: row;
-    box-shadow: none;
-    margin: 0 0;
-    padding: 0 0;
-    background-color: transparent
+
+.form-no-form {
+  flex-direction: row;
+  box-shadow: none;
+  margin: 0 0;
+  padding: 0 0;
+  background-color: transparent
 }
 
 
-.mensaje-empresas{
-    padding: 3em 2em;
+.mensaje-empresas {
+  padding: 3em 2em;
 }
 
 /* --- OFERTAS Y SOLICITUDES --- */
-.card-oferta, .card-solicitud {
-    background-color: white;
-    box-shadow: 0 6px 25px 8px;
-    padding: 1em 1em;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    align-items: center;
+.card-oferta,
+.card-solicitud {
+  background-color: var(--color-blanco);
+  box-shadow: 0px 0px 13px 0px;
+  padding: 1em 1em;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  align-items: center;
 }
-.ofertas-grid, .solicitudes-grid {
+
+.ofertas-grid,
+.solicitudes-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(310px, 1fr));
   grid-gap: 2em;
   justify-items: center;
   margin: 2.5em 0;
 }
+
 .card-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  align-items: center;
 }
 
-.card-oferta .empresa, .card-solicitud .empresa {
+.card-oferta .empresa,
+.card-solicitud .empresa {
   color: var(--color-teal);
   font-size: 1.10em;
   font-weight: 600;
   margin-bottom: .3em;
 }
-.card-oferta .titulo-oferta, .card-solicitud .titulo-oferta {
+
+.card-oferta .titulo-oferta,
+.card-solicitud .titulo-oferta {
   font-size: 1.22em;
   margin-bottom: .3em;
 }
+
 .card-oferta .descripcion {
   color: var(--color-gris-oscuro);
   font-size: 1em;
   margin-bottom: .8em;
 }
-.card-oferta .fecha-limite, .card-solicitud .fecha-solicitud {
+
+.card-oferta .fecha-limite,
+.card-solicitud .fecha-solicitud {
   color: var(--color-warning);
   font-size: .98em;
   margin-bottom: 1em;
   font-weight: 600;
 }
+
 .solicitudes-oferta-div {
-    display: flex;
-    flex-direction: column;
-    gap: 2em;
-    background-color: white;
-    box-shadow: 6px 6px 8px var(--color-box-shadow);
-    padding: 2em 2em;
-    margin: 2em 2em;
-    border-radius: 12px;
-    
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  background-color: white;
+  box-shadow: 6px 6px 8px var(--color-box-shadow);
+  padding: 2em 2em;
+  margin: 2em 2em;
+  border-radius: 12px;
+
 }
 
 /* --- REGISTROS DE ALUMNO Y EMPRESA --- */
@@ -551,16 +678,32 @@ input:disabled, select:disabled, textarea:disabled {
   min-height: 0;
   transition: border-color 0.2s;
 }
+
+.form-errores {
+  background: var(--color-blanco);
+  color: var(--color-error);
+  border: 2px solid var(--color-teal);
+  border-radius: 16px;
+  box-shadow: 0 4px 18px 0 var(--color-box-shadow);
+  padding: 1.4em 1.7em;
+  max-width: 600px;
+  text-align: center;
+  margin: auto;
+  min-width: 0;
+  min-height: 0;
+  transition: border-color 0.2s;
+}
+
 .form-bloque h3 {
   margin-top: 0;
   margin-bottom: 0.6em;
   color: var(--color-teal);
-  font-size: 1.13em;
+  font-size: 1.3em;
   letter-spacing: 0.02em;
 }
 
 .btn-verde-lima {
-    margin-top: .5em;
+  margin-top: .5em;
 }
 
 /* Destacar documentos/estudios con otro fondo */
@@ -571,13 +714,31 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 /* Grid positioning de alumno */
-.form-registro-alumno > .form-bloque:nth-of-type(1) { grid-area: 1 / 1 / 2 / 3; }
-.form-registro-alumno > .form-bloque:nth-of-type(2) { grid-area: 2 / 1 / 3 / 2; }
-.form-registro-alumno > .form-bloque:nth-of-type(3) { grid-area: 2 / 2 / 3 / 3; }
-#bloque-estudios { grid-area: 3 / 1 / 4 / 3; }
-.form-registro-alumno > .form-bloque.form-documentos:nth-of-type(4) { grid-area: 4 / 1 / 5 / 2; }
-.form-registro-alumno > .form-bloque.form-documentos:nth-of-type(5) { grid-area: 4 / 2 / 5 / 3; }
-.form-registro-alumno > .registro-botones {
+.form-registro-alumno>.form-bloque:nth-of-type(1) {
+  grid-area: 1 / 1 / 2 / 3;
+}
+
+.form-registro-alumno>.form-bloque:nth-of-type(2) {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.form-registro-alumno>.form-bloque:nth-of-type(3) {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+#bloque-estudios {
+  grid-area: 3 / 1 / 4 / 3;
+}
+
+.form-registro-alumno>.form-bloque.form-documentos:nth-of-type(4) {
+  grid-area: 4 / 1 / 5 / 2;
+}
+
+.form-registro-alumno>.form-bloque.form-documentos:nth-of-type(5) {
+  grid-area: 4 / 2 / 5 / 3;
+}
+
+.form-registro-alumno>.registro-botones {
   grid-area: 5 / 1 / 6 / 3;
   display: flex;
   gap: 1em;
@@ -587,11 +748,24 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 /* Grid positioning de empresa*/
-.form-registrar-empresa .form-bloque:nth-of-type(1) { grid-area: 1 / 1 / 2 / 2; } 
-.form-registrar-empresa .form-bloque:nth-of-type(2) { grid-area: 1 / 2 / 2 / 3; } 
-.form-registrar-empresa .form-bloque:nth-of-type(3) { grid-area: 2 / 1 / 3 / 2; }
-.form-registrar-empresa .form-bloque.form-documentos { grid-area: 2 / 2 / 3 / 3; }
-.form-registrar-empresa > .registro-botones, .form-registrar-empresa > button[type="submit"] {
+.form-registrar-empresa .form-bloque:nth-of-type(1) {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.form-registrar-empresa .form-bloque:nth-of-type(2) {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.form-registrar-empresa .form-bloque:nth-of-type(3) {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.form-registrar-empresa .form-bloque.form-documentos {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+.form-registrar-empresa>.registro-botones,
+.form-registrar-empresa>button[type="submit"] {
   grid-area: 3 / 1 / 4 / 3;
   display: flex;
   gap: 1em;
@@ -614,11 +788,17 @@ input:disabled, select:disabled, textarea:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadein-modal 0.24s cubic-bezier(.34,1.56,.64,1);
+  animation: fadein-modal 0.24s cubic-bezier(.34, 1.56, .64, 1);
 }
+
 @keyframes fadein-modal {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-form {
@@ -682,14 +862,22 @@ input:disabled, select:disabled, textarea:disabled {
   padding: 2em 2.5em;
   box-shadow: 0 7px 32px var(--color-box-shadow);
   position: relative;
-  animation: subir-modal 0.24s cubic-bezier(.34,1.56,.64,1);
+  animation: subir-modal 0.24s cubic-bezier(.34, 1.56, .64, 1);
   font-family: 'Lato', Arial, sans-serif;
 }
 
 @keyframes subir-modal {
-  from { transform: translateY(40px) scale(0.98); opacity:0; }
-  to { transform: none; opacity:1; }
+  from {
+    transform: translateY(40px) scale(0.98);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
+
 .modal-cerrar {
   position: absolute;
   top: 0.8em;
@@ -705,22 +893,46 @@ input:disabled, select:disabled, textarea:disabled {
   line-height: 1;
   z-index: 11;
 }
+
 .modal-cerrar:hover {
   color: var(--color-verde-lima);
-  background-color:transparent;
+  background-color: transparent;
   opacity: 1;
   transform: scale(1.11);
 }
 
 /* --- RESPONSIVE Y MEDIA QUERIES --- */
 @media (max-width: 1100px) {
-  .navbar { flex-direction: column; }
-  .main-wrapper { flex-direction: column; }
-  .admin-layout { flex-direction: column; }
-  .admin-menu { min-width: 100%; border-right: none; border-bottom: 1.5px solid var(--color-modales); }
-  .admin-layout .contenido { padding: 1.2em; }
-  .panel-box { width: 99%; padding: 1.6em 1.2em; }
-  form { padding: 1.2em 0.6em; }
+  .navbar {
+    flex-direction: column;
+  }
+
+  .main-wrapper {
+    flex-direction: column;
+  }
+
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-menu {
+    min-width: 100%;
+    border-right: none;
+    border-bottom: 1.5px solid var(--color-modales);
+  }
+
+  .admin-layout .contenido {
+    padding: 1.2em;
+  }
+
+  .panel-box {
+    width: 99%;
+    padding: 1.6em 1.2em;
+  }
+
+  form {
+    padding: 1.2em 0.6em;
+  }
 }
 
 @media (max-width: 900px) {
@@ -729,47 +941,113 @@ input:disabled, select:disabled, textarea:disabled {
     grid-template-rows: none;
     grid-row-gap: 18px;
   }
-  .form-registro-alumno > div,
-  .form-registro-alumno > .registro-botones {
+
+  .form-registro-alumno>div,
+  .form-registro-alumno>.registro-botones {
     grid-area: auto;
   }
 
-  .form-registrar-empresa > div,
-  .form-registrar-empresa > button,
-  .form-registrar-empresa > .registro-botones {
+  .form-registrar-empresa>div,
+  .form-registrar-empresa>button,
+  .form-registrar-empresa>.registro-botones {
     grid-area: auto;
   }
 }
 
 
 @media (max-width: 700px) {
-  .header-ul { gap: 0.7em; }
-  .navbar { padding: 0.7em 0.4em; }
-  .wrapper, .main-wrapper { padding: 0; }
-  .panel-box { margin: 1em auto; }
-  .modal { padding: 1.2em 0.6em; min-width: 90vw; }
-  .admin-menu { padding: 1.2em 0.7em; }
+  .header-ul {
+    gap: 0.7em;
+  }
+
+  .navbar {
+    padding: 0.7em 0.4em;
+  }
+
+  .wrapper,
+  .main-wrapper {
+    padding: 0;
+  }
+
+  .panel-box {
+    margin: 1em auto;
+  }
+
+  .modal {
+    padding: 1.2em 0.6em;
+    min-width: 90vw;
+  }
+
+  .admin-menu {
+    padding: 1.2em 0.7em;
+  }
 }
 
 @media (max-width: 510px) {
-  html, body { font-size: 97%; }
-  .panel-box { border-radius: 9px; box-shadow: 0 3px 12px var(--color-box-shadow);}
-  form { border-radius: 8px; }
+
+  html,
+  body {
+    font-size: 97%;
+  }
+
+  .panel-box {
+    border-radius: 9px;
+    box-shadow: 0 3px 12px var(--color-box-shadow);
+  }
+
+  form {
+    border-radius: 8px;
+  }
 }
 
 /* --- UTILIDADES Y OTROS BLOQUES --- */
-.text-center       { text-align: center }
-.text-right        { text-align: right }
-.w100              { width: 100% }
-.mt-2              { margin-top: 2em }
-.mt-1              { margin-top: 1em }
-.mb-1              { margin-bottom: 1em }
-.mb-2              { margin-bottom: 2em }
-.no-shadow         { box-shadow: none }
-.rounded           { border-radius: 9px }
-.no-select         { user-select: none }
-.hidden            { display: none }
-.block             { display: block }
+.text-center {
+  text-align: center
+}
+
+.text-right {
+  text-align: right
+}
+
+.w100 {
+  width: 100%
+}
+
+.mt-2 {
+  margin-top: 2em
+}
+
+.mt-1 {
+  margin-top: 1em
+}
+
+.mb-1 {
+  margin-bottom: 1em
+}
+
+.mb-2 {
+  margin-bottom: 2em
+}
+
+.no-shadow {
+  box-shadow: none
+}
+
+.rounded {
+  border-radius: 9px
+}
+
+.no-select {
+  user-select: none
+}
+
+.hidden {
+  display: none
+}
+
+.block {
+  display: block
+}
 
 .success-msg {
   background: #ddf5ea;
@@ -778,6 +1056,7 @@ input:disabled, select:disabled, textarea:disabled {
   padding: 0.7em 1em;
   border-radius: 6px;
 }
+
 .error-msg {
   background: #fde6e6;
   color: #b71c1c;
@@ -785,6 +1064,7 @@ input:disabled, select:disabled, textarea:disabled {
   padding: 0.7em 1em;
   border-radius: 6px;
 }
+
 .info-msg {
   background: #e7f6fd;
   color: #1078d7;
@@ -792,6 +1072,7 @@ input:disabled, select:disabled, textarea:disabled {
   padding: 0.7em 1em;
   border-radius: 6px;
 }
+
 .warning-msg {
   background: #fff9e7;
   color: #b88b00;
@@ -799,5 +1080,3 @@ input:disabled, select:disabled, textarea:disabled {
   padding: 0.7em 1em;
   border-radius: 6px;
 }
-
-

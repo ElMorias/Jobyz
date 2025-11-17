@@ -13,58 +13,84 @@ class EmpresaController {
         $this ->templates = $templates;
     }
 
-    public function registrarEmpresa(){
-           if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $ok = $this->repo->crearEmpresa($_POST, $_FILES); // Passo POST y archivos
+    public function registrarEmpresa() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Valida datos antes de guardar
+            $validador = new Validators();
+            $errores = $validador->validarEmpresa($_POST);
+
+            if (!empty($errores)) {
+                // Devuelve los errores, mantén los datos escritos
+                echo $this->templates->render('../registro_empresa', [
+                    'empresa' => $_POST,
+                    'errores' => $errores // Cambia 'error' por 'errores' para mostrar lista
+                ]);
+                return;
+            }
+
+            // Si no hay errores, guardar en base de datos
+            $ok = $this->repo->crearEmpresa($_POST, $_FILES);
             if ($ok) {
-                
+                MailerService::enviarBienvenida($_POST['correo'], $_POST['nombre']);
                 header('Location: ?page=login');
                 exit();
             } else {
-                // Si falla algo, muestra el mismo form con mensaje de error
-                $error = 'Error al registrar la empresa. Por favor, revisa los datos.';
+                $error = 'Error al registrar la empresa. Revisa los datos.';
                 echo $this->templates->render('../registro_empresa', [
                     'empresa' => $_POST,
-                    'error' => $error
+                    'errores' => [$error]
                 ]);
                 return;
             }
         } else {
             echo $this->templates->render('../registro_empresa', [
                 'empresa' => [],
-                'error' => ''
+                'errores' => []
             ]);
         }
     }
 
+
     public function crearEmpresa(){
-        if (isset($_SESSION['correo']) || isset($_SESSION['rol_id']) || $_SESSION['rol_id'] == 1) {
+        if (isset($_SESSION['correo']) && isset($_SESSION['rol_id']) && $_SESSION['rol_id'] == 1) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Validación antes de crear
+                $validador = new Validators();
+                $errores = $validador->validarEmpresa($_POST);
+                if (!empty($errores)) {
+                    echo $this->templates->render('../crear_empresa', [
+                        'empresa' => $_POST,
+                        'errores' => $errores
+                    ]);
+                    return;
+                }
+
+                // Solo si no hay errores se crea la empresa:
                 $ok = $this->repo->crearEmpresa($_POST, $_FILES); 
                 if ($ok) {
-                    // Redirige al listado CRUD después de crear
+                    MailerService::enviarBienvenida($_POST['correo'], $_POST['nombre']);
                     header('Location: ?page=tabla_empresas');
                     exit();
                 } else {
-                    // Si falla algo, muestra el mismo form con mensaje de error
-                    $error = 'Error al crear la empresa. Por favor, revisa los datos.';
+                    $errores = ['Error al crear la empresa. Por favor, revisa los datos.'];
                     echo $this->templates->render('../crear_empresa', [
                         'empresa' => $_POST,
-                        'error' => $error
+                        'errores' => $errores
                     ]);
                     return;
                 }
             } else {
                 echo $this->templates->render('../crear_empresa', [
                     'empresa' => [],
-                    'error' => ''
+                    'errores' => []
                 ]);
             }
-        }else{
+        } else {
             header('Location: index.php?page=landing');
             exit;
         }
     }
+
 
 
     public function mostrarTabla() {
@@ -136,7 +162,7 @@ class EmpresaController {
     }
 
     public function editarEmpresa() {
-        if (isset($_SESSION['correo']) || isset($_SESSION['rol_id']) || $_SESSION['rol_id'] == 1) {
+        if (isset($_SESSION['correo']) && isset($_SESSION['rol_id']) && $_SESSION['rol_id'] == 1) {
             $id = $_GET['id'] ?? null;
             if (!$id) {
                 header('Location: ?page=tabla_empresas');
@@ -144,89 +170,105 @@ class EmpresaController {
             }
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $validador = new Validators();
+                $errores = $validador->validarEmpresaEdicion($_POST);  // <-- validación aquí
+
+                if (!empty($errores)) {
+                    $empresa = array_merge($_POST, ['id' => $id]);
+                    echo $this->templates->render('../editar_empresa', [
+                        'empresa' => $empresa,
+                        'errores' => $errores // <-- muestra lista o por campo en la vista
+                    ]);
+                    return;
+                }
+
                 $ok = $this->repo->actualizar($id, $_POST, $_FILES);
                 if ($ok) {
-                header('Location: ?page=tabla_empresas');
-                exit();
+                    header('Location: ?page=tabla_empresas');
+                    exit();
                 } else {
-                $error = 'Error al actualizar la empresa.';
-                $empresa = array_merge($_POST, ['id' => $id]);
-                echo $this->templates->render('../editar_empresa', [
-                    'empresa' => $empresa,
-                    'error' => $error
-                ]);
-                return;
+                    $error = 'Error al actualizar la empresa.';
+                    $empresa = array_merge($_POST, ['id' => $id]);
+                    echo $this->templates->render('../editar_empresa', [
+                        'empresa' => $empresa,
+                        'errores' => [$error]
+                    ]);
+                    return;
                 }
             } else {
                 $empresa = $this->repo->getPorId($id);
                 echo $this->templates->render('../editar_empresa', [
-                'empresa' => $empresa,
-                'error' => ''
+                    'empresa' => $empresa,
+                    'errores' => []
                 ]);
             }
-        }else{
+        } else {
             header('Location: index.php?page=landing');
             exit;
         }
     }
 
+
      
     public function editarPerfilEmpresa() {
-    // 1. Comprobar que el usuario está logueado y es empresa
-    if (!isset($_SESSION['user_id']) || !isset($_SESSION['rol_id']) || $_SESSION['rol_id'] != 3) {
-        // Si no es empresa, redirige fuera
-        header('Location: index.php?page=landing');
-        exit();
-    }
-
-    // 2. Recuperar el id del usuario desde la sesión (siempre está si está logueado)
-    $userId = $_SESSION['user_id'];
-
-    // 3. Buscar la empresa asociada a ese usuario mediante su user_id
-    $empresa = $this->repo->getPorUserId($userId); // Debes tener este método en el repositorio
-    if (!$empresa) {
-        // Si no encuentra la empresa, redirige o muestra error
-        header('Location: index.php?page=landing');
-        exit();
-    }
-    $empresaId = $empresa['id'];
-
-    // 4. Si el formulario fue enviado vía POST, procesamos actualización
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Si el campo 'contrasena' viene vacío, no se actualiza la contraseña
-        $datos = $_POST;
-        if (empty($datos['contrasena'])) {
-            unset($datos['contrasena']);
-        } else {
-            // Si se envió nueva contraseña, la hasheamos
-            $datos['contrasena'] = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
-        }
-        // Procesar imagen/foto si se envía
-        // (puedes poner tu lógica de $_FILES acá)
-        $ok = $this->repo->actualizar($empresaId, $datos, $_FILES);
-        
-        if ($ok) {
-            // Redirige al propio perfil tras actualizar
-            header('Location: index.php?page=perfil_empresa');
+        // 1. Comprobar que el usuario está logueado y es empresa
+        if (!isset($_SESSION['user_id']) || !isset($_SESSION['rol_id']) || $_SESSION['rol_id'] != 3) {
+            header('Location: index.php?page=landing');
             exit();
-        } else {
-            $error = 'Error actualizando datos';
-            // Muestra el formulario con los datos enviados y el error
-            echo $this->templates->render('../perfil_empresa', [
-                'empresa' => array_merge($empresa, $_POST),
-                'error' => $error
-            ]);
-            return;
         }
-    } else {
-        // 5. Si no se envió el formulario, mostrar la página de perfil con los datos actuales
-        echo $this->templates->render('../perfil_empresa', [
-            'empresa' => $empresa,
-            'error' => ''
-        ]);
-    }
-}
+        $userId = $_SESSION['user_id'];
+        $empresa = $this->repo->getPorUserId($userId);
+        if (!$empresa) {
+            header('Location: index.php?page=landing');
+            exit();
+        }
+        $empresaId = $empresa['id'];
 
+        // 4. Si el formulario fue enviado vía POST, procesamos actualización
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $datos = $_POST;
+
+            // VALIDACIÓN ANTES DE ACTUALIZAR
+            $validador = new Validators();
+            $errores = $validador->validarEmpresaEdicion($datos);
+            if (!empty($errores)) {
+                // Vuelve a mostrar el formulario con los errores y datos actuales
+                echo $this->templates->render('../perfil_empresa', [
+                    'empresa' => array_merge($empresa, $datos),
+                    'errores' => $errores
+                ]);
+                return;
+            }
+
+            // Procesa la contraseña: si viene, la hashea, si no, no la pongas
+            if (empty($datos['contrasena'])) {
+                unset($datos['contrasena']);
+            } else {
+                $datos['contrasena'] = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
+            }
+            // Aquí lógicamente podrías procesar $_FILES si lo necesitas
+            $ok = $this->repo->actualizar($empresaId, $datos, $_FILES);
+
+            if ($ok) {
+                header('Location: index.php?page=perfil_empresa');
+                exit();
+            } else {
+                // Podrías agregar más detalles según error, aquí le añadimos uno general
+                $errores = ['Error actualizando datos en la base de datos.'];
+                echo $this->templates->render('../perfil_empresa', [
+                    'empresa' => array_merge($empresa, $datos),
+                    'errores' => $errores
+                ]);
+                return;
+            }
+        } else {
+            // Si no se envió el formulario, mostrar el perfil normal
+            echo $this->templates->render('../perfil_empresa', [
+                'empresa' => $empresa,
+                'errores' => []
+            ]);
+        }
+    }
 
 
     public function borrarEmpresa() {
@@ -246,6 +288,12 @@ class EmpresaController {
             header('Location: index.php?page=landing');
             exit;
         }
+    }
+
+    public function exportarEmpresaPDF(){
+        $empresas = $this->repo->getTodas();
+        PdfEmpresa::exportEmpresas($empresas);
+        exit; // importante para que no imprima HTML adicional
     }
 }
 ?>

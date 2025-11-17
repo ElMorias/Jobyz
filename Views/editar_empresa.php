@@ -3,60 +3,64 @@
 <?php $this->stop() ?>
 <?php $this->start('contenido') ?>
 <section class="registro-container">
+
+  <?php if (!empty($errores)): ?>
+    <div class="form-errores">
+      <ul>
+        <?php foreach ($errores as $err): ?>
+          <li><?= htmlspecialchars($err) ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+  <?php endif; ?>
+
   <form method="POST" enctype="multipart/form-data">
     <h2>Modificar Empresa</h2>
-
-    <?php if (!empty($error)): ?>
-      <div class="form-error">
-        <?= htmlspecialchars($error) ?>
+    
+    <!-- Datos de Cuenta -->
+    <div class="form-bloque">
+      <h3>Datos de Cuenta</h3>
+      <div class="form-group">
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" name="correo" value="<?= htmlspecialchars($empresa['correo'] ?? '') ?>" readonly maxlength="80">
       </div>
-    <?php endif; ?>
+      <input type="hidden" name="rol_id" value="3">
+    </div>
 
-    <div class="form-columnas">
-      <!-- Datos de Cuenta -->
-      <div class="form-bloque">
-        <h3>Datos de Cuenta</h3>
-        <div class="form-group">
-          <label for="correo">Correo electrónico</label>
-          <input type="email" id="correo" name="correo" value="<?= htmlspecialchars($empresa['correo'] ?? '') ?>" required>
-        </div>
-        <input type="hidden" name="rol_id" value="3">
+    <!-- Datos Generales -->
+    <div class="form-bloque">
+      <h3>Datos Generales</h3>
+      <div class="form-group">
+        <label for="nombre">Nombre de la empresa</label>
+        <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($empresa['nombre'] ?? '') ?>" required maxlength="60">
       </div>
-
-      <!-- Datos Generales -->
-      <div class="form-bloque">
-        <h3>Datos Generales</h3>
-        <div class="form-group">
-          <label for="nombre">Nombre de la empresa</label>
-          <input type="text" id="nombre" name="nombre" value="<?= htmlspecialchars($empresa['nombre'] ?? '') ?>" required>
-        </div>
-        <div class="form-group">
-          <label for="direccion">Dirección</label>
-          <input type="text" id="direccion" name="direccion" value="<?= htmlspecialchars($empresa['direccion'] ?? '') ?>" required>
-        </div>
-        <div class="form-group">
-          <label for="cif">CIF</label>
-          <input type="text" id="cif" name="cif" value="<?= htmlspecialchars($empresa['cif'] ?? '') ?>" required>
-        </div>
+      <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" name="direccion" value="<?= htmlspecialchars($empresa['direccion'] ?? '') ?>" required maxlength="80">
       </div>
-
-      <!-- Contacto -->
-      <div class="form-bloque">
-        <h3>Contacto</h3>
-        <div class="form-group">
-          <label for="pcontacto">Persona de contacto</label>
-          <input type="text" id="pcontacto" name="pcontacto" value="<?= htmlspecialchars($empresa['pcontacto'] ?? '') ?>">
-        </div>
-        <div class="form-group">
-          <label for="pcontactoemail">Email persona contacto</label>
-          <input type="email" id="pcontactoemail" name="pcontactoemail" value="<?= htmlspecialchars($empresa['pcontactoemail'] ?? '') ?>">
-        </div>
-        <div class="form-group">
-          <label for="tlfcontacto">Teléfono contacto</label>
-          <input type="tel" id="tlfcontacto" name="tlfcontacto" value="<?= htmlspecialchars($empresa['tlfcontacto'] ?? '') ?>">
-        </div>
+      <div class="form-group">
+        <label for="cif">CIF</label>
+        <input type="text" id="cif" name="cif" value="<?= htmlspecialchars($empresa['cif'] ?? '') ?>" required maxlength="12" pattern="^[A-Z][0-9]{7}[A-Z0-9]$" title="Formato típico: letra + 7 dígitos + letra/dígito">
       </div>
     </div>
+
+    <!-- Contacto -->
+    <div class="form-bloque">
+      <h3>Contacto</h3>
+      <div class="form-group">
+        <label for="pcontacto">Persona de contacto</label>
+        <input type="text" id="pcontacto" name="pcontacto" value="<?= htmlspecialchars($empresa['pcontacto'] ?? '') ?>" maxlength="50">
+      </div>
+      <div class="form-group">
+        <label for="pcontactoemail">Email persona contacto</label>
+        <input type="email" id="pcontactoemail" name="pcontactoemail" value="<?= htmlspecialchars($empresa['pcontactoemail'] ?? '') ?>" maxlength="80">
+      </div>
+      <div class="form-group">
+        <label for="tlfcontacto">Teléfono contacto</label>
+        <input type="tel" id="tlfcontacto" name="tlfcontacto" value="<?= htmlspecialchars($empresa['tlfcontacto'] ?? '') ?>" maxlength="15" pattern="^[0-9]{9,15}$" title="9 a 15 dígitos, solo números">
+      </div>
+    </div>
+    
 
     <!-- Logo / Foto -->
     <div class="form-bloque form-documentos">

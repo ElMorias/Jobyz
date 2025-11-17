@@ -83,32 +83,107 @@ function initRegistroAlumnoForm(raiz) {
 
 
     const formRegistro = document.getElementById('form-registro-alumno');
+    const registroErrores = document.getElementById('modal-registro-errores');
 
-    if (formRegistro){
-       
+    if (formRegistro) {
         formRegistro.addEventListener('submit', function (e) {
-            debugger;
             e.preventDefault();
+            let errores = [];
+            registroErrores.innerHTML = '';
+
+            // Captura de campos
+            const correo = formRegistro.correo.value.trim();
+            const pass1 = formRegistro.contrasena.value;
+            const pass2 = formRegistro.repetir_contrasena.value;
+            const nombre = formRegistro.nombre.value.trim();
+            const apellido1 = formRegistro.apellido1.value.trim();
+            const apellido2 = formRegistro.apellido2.value.trim();
+            const fnacimiento = formRegistro.fnacimiento.value;
+            const dni = formRegistro.dni.value.trim();
+            const telefono = formRegistro.telefono.value.trim();
+            const direccion = formRegistro.direccion.value.trim();
+
+            // Validaciones
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo)) {
+                errores.push('Introduce un correo electrónico válido.');
+            }
+            if (pass1.length < 6 || pass1.length > 60) {
+                errores.push('La contraseña debe tener entre 6 y 60 caracteres.');
+            }
+            if (pass1 !== pass2) {
+                errores.push('Las contraseñas no coinciden.');
+            }
+            const patronNombre = /^[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}$/;
+            if (!patronNombre.test(nombre)) {
+                errores.push('El nombre solo puede tener letras y espacios (2-50).');
+            }
+            if (!patronNombre.test(apellido1)) {
+                errores.push('El primer apellido solo puede tener letras y espacios (2-50).');
+            }
+            if (apellido2 && !patronNombre.test(apellido2)) {
+                errores.push('El segundo apellido solo puede tener letras y espacios (2-50).');
+            }
+            if (!fnacimiento) {
+                errores.push('Debe indicar su fecha de nacimiento.');
+            }
+            if (!/^\d{8}[A-Za-z]$/.test(dni)) {
+                errores.push('El DNI debe tener formato 12345678A.');
+            }
+            if (!/^\d{9}$/.test(telefono)) {
+                errores.push('El teléfono debe tener 9 dígitos.');
+            }
+            if (!direccion || direccion.length > 80) {
+                errores.push('La dirección es obligatoria y de máximo 80 caracteres.');
+            }
+
+            // Mostrar errores si existen
+            if (errores.length > 0) {
+                const ul = document.createElement('ul');
+                errores.forEach(msg => {
+                    const li = document.createElement('li');
+                    li.textContent = msg;
+                    ul.appendChild(li);
+                });
+                registroErrores.appendChild(ul);
+                return;
+            }
+
+            // Si no hay errores, enviar AJAX normalmente
             let datos = new FormData(formRegistro);
             fetch('api/apiAlumno.php', {
                 method: 'POST',
                 body: datos
             })
-            .then(res => res.json())
-            .then(resp => {
-                if(resp.status === "ok") {
-                    alert(resp.mensaje);
-                    window.location.href = 'index.php?page=login';
-                } else {
-                    alert("Error: " + resp.mensaje);
-                }
-            })
-            .catch(err => {
-                alert("Fallo en petición AJAX");
-            });
+                .then(res => res.json())
+                .then(resp => {
+                    if (resp.status === 'ok') {
+                        registroErrores.innerHTML = '<span style="color: green;">Registro completado. Redirigiendo...</span>';
+                        setTimeout(() => {
+                            window.location.href = 'index.php?page=tabla_alumnos';
+                        }, 1500);
+                    } else if (Array.isArray(resp.errores)) {
+                        // Muestra lista de errores si el backend devuelve un array
+                        const ul = document.createElement('ul');
+                        resp.errores.forEach(msg => {
+                            const li = document.createElement('li');
+                            li.textContent = msg;
+                            ul.appendChild(li);
+                        });
+                        registroErrores.innerHTML = '';
+                        registroErrores.appendChild(ul);
+                    } else if (resp.mensaje) {
+                        registroErrores.innerHTML = `<span>Error: ${resp.mensaje}</span>`;
+                    } else {
+                        registroErrores.innerHTML = '<span>Error desconocido</span>';
+                    }
+                })
+                .catch(() => {
+                    registroErrores.innerHTML = '<span>Fallo en la petición AJAX</span>';
+                });
         });
     }
-  
+
+
     // ---- Foto y Cámara ----
     let streamActivo = null;
     const btnTomarFoto = raiz.querySelector('#tomarFotoBtn');
@@ -180,19 +255,19 @@ function initRegistroAlumnoForm(raiz) {
     // ---- Salir de la página ---- //
     const salir = document.getElementById("btn-salir");
 
-    if (salir){
-        salir.addEventListener('click', function(e){
-            window.location.href= "index.php?page=landing";
+    if (salir) {
+        salir.addEventListener('click', function (e) {
+            window.location.href = "index.php?page=landing";
         });
     }
-    
+
 
 
 
 }
 
 
-function initCargaMasiva(raiz){
+function initCargaMasiva(raiz) {
     const selectFamilia = raiz.querySelector('#familia');
     const selectCiclo = raiz.querySelector('#ciclo');
     const inputCSV = raiz.querySelector('#csvAlumnos');
@@ -234,11 +309,11 @@ function initCargaMasiva(raiz){
         e.preventDefault();
         const file = inputCSV.files[0];
         if (!file) return alert('Selecciona un archivo CSV primero.');
-            const reader = new FileReader();
-            reader.onload = evt => {
-                const lines = evt.target.result.split(/\r?\n/);
-                parsedRows = [];
-                let html = `<table style="width:100%"><thead>
+        const reader = new FileReader();
+        reader.onload = evt => {
+            const lines = evt.target.result.split(/\r?\n/);
+            parsedRows = [];
+            let html = `<table style="width:100%"><thead>
                     <tr>
                         <th>Subir  <input type="checkbox" id="check-todos" checked></th>
                         <th>Nombre</th>
@@ -247,12 +322,12 @@ function initCargaMasiva(raiz){
                         <th></th>
                     </tr>
                     </thead><tbody>`;
-                lines.forEach((line, idx) => {
-                    if (!line.trim()) return;
-                    const [nombre, apellido, correo, dni] = line.split(',');
-                    if (!nombre || !apellido || !correo || !dni) return;
-                    parsedRows.push({nombre, apellido, correo, dni});
-                    html += `<tr>
+            lines.forEach((line, idx) => {
+                if (!line.trim()) return;
+                const [nombre, apellido, correo, dni] = line.split(',');
+                if (!nombre || !apellido || !correo || !dni) return;
+                parsedRows.push({ nombre, apellido, correo, dni });
+                html += `<tr>
                         <td><input type="checkbox" class="fila-checkbox" data-idx="${idx}" checked></td>
                         <td><input type="text" class="input-nombre" value="${nombre}" data-idx="${idx}"></td>
                         <td><input type="text" class="input-apellido" value="${apellido}" data-idx="${idx}"></td>
@@ -289,7 +364,7 @@ function initCargaMasiva(raiz){
                 const apellido = previewDiv.querySelector(`.input-apellido[data-idx="${idx}"]`).value;
                 const correo = previewDiv.querySelector(`.input-correo[data-idx="${idx}"]`).value;
                 const dni = previewDiv.querySelector(`.input-dni[data-idx="${idx}"]`).value;
-                seleccionados.push({nombre, apellido, correo, dni});
+                seleccionados.push({ nombre, apellido, correo, dni });
             }
         });
         const familia = selectFamilia.value;
@@ -299,35 +374,35 @@ function initCargaMasiva(raiz){
 
         fetch('api/apiAlumno.php', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 usuarios: seleccionados,
                 familia, ciclo
             })
         })
-        .then(r => r.json())
-        .then(data => {
-            // Mostrar fallos en el div del modal
-            const divFallos = document.getElementById('carga-fallos');
-            divFallos.innerHTML = '';
-            if (data.errores && data.errores.length) {
-                let html = `<div style="color:red;font-weight:bold;margin-bottom:6px;">No se pudieron cargar:</div><ul>`;
-                data.errores.forEach(email => {
-                    html += `<li>${email}</li>`;
-                });
-                html += "</ul>";
-                divFallos.innerHTML = html;
-            }
+            .then(r => r.json())
+            .then(data => {
+                // Mostrar fallos en el div del modal
+                const divFallos = document.getElementById('carga-fallos');
+                divFallos.innerHTML = '';
+                if (data.errores && data.errores.length) {
+                    let html = `<div style="color:red;font-weight:bold;margin-bottom:6px;">No se pudieron cargar:</div><ul>`;
+                    data.errores.forEach(email => {
+                        html += `<li>${email}</li>`;
+                    });
+                    html += "</ul>";
+                    divFallos.innerHTML = html;
+                }
 
-            // Pintar tabla con los alumnos insertados
-            if (data.ok && data.alumnos && data.alumnos.length) {
-                recargarAlumnos();
-            }
+                // Pintar tabla con los alumnos insertados
+                if (data.ok && data.alumnos && data.alumnos.length) {
+                    recargarAlumnos();
+                }
 
-            if (!data.ok) {
-                alert('Error cargando: ' + (data.error || ''));
-            }
-        });
+                if (!data.ok) {
+                    alert('Error cargando: ' + (data.error || ''));
+                }
+            });
     });
 
 

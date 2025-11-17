@@ -4,8 +4,9 @@ let paginaActual = 1;
 const alumnosPorPagina = 10;
 
 document.addEventListener('DOMContentLoaded', function () {
-    
+
     recargarAlumnos();
+
 
     // Añadir alumno
     const btnAdd = document.getElementById('addUsuario');
@@ -14,28 +15,15 @@ document.addEventListener('DOMContentLoaded', function () {
             modalManager.crearModalDesdeUrl('assets/modales/modalRegistroAlumno.txt', function () {
                 let modalRaiz = document.querySelector('.modal-contenedor');
                 initRegistroAlumnoForm(modalRaiz);
-                let form = modalRaiz.querySelector('form');
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    let datos = new FormData(form);
-                    fetch('api/apiAlumno.php', {
-                        method: 'POST',
-                        body: datos
-                    })
-                    .then(res => res.json())
-                    .then(resp => {
-                        if (resp.status === "ok") {
-                            recargarAlumnos();
-                            modalManager.cerrarModal();
-                        } else {
-                            alert("Error: " + resp.mensaje);
-                        }
-                    })
-                    .catch(() => alert("Fallo en petición AJAX"));
-                });
             });
         });
     }
+
+
+    // boton de generar el pdf
+    document.getElementById('exportarAlumnosBtn').addEventListener('click', function () {
+        window.open('?page=exportar_alumno_pdf', '_blank');
+    });
 
     // Carga masiva
     const btnCargaMasiva = document.getElementById('addMasivo');
@@ -123,9 +111,9 @@ function renderAlumnos(usuarios) {
 
     // ---- PAGINACIÓN BOTONES ----
     html += `<div class="tabla-paginacion">`;
-    html += `<button id="btn-previa" ${paginaActual === 1 ? 'disabled' : ''}>Ant</button>`;
+    html += `<button id="btn-previa" ${paginaActual === 1 ? 'disabled' : ''}>Anterior</button>`;
     html += `<span> Página ${paginaActual} de ${totalPaginas} </span>`;
-    html += `<button id="btn-siguiente" ${paginaActual === totalPaginas ? 'disabled' : ''}>Sig</button>`;
+    html += `<button id="btn-siguiente" ${paginaActual === totalPaginas ? 'disabled' : ''}>Siguiente</button>`;
     html += `</div>`;
 
     if (!usuarios.length)
@@ -140,15 +128,15 @@ function renderAlumnos(usuarios) {
 
     const tabla = document.getElementById('tabla-alumnos');
 
-    document.getElementById('boton-ordenar-id').onclick = function() {
+    document.getElementById('boton-ordenar-id').onclick = function () {
         ordenarPorColumna(tabla, 0, ordenIdAsc);
         ordenIdAsc = !ordenIdAsc;
     };
-    document.getElementById('boton-ordenar-nombre').onclick = function() {
+    document.getElementById('boton-ordenar-nombre').onclick = function () {
         ordenarPorColumna(tabla, 1, ordenNombreAsc);
         ordenNombreAsc = !ordenNombreAsc;
     };
-    document.getElementById('boton-ordenar-correo').onclick = function() {
+    document.getElementById('boton-ordenar-correo').onclick = function () {
         ordenarPorColumna(tabla, 2, ordenCorreoAsc);
         ordenCorreoAsc = !ordenCorreoAsc;
     };
@@ -174,7 +162,7 @@ function renderAlumnos(usuarios) {
 // Función genérica de ordenación
 function ordenarPorColumna(tabla, indiceCol, ascendente) {
     let filas = Array.from(tabla.tBodies[0].rows);
-    filas.sort(function(a, b) {
+    filas.sort(function (a, b) {
         let valA = a.cells[indiceCol].innerText.trim().toLowerCase();
         let valB = b.cells[indiceCol].innerText.trim().toLowerCase();
         if (ascendente) {
@@ -199,14 +187,14 @@ function addAlumnoListeners() {
                         method: 'DELETE',
                         body: JSON.stringify({ id })
                     }).then(res => res.json())
-                      .then(resp => {
-                          if (resp.status === "ok") {
-                              recargarAlumnos();
-                              modalManager.cerrarModal();
-                          } else {
-                              alert("Error: " + resp.mensaje);
-                          }
-                      });
+                        .then(resp => {
+                            if (resp.status === "ok") {
+                                recargarAlumnos();
+                                modalManager.cerrarModal();
+                            } else {
+                                alert("Error: " + resp.mensaje);
+                            }
+                        });
                 };
                 btnCancelar.onclick = function () {
                     modalManager.cerrarModal();
@@ -289,28 +277,113 @@ function addAlumnoListeners() {
                 });
 
                 // Guardar cambios
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    let data = new FormData(form);
-                    fetch('api/apiAlumno.php', {
-                        method: 'POST',
-                        body: data
-                    })
-                    .then(res => res.json())
-                    .then(resp => {
-                        if(resp.status === "ok") {
-                            recargarAlumnos();
-                            modalManager.cerrarModal();
-                        } else {
-                            alert("Error: " + resp.mensaje);
-                        }
-                    });
-                });
+                modalErrores = modalRaiz.querySelector('#modal-errores');
 
-                // Botón cerrar
-                document.getElementById('cerrar').onclick = function () {
-                    modalManager.cerrarModal();
-                };
+                if (form) {
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        let errores = [];
+                        if (modalErrores) modalErrores.innerHTML = '';
+
+                        // Validaciones
+                        const nombre = form['modal-nombre'].value.trim();
+                        const apellido1 = form['modal-apellido1'].value.trim();
+                        const apellido2 = form['modal-apellido2'].value.trim();
+                        const fnacimiento = form['modal-fnacimiento'].value;
+                        const dni = form['modal-dni'].value.trim();
+                        const telefono = form['modal-telefono'].value.trim();
+                        const direccion = form['modal-direccion'].value.trim();
+                        const contrasena = form['modal-contrasena'] ? form['modal-contrasena'].value : '';
+
+                        // Nombre y apellidos
+                        const patronNombre = /^[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}$/;
+                        if (!patronNombre.test(nombre)) {
+                            errores.push('El nombre solo puede tener letras y espacios (2-50).');
+                        }
+                        if (!patronNombre.test(apellido1)) {
+                            errores.push('El primer apellido solo puede tener letras y espacios (2-50).');
+                        }
+                        if (apellido2 && !patronNombre.test(apellido2)) {
+                            errores.push('El segundo apellido solo puede tener letras y espacios (2-50).');
+                        }
+                        if (!fnacimiento) {
+                            errores.push('Debe indicar su fecha de nacimiento.');
+                        }
+                        if (!/^\d{8}[A-Za-z]$/.test(dni)) {
+                            errores.push('El DNI debe tener formato 12345678A.');
+                        }
+                        if (!/^\d{9}$/.test(telefono)) {
+                            errores.push('El teléfono debe tener 9 dígitos.');
+                        }
+                        if (!direccion || direccion.length > 80) {
+                            errores.push('La dirección es obligatoria y de máximo 80 caracteres.');
+                        }
+                        // Validación de contraseña SOLO si el campo está habilitado
+                        if (!form['modal-contrasena'].disabled && contrasena) {
+                            if (contrasena.length < 6 || contrasena.length > 60) {
+                                errores.push('La nueva contraseña debe tener entre 6 y 60 caracteres.');
+                            }
+                        }
+
+                        // Mostrar errores si existen
+                        if (errores.length > 0) {
+                            if (modalErrores) {
+                                const ul = document.createElement('ul');
+                                errores.forEach(msg => {
+                                    const li = document.createElement('li');
+                                    li.textContent = msg;
+                                    ul.appendChild(li);
+                                });
+                                modalErrores.appendChild(ul);
+                            }
+                            return;
+                        }
+
+                        // Si no hay errores, enviar AJAX normalmente
+                        let data = new FormData(form);
+                        fetch('api/apiAlumno.php', {
+                            method: 'POST',
+                            body: data
+                        })
+                            .then(res => res.json())
+                            .then(resp => {
+                                if (resp.status === 'ok') {
+                                    if (modalErrores) {
+                                        modalErrores.innerHTML = '<span style="color:green;">Datos guardados correctamente.</span>';
+                                    }
+                                    recargarAlumnos();
+                                    setTimeout(() => { modalManager.cerrarModal(); }, 800);
+                                } else if (Array.isArray(resp.errores)) {
+                                    if (modalErrores) {
+                                        const ul = document.createElement('ul');
+                                        resp.errores.forEach(msg => {
+                                            const li = document.createElement('li');
+                                            li.textContent = msg;
+                                            ul.appendChild(li);
+                                        });
+                                        modalErrores.innerHTML = '';
+                                        modalErrores.appendChild(ul);
+                                    }
+                                } else if (resp.mensaje) {
+                                    if (modalErrores) {
+                                        modalErrores.innerHTML = '<span>Error: ' + resp.mensaje + '</span>';
+                                    }
+                                } else {
+                                    if (modalErrores) {
+                                        modalErrores.innerHTML = '<span>Error desconocido</span>';
+                                    }
+                                }
+                            });
+                    });
+
+                    // Botón cerrar
+                    const btnCerrar = document.getElementById('cerrar');
+                    if (btnCerrar) {
+                        btnCerrar.onclick = function () {
+                            modalManager.cerrarModal();
+                        };
+                    }
+                }
             });
         };
     });

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   recargarSolicitudes();
 });
 
@@ -27,7 +27,7 @@ function renderSolicitudes(rol, solicitudes) {
         </thead>
         <tbody>
     `;
-    solicitudes.forEach(function(s) {
+    solicitudes.forEach(function (s) {
       html += `
         <tr>
           <td>${s.alumno_email}</td>
@@ -57,7 +57,7 @@ function renderSolicitudes(rol, solicitudes) {
         </thead>
         <tbody>
     `;
-    solicitudes.forEach(function(s) {
+    solicitudes.forEach(function (s) {
       html += `
         <tr data-id="${s.id}">
           <td>${s.alumno_nombre}</td>
@@ -80,7 +80,7 @@ function renderSolicitudes(rol, solicitudes) {
 
   if (rol === 2) { // ALUMNO
     let html = `<div class="solicitudes-grid">`;
-    solicitudes.forEach(function(s) {
+    solicitudes.forEach(function (s) {
       html += `
         <div class="card-solicitud" data-id="${s.id}">
           <div class="titulo-oferta">${s.oferta_titulo}</div>
@@ -103,22 +103,22 @@ function renderSolicitudes(rol, solicitudes) {
 // ACCIONES para empresa
 function addEmpresaListeners() {
   document.querySelectorAll('.btn-aceptar').forEach(btn => {
-    btn.onclick = function() {
+    btn.onclick = function () {
       const id = this.closest('tr').dataset.id;
       fetch('api/ApiSolicitud.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({accion: 'aceptar', id})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion: 'aceptar', id })
       }).then(() => recargarSolicitudes());
     };
   });
   document.querySelectorAll('.btn-rechazar').forEach(btn => {
-    btn.onclick = function() {
+    btn.onclick = function () {
       const id = this.closest('tr').dataset.id;
       fetch('api/ApiSolicitud.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({accion: 'rechazar', id})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion: 'rechazar', id })
       }).then(() => recargarSolicitudes());
     };
   });
@@ -127,12 +127,12 @@ function addEmpresaListeners() {
 // ACCIONES para alumno
 function addAlumnoListeners() {
   document.querySelectorAll('.btn-borrar').forEach(btn => {
-    btn.onclick = function() {
+    btn.onclick = function () {
       const id = this.closest('.card-solicitud').dataset.id;
       fetch('api/ApiSolicitud.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({accion: 'eliminar', id})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion: 'eliminar', id })
       }).then(() => recargarSolicitudes());
     };
   });

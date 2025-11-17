@@ -4,57 +4,62 @@
 <?php $this->stop() ?>
 
 <?php $this->start('contenido') ?>
-section class="registro-container">
+<section class="registro-container">
 
-  <?php if (!empty($error)): ?>
-    <div class="form-error">
-      <?= htmlspecialchars($error) ?>
+  <?php if (!empty($errores)): ?>
+    <div class="form-errores">
+      <ul>
+        <?php foreach ($errores as $err): ?>
+          <li><?= htmlspecialchars($err) ?></li>
+        <?php endforeach; ?>
+      </ul>
     </div>
   <?php endif; ?>
 
-  <form action="" method="POST" id="form-crear-empresa" class="form-registrar-empresa" enctype="multipart/form-data">
-    <!-- Datos de Cuenta -->
-    <div class="form-bloque">
-      <h3>Datos de Cuenta</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="correo">Correo electrónico</label>
-          <input type="email" id="correo" name="correo" value="<?= $empresa['correo'] ?? '' ?>" required>
-        </div>
-        <div class="form-group">
-          <label for="contrasena">Contraseña</label>
-          <input type="password" id="contrasena" name="contrasena" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="repetir_contrasena">Repetir contraseña</label>
-          <input type="password" id="repetir_contrasena" name="repetir_contrasena" required>
-        </div>
-      </div>
-      <input type="hidden" name="rol_id" value="3">
-    </div>
 
-    <!-- Datos Generales -->
-    <div class="form-bloque">
-      <h3>Datos Generales</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="nombre">Nombre de la empresa</label>
-          <input type="text" id="nombre" name="nombre" value="<?= $empresa['nombre'] ?? '' ?>" required>
-        </div>
-        <div class="form-group">
-          <label for="direccion">Dirección</label>
-          <input type="text" id="direccion" name="direccion" value="<?= $empresa['direccion'] ?? '' ?>" required>
-        </div>
+  <form action="" method="POST" id="form-crear-empresa" class="form-registrar-empresa" enctype="multipart/form-data">
+  <!-- Datos de Cuenta -->
+  <div class="form-bloque">
+    <h3>Datos de Cuenta</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" name="correo" value="<?= $empresa['correo'] ?? '' ?>" required maxlength="80">
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="cif">CIF</label>
-          <input type="text" id="cif" name="cif" value="<?= $empresa['cif'] ?? '' ?>" required>
-        </div>
+      <div class="form-group">
+        <label for="contrasena">Contraseña</label>
+        <input type="password" id="contrasena" name="contrasena" required minlength="8" maxlength="60" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Al menos 8 caracteres, una mayúscula, una minúscula y un número">
       </div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="repetir_contrasena">Repetir contraseña</label>
+        <input type="password" id="repetir_contrasena" name="repetir_contrasena" required minlength="8" maxlength="60" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Al menos 8 caracteres, una mayúscula, una minúscula y un número">
+      </div>
+    </div>
+    <input type="hidden" name="rol_id" value="3">
+  </div>
+
+  <!-- Datos Generales -->
+  <div class="form-bloque">
+    <h3>Datos Generales</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="nombre">Nombre de la empresa</label>
+        <input type="text" id="nombre" name="nombre" value="<?= $empresa['nombre'] ?? '' ?>" required maxlength="60">
+      </div>
+      <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" name="direccion" value="<?= $empresa['direccion'] ?? '' ?>" required maxlength="80">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="cif">CIF</label>
+        <input type="text" id="cif" name="cif" value="<?= $empresa['cif'] ?? '' ?>" required maxlength="12" pattern="^[A-Z][0-9]{7}[A-Z0-9]$" title="Formato típico: letra + 7 dígitos + letra/dígito">
+      </div>
+    </div>
+  </div>
 
     <!-- Contacto -->
     <div class="form-bloque">

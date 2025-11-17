@@ -97,7 +97,14 @@ switch ($page) {
     $controller = new EmpresaController($templates);
     $controller->validarEmpresa();
     break;
-
+  case 'exportar_empresa_pdf':
+    $controller = new EmpresaController($templates);
+    $controller->exportarEmpresaPDF();
+    break;
+    case 'exportar_alumno_pdf':
+    $controller = new AlumnoController($templates);
+    $controller->exportarAlumnoPDF();
+    break;
 
   case 'landing':
   default:

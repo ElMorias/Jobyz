@@ -33,7 +33,12 @@ function thOrden($campo, $label, $ordenActual, $sentidoActual, $buscar, $pagina)
         <?php endif; ?>
       </form>
     </div>
-    <a href="?page=crear_empresa" class="btn btn-a" id="addEmpresa">Añadir</a>
+
+    <div>
+      <a href="?page=crear_empresa" class="btn btn-a" id="addEmpresa">Añadir</a>
+      <a href="?page=exportar_empresa_pdf" class="btn" target="_blank">Descargar Empresas PDF</a>
+    </div>
+    
   </div>
 
   <table class="tablaEmpresas">

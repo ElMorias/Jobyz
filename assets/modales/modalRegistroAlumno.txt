@@ -1,57 +1,61 @@
+ <div id="modal-registro-errores"></div>
   <form action="" method="POST" id="form-registro-alumno" class="form-registro-alumno" enctype="multipart/form-data">
-    <!-- div1: Datos de Cuenta -->
-    <div class="form-bloque">
-      <h3>Datos de Cuenta</h3>
-      <div class="form-group">
-        <label for="correo">Correo electrónico</label>
-        <input type="email" id="correo" name="correo">
-      </div>
-      <div class="form-group">
-        <label for="contrasena">Contraseña</label>
-        <input type="password" id="contrasena" name="contrasena">
-      </div>
-      <div class="form-group">
-        <label for="repetir_contrasena">Repetir contraseña</label>
-        <input type="password" id="repetir_contrasena" name="repetir_contrasena">
-      </div>
-      <input type="hidden" name="rol_id" value="2">
-      <input type="hidden" name="validado" value="1">
+ <!-- div1: Datos de Cuenta -->
+  <div class="form-bloque">
+    <h3>Datos de Cuenta</h3>
+    <div class="form-group">
+      <label for="correo">Correo electrónico</label>
+      <input type="email" id="correo" name="correo" required maxlength="80">
     </div>
-    <!-- div2: Datos personales izquierda -->
-    <div class="form-bloque">
-      <h3>Datos Personales</h3>
-      <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre">
-      </div>
-      <div class="form-group">
-        <label for="apellido1">Primer Apellido</label>
-        <input type="text" id="apellido1" name="apellido1">
-      </div>
-      <div class="form-group">
-        <label for="apellido2">Segundo Apellido</label>
-        <input type="text" id="apellido2" name="apellido2">
-      </div>
-      <div class="form-group">
-        <label for="fnacimiento">Fecha de Nacimiento</label>
-        <input type="date" id="fnacimiento" name="fnacimiento">
-      </div>
+    <div class="form-group">
+      <label for="contrasena">Contraseña</label>
+      <input type="password" id="contrasena" name="contrasena" required minlength="6" maxlength="60">
     </div>
-    <!-- div3: Datos personales derecha -->
-    <div class="form-bloque">
-      <div class="form-group">
-        <label for="dni">DNI</label>
-        <input type="text" id="dni" name="dni">
-      </div>
-      <div class="form-group">
-        <label for="telefono">Teléfono</label>
-        <input type="tel" id="telefono" name="telefono">
-      </div>
-      <div class="form-group">
-        <label for="direccion">Dirección</label>
-        <input type="text" id="direccion" name="direccion">
-      </div>
+    <div class="form-group">
+      <label for="repetir_contrasena">Repetir contraseña</label>
+      <input type="password" id="repetir_contrasena" name="repetir_contrasena" required minlength="6" maxlength="60">
     </div>
+    <input type="hidden" name="rol_id" value="2">
+    <input type="hidden" name="validado" value="1">
+  </div>
+
+  <!-- div2: Datos personales izquierda -->
+  <div class="form-bloque">
+    <h3>Datos Personales</h3>
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" name="nombre" required pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label for="apellido1">Primer Apellido</label>
+      <input type="text" id="apellido1" name="apellido1" required pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label for="apellido2">Segundo Apellido</label>
+      <input type="text" id="apellido2" name="apellido2" pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label for="fnacimiento">Fecha de Nacimiento</label>
+      <input type="date" id="fnacimiento" name="fnacimiento" required>
+    </div>
+  </div>
+
+  <!-- div3: Datos personales derecha -->
+  <div class="form-bloque">
+    <div class="form-group">
+      <label for="dni">DNI</label>
+      <input type="text" id="dni" name="dni" required pattern="^[0-9]{8}[A-Za-z]$" maxlength="9" title="Debe tener formato 12345678A">
+    </div>
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input type="tel" id="telefono" name="telefono" required pattern="^[0-9]{9}$" maxlength="9" title="Debe tener 9 dígitos">
+    </div>
+    <div class="form-group">
+      <label for="direccion">Dirección</label>
+      <input type="text" id="direccion" name="direccion" required maxlength="80">
+    </div>
+  </div>
+
     <!-- div4: Estudios -->
     <div class="form-bloque" id="bloque-estudios">
       <h3>Estudios</h3>
@@ -77,6 +81,6 @@
     </div>
     <!-- div7: Botones -->
     <div class="registro-botones">
-      <button type="submit" class="btn-registro">Registrar Alumno</button>
+      <button type="submit" class="btn-registro">Crear Alumno</button>
     </div>
   </form>

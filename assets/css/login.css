@@ -1,3 +1,24 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Lato:400,300&display=swap');
+
+/* --- Color Tokens Jobyz --- */
+:root {
+  --color-teal: #215A63;
+  --color-gris-oscuro: #3A3A3A;
+  --color-gris-claro: #fff5f5;
+  --color-blanco: #FFFFFF;
+  --color-verde-lima: #8bcf03;
+  --color-hover-teal: #1a4a52;
+  --color-gris-borde: #B1B2B6;
+  --color-error: #d93025;
+  --color-warning: #f4b400;
+  --color-success: #8bcf03;
+  --color-info: #2a7ae2;
+  --color-fondo: #226369;
+  --color-box-shadow: #020909b3;
+  --color-modales: #d7d7d7d3;
+}
+
 main {
   flex: 1;
   display: flex;

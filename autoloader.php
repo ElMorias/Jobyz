@@ -8,6 +8,8 @@ spl_autoload_register(function($clase) {
         __DIR__ . '/Helpers/',
         __DIR__ . '/Models/',
         __DIR__ . '/Repositorios/',
+        __DIR__ . '/Services/Mailer/',
+        __DIR__ . '/Services/PDF/',
         __DIR__ . '/Views/'
     ];
 

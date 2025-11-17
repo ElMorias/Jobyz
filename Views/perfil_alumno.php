@@ -5,66 +5,67 @@
 
 
 <?php $this->start('contenido') ?>
+
 <form action="" method="POST" id="form-editar-alumno" class="modal-form" enctype="multipart/form-data">
   <input type="hidden" name="id" id="perfil-id">
   <input type="hidden" name="validado" id="perfil-validado" value="1">
-
-  <!--Bloque 1: Correo, contraseña, nombre -->
-  <div class="form-bloque">
+  <div id="modal-errores"></div>
+    <!--Bloque 1: Correo, contraseña, nombre -->
+    <div class="form-bloque">
     <h3>Identificación</h3>
     <div class="form-datos-personales">
-      <div class="form-group">
+        <div class="form-group">
         <label for="perfil-correo">Correo</label>
-        <input type="email" name="correo" id="perfil-correo" required readonly>
-      </div>
-      <div class="form-group">
+        <input type="email" name="correo" id="perfil-correo" required readonly maxlength="80">
+        </div>
+        <div class="form-group">
         <label for="perfil-contrasena">Contraseña</label>
-        <input type="password" name="contrasena" id="perfil-contrasena">
-      </div>
-      <div class="form-group">
+        <input type="password" name="contrasena" id="perfil-contrasena" minlength="6" maxlength="60">
+        </div>
+        <div class="form-group">
         <label for="perfil-nombre">Nombre</label>
-        <input type="text" name="nombre" id="perfil-nombre" required>
-      </div>
+        <input type="text" name="nombre" id="perfil-nombre" required pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+        </div>
     </div>
-  </div>
+    </div>
 
-  <!--Bloque 2: Apellidos y fecha -->
-  <div class="form-bloque">
+    <!--Bloque 2: Apellidos y fecha -->
+    <div class="form-bloque">
     <h3>Datos personales</h3>
     <div class="form-datos-personales">
-      <div class="form-group">
+        <div class="form-group">
         <label for="perfil-apellido1">Primer apellido</label>
-        <input type="text" name="apellido1" id="perfil-apellido1" required>
-      </div>
-      <div class="form-group">
+        <input type="text" name="apellido1" id="perfil-apellido1" required pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+        </div>
+        <div class="form-group">
         <label for="perfil-apellido2">Segundo apellido</label>
-        <input type="text" name="apellido2" id="perfil-apellido2">
-      </div>
-      <div class="form-group">
+        <input type="text" name="apellido2" id="perfil-apellido2" pattern="[A-Za-zÁÉÍÓÚáéíóúüÜñÑ ]{2,50}" maxlength="50">
+        </div>
+        <div class="form-group">
         <label for="perfil-fnacimiento">Fecha de nacimiento</label>
         <input type="date" name="fnacimiento" id="perfil-fnacimiento" required>
-      </div>
+        </div>
     </div>
-  </div>
+    </div>
 
-  <!--Bloque 3: DNI, dirección, teléfono -->
-  <div class="form-bloque">
+    <!--Bloque 3: DNI, dirección, teléfono -->
+    <div class="form-bloque">
     <h3>Contacto</h3>
     <div class="form-datos-personales">
-      <div class="form-group">
+        <div class="form-group">
         <label for="perfil-dni">DNI</label>
-        <input type="text" name="dni" id="perfil-dni" required>
-      </div>
-      <div class="form-group">
+        <input type="text" name="dni" id="perfil-dni" required pattern="^[0-9]{8}[A-Za-z]$" maxlength="9" title="Debe tener formato 12345678A">
+        </div>
+        <div class="form-group">
         <label for="perfil-direccion">Dirección</label>
-        <input type="text" name="direccion" id="perfil-direccion" required>
-      </div>
-      <div class="form-group">
+        <input type="text" name="direccion" id="perfil-direccion" required maxlength="80">
+        </div>
+        <div class="form-group">
         <label for="perfil-telefono">Teléfono</label>
-        <input type="tel" name="telefono" id="perfil-telefono" required>
-      </div>
+        <input type="tel" name="telefono" id="perfil-telefono" required pattern="^[0-9]{9}$" maxlength="9" title="Debe tener 9 dígitos">
+        </div>
     </div>
-  </div>
+    </div>
 
     <!--Bloque 3: estudios -->
  
