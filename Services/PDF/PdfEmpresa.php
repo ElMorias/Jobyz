@@ -1,8 +1,21 @@
 <?php
 use Dompdf\Dompdf;
 
+/**
+ * PdfEmpresa
+ *
+ * Servicio estático para exportar listados de empresas en PDF usando Dompdf.
+ */
 class PdfEmpresa
 {
+    /**
+     * Genera y envía al navegador un PDF con el listado pasado como parámetro.
+     * También guarda el HTML generado en disco para poder depurarlo visualmente.
+     *
+     * @param array $empresas Array de arrays asociativos con los datos de cada empresa.
+     * Cada elemento debe contener al menos: id, nombre, cif, pcontactoemail, tlfcontacto.
+     * Puedes adaptar/añadir columnas según tu modelo.
+     */
     public static function exportEmpresas($empresas)
     {
         $dompdf = new Dompdf();
@@ -11,11 +24,20 @@ class PdfEmpresa
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4');
         $dompdf->render();
+
+        // Guarda una copia del HTML generado, útil para debugear estilos o contenido
         file_put_contents(__DIR__.'/debug_dompdf.html', $html);
+
+        // Envía el PDF al navegador, sin forzar descarga
         $dompdf->stream("empresas.pdf", ["Attachment" => false]);
     }
 
-    // Devuelve el html del pdf como string
+    /**
+     * Devuelve el HTML para renderizar el listado de empresas.
+     *
+     * @param array $empresas Array de arrays asociativos (id, nombre, cif, etc.)
+     * @return string HTML para ser convertido en PDF
+     */
     private static function getHtmlEmpresas($empresas)
     {
         $html = '<html>
@@ -37,7 +59,6 @@ class PdfEmpresa
     <th>Teléfono</th>
     </tr></thead>
     <tbody>';
-        
         foreach ($empresas as $empresa) {
             $html .= '<tr>';
             $html .= '<td>' . htmlspecialchars($empresa['id']) . '</td>';

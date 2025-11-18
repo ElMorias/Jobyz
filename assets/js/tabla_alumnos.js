@@ -104,7 +104,7 @@ document.addEventListener('click', function (e) {
                     document.getElementById('modal-direccion').value = alumno.direccion || '';
                     document.getElementById('modal-telefono').value = alumno.telefono || '';
                     document.getElementById('preview-foto').innerHTML = alumno.foto
-                        ? `<img src="${alumno.foto}" style="max-width:150px;">` : '';
+                        ? `<img src="${alumno.foto}">` : '';
                     let enlaceCurriculum = document.getElementById('curriculum-link');
                     if (alumno.curriculum) {
                         enlaceCurriculum.href = alumno.curriculum;

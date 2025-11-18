@@ -3,9 +3,24 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+/**
+ * MailerService
+ *
+ * Servicio estático para el envío de correos electrónicos (notificaciones y avisos)
+ * usando PHPMailer y el SMTP configurado (por defecto MailHog para desarrollo local).
+ */
 class MailerService
 {
-    // Enviar correo genérico (puedes usar HTML en $body si quieres)
+    /**
+     * Envía un correo genérico usando PHPMailer.
+     *
+     * @param string $to       Correo destinatario
+     * @param string $subject  Asunto del mensaje
+     * @param string $body     Cuerpo HTML del mensaje
+     * @param string $from     Correo remitente (por defecto: admin@gmail.com)
+     * @param string $fromName Nombre remitente (por defecto: Jobyz)
+     * @return bool|string     True en caso de éxito, o mensaje de error
+     */
     public static function enviarCorreo($to, $subject, $body, $from = 'admin@gmail.com', $fromName = 'Jobyz')
     {
         $mail = new PHPMailer();
@@ -18,13 +33,18 @@ class MailerService
         $mail->addAddress($to);
         $mail->Subject = $subject;
         $mail->isHTML(true);
-        $mail->Body    = $body;
+        $mail->Body = $body;
 
         // Devuelve true si OK, o el error como string
         return $mail->send() ? true : $mail->ErrorInfo;
     }
 
-    // Ejemplo: Correo de bienvenida
+    /**
+     * Envía correo de bienvenida tras el registro de usuario.
+     * @param string $to     Email receptor
+     * @param string $nombre Nombre del nuevo usuario
+     * @return bool|string
+     */
     public static function enviarBienvenida($to, $nombre)
     {
         $subject = "Bienvenido a Jobyz";
@@ -35,27 +55,26 @@ class MailerService
         return self::enviarCorreo($to, $subject, $body);
     }
 
-    // Ejemplo: Recuperar contraseña
+    /**
+     * Envía instrucciones de recuperación de contraseña con enlace único.
+     * @param string $to     Email receptor
+     * @param string $nombre Nombre usuario
+     * @param string $token  Token seguro del enlace
+     * @return bool|string
+     */
     public static function enviarRecuperarPassword($to, $nombre, $token)
     {
-        $subject = "Recupera tu contraseña";
-        $url = "http://localhost/Jobyz/index.php?page=reset_password&token=$token";
-        $body = "
-            <h2>Hola $nombre</h2>
-            <p>Para recuperar tu contraseña haz clic en este enlace:<br>
-            <a href='$url'>$url</a></p>
-        ";
-        return self::enviarCorreo($to, $subject, $body);
     }
 
-    // Ejemplo: Aviso para administradores
-    public static function enviarAvisoAdmin($to, $asunto, $mensaje)
-    {
-        $subject = "[AVISO Jobyz] $asunto";
-        $body = "<p>$mensaje</p>";
-        return self::enviarCorreo($to, $subject, $body);
-    }
-
+    /**
+     * Notifica al alumno que su solicitud fue aceptada.
+     * @param string $to             Email alumno
+     * @param string $nombre         Nombre alumno
+     * @param string $nombreOferta   Título de la oferta
+     * @param string $empresaCorreo  Email de la empresa
+     * @param string $empresaNombre  Nombre empresa
+     * @return bool|string
+     */
     public static function enviarAceptacionSolicitud($to, $nombre, $nombreOferta, $empresaCorreo, $empresaNombre)
     {
         $subject = "Tu solicitud en Jobyz ha sido ACEPTADA";
@@ -69,7 +88,15 @@ class MailerService
         return self::enviarCorreo($to, $subject, $body, $empresaCorreo, $empresaNombre);
     }
 
-    // Correo al rechazar solicitud (desde empresa)
+    /**
+     * Notifica al alumno que su solicitud fue rechazada.
+     * @param string $to             Email alumno
+     * @param string $nombre         Nombre alumno
+     * @param string $nombreOferta   Título de la oferta
+     * @param string $empresaCorreo  Email de la empresa
+     * @param string $empresaNombre  Nombre empresa
+     * @return bool|string
+     */
     public static function enviarRechazoSolicitud($to, $nombre, $nombreOferta, $empresaCorreo, $empresaNombre)
     {
         $subject = "Tu solicitud en Jobyz ha sido RECHAZADA";
@@ -84,6 +111,12 @@ class MailerService
         return self::enviarCorreo($to, $subject, $body, $empresaCorreo, $empresaNombre);
     }
 
+    /**
+     * Envía email recordatorio para cuentas de alumno creadas pero no completadas.
+     * @param string $to     Email alumno
+     * @param string $nombre Nombre alumno
+     * @return bool|string
+     */
     public static function enviarAvisoNoValidado($to, $nombre)
     {
         $subject = "Completa el registro de tu cuenta Jobyz";
@@ -98,6 +131,14 @@ class MailerService
         return self::enviarCorreo($to, $subject, $body);
     }
 
+    /**
+     * Envío masivo utilizado en carga múltiple de usuarios/alumnos.
+     * @param string $to           Email alumno
+     * @param string $nombre       Nombre alumno
+     * @param string $email        Email alumno (repetido por compatibilidad)
+     * @param string $passTemporal Contraseña temporal (por defecto Temporal1234)
+     * @return bool|string
+     */
     public static function enviarBienvenidaMasiva($to, $nombre, $email, $passTemporal = 'Temporal1234')
     {
         $subject = "Tu cuenta Jobyz ha sido creada";

@@ -1,5 +1,5 @@
  <div id="modal-registro-errores"></div>
-  <form action="" method="POST" id="form-registro-alumno" class="form-registro-alumno" enctype="multipart/form-data">
+  <form action="" method="POST" id="form-registro-alumno" class="form-registro-alumno form-no-form" enctype="multipart/form-data">
  <!-- div1: Datos de Cuenta -->
   <div class="form-bloque">
     <h3>Datos de Cuenta</h3>

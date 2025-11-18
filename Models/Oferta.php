@@ -7,8 +7,8 @@ class Oferta {
     public int $empresa_id;
     public string $fechalimite;
 
-
     public ?string $empresa_nombre = null;
+    public array $ciclos = [];
 
     public function __construct(
         int $id,
@@ -27,7 +27,7 @@ class Oferta {
     }
 
     public static function fromArray(array $row): Oferta {
-        return new Oferta(
+        $oferta = new Oferta(
             (int)$row['id'],
             $row['titulo'],
             $row['descripcion'],
@@ -35,6 +35,10 @@ class Oferta {
             (int)$row['empresa_id'],
             $row['fechalimite']
         );
+        if (isset($row['empresa_nombre'])) {
+            $oferta->empresa_nombre = $row['empresa_nombre'];
+        }
+        return $oferta;
     }
 
     public function toArray(): array {
@@ -45,8 +49,8 @@ class Oferta {
             'fechainicio' => $this->fechainicio,
             'empresa_id' => $this->empresa_id,
             'fechalimite' => $this->fechalimite,
-            'empresa_nombre' => $this->empresa_nombre
+            'empresa_nombre' => $this->empresa_nombre,
+            'ciclos' => $this->ciclos,
         ];
     }
 }
-?>

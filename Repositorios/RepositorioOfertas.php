@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__DIR__) . '/autoloader.php';
+
 class RepositorioOfertas {
     private $db;
 
@@ -7,13 +9,13 @@ class RepositorioOfertas {
     }
 
     // Obtener todas las ofertas con nombre de empresa
-    public function todas(){
+    public function todas(): array {
         $sql = "SELECT o.*, e.nombre AS empresa_nombre
                 FROM oferta o
                 JOIN empresa e ON o.empresa_id = e.id";
         $stmt = $this->db->query($sql);
         $ofertas = [];
-        foreach ($stmt as $row) {
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $oferta = Oferta::fromArray($row);
             $oferta->empresa_nombre = $row['empresa_nombre'];
             $ofertas[] = $oferta;
@@ -22,7 +24,7 @@ class RepositorioOfertas {
     }
 
     // Ofertas de una empresa
-    public function deEmpresa($empresa_id){
+    public function deEmpresa($empresa_id): array {
         $sql = "SELECT o.*, e.nombre AS empresa_nombre
                 FROM oferta o
                 JOIN empresa e ON o.empresa_id = e.id
@@ -30,7 +32,7 @@ class RepositorioOfertas {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$empresa_id]);
         $ofertas = [];
-        foreach ($stmt as $row) {
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $oferta = Oferta::fromArray($row);
             $oferta->empresa_nombre = $row['empresa_nombre'];
             $ofertas[] = $oferta;
@@ -38,50 +40,46 @@ class RepositorioOfertas {
         return $ofertas;
     }
 
-    // Insertar nueva oferta (MySQL pone fechainicio solo)
-    public function insertarOferta($titulo, $descripcion, $empresa_id, $fechalimite) {
+    // Insertar nueva oferta y devolver el ID
+    public function insertarOferta($titulo, $descripcion, $empresa_id, $fechalimite): int {
         $stmt = $this->db->prepare(
             "INSERT INTO oferta (titulo, descripcion, empresa_id, fechalimite)
              VALUES (?, ?, ?, ?)");
         $stmt->execute([$titulo, $descripcion, $empresa_id, $fechalimite]);
-        return $this->db->lastInsertId();
+        return (int)$this->db->lastInsertId();
     }
 
-    public function anadirCicloAOferta($ofertaId, $cicloId) {
+    public function anadirCicloAOferta($ofertaId, $cicloId): bool {
         $sql = "INSERT INTO oferta_has_ciclo (oferta_id, ciclo_id) VALUES (?, ?)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$ofertaId, $cicloId]);
     }
 
     // Borrar una oferta por ID
-    public function borrar($id) {
+    public function borrar($id): void {
         $stmt = $this->db->prepare("DELETE FROM oferta WHERE id = ?");
         $stmt->execute([$id]);
     }
 
+    // Obtener oferta por ID (con ciclos y empresa_nombre)
     public function obtener($id): ?Oferta {
         $stmt = $this->db->prepare("SELECT o.*, e.nombre AS empresa_nombre
                                     FROM oferta o JOIN empresa e ON o.empresa_id = e.id
                                     WHERE o.id = ?");
         $stmt->execute([$id]);
-        $row = $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if($row){
             $oferta = Oferta::fromArray($row);
             $oferta->empresa_nombre = $row['empresa_nombre'];
-            
-            // Añadimos ciclos como array de nombres
-            $ciclosStmt = $this->db->prepare("SELECT c.nombre 
-                                            FROM oferta_has_ciclo ohc
-                                            INNER JOIN ciclo c ON ohc.ciclo_id = c.id
-                                            WHERE ohc.oferta_id = ?");
-            $ciclosStmt->execute([$id]);
-            $oferta->ciclos = array_column($ciclosStmt->fetchAll(PDO::FETCH_ASSOC), 'nombre');
+            // Añadir ciclos como array de nombres
+            $oferta->ciclos = $this->obtenerCiclosPorOferta($id);
             return $oferta;
         }
         return null;
     }
 
-    public function obtenerCiclosPorOferta($ofertaId) {
+    // Devuelve array de nombres de ciclos de una oferta
+    public function obtenerCiclosPorOferta($ofertaId): array {
         $sql = "SELECT c.nombre 
                 FROM oferta_has_ciclo oc
                 INNER JOIN ciclo c ON oc.ciclo_id = c.id
@@ -91,11 +89,9 @@ class RepositorioOfertas {
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'nombre');
     }
 
-  
-    public function actualizar($id, $titulo, $descripcion, $fechalimite) {
-        $stmt = $this->db->prepare("UPDATE oferta SET titulo=?, descripcion=?, fechalimite=? WHERE id=?");
+    public function actualizar($id, $titulo, $descripcion, $fechalimite): void {
+        $stmt = $this->db->prepare(
+            "UPDATE oferta SET titulo=?, descripcion=?, fechalimite=? WHERE id=?");
         $stmt->execute([$titulo, $descripcion, $fechalimite, $id]);
     }
 }
-
-?>

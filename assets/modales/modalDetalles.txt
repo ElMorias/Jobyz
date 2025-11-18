@@ -1,9 +1,9 @@
-<form class="modal-form">
+<form class="modal-form form-no-form">
 
   <div class="form-bloque">
     <div class="form-group foto-contenedor">
       <label>Foto:</label>
-      <img id="detalle-foto" style="max-width:150px; border-radius: 8px;">
+      <img id="detalle-foto">
     </div>
 
     <div class="form-datos-personales">

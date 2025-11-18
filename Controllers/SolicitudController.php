@@ -1,19 +1,25 @@
 <?php
 require_once dirname(__DIR__) . '/autoloader.php';
 
+/**
+ * Controlador para vistas y acciones relacionadas con solicitudes
+ */
 class SolicitudController {
-  private $templates;
-  private $repo;
+    private $templates;
+    private $repo;
 
-  public function __construct($templates) {
-    $this ->templates = $templates;
-    $this -> repo = new RepositorioSolicitudes;
-  }
+    public function __construct($templates) {
+        $this->templates = $templates;
+        $this->repo = new RepositorioSolicitudes();
+    }
 
     public function mostrarSolicitudes() {
         echo $this->templates->render('../solicitudes', ['title' => 'Solicitudes']);
     }
 
+    /**
+     * Registra una solicitud (GET, acceso por query string) y redirige
+     */
     public function solicitarOferta() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -25,9 +31,7 @@ class SolicitudController {
             header('Location: index.php?page=ofertas');
             exit;
         }
-
-        // Busca el id de alumno que corresponde a este usuario
-        $alumnorepo= new RepositorioAlumno();
+        $alumnorepo = new RepositorioAlumno();
         $alumno_id = $alumnorepo->getAlumnoIdPorUserId($user_id);
 
         if (!$alumno_id) {
@@ -35,16 +39,12 @@ class SolicitudController {
             exit;
         }
 
-        // Crea la solicitud solo si no existe ya
         $existe = $this->repo->buscaDuplicada($alumno_id, $oferta_id);
         if (!$existe) {
             $this->repo->insertar($alumno_id, $oferta_id);
         }
 
-        // Redirige a la lista de solicitudes del alumno
         header('Location: index.php?page=solicitudes');
         exit;
     }
-
 }
-?>

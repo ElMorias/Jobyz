@@ -4,4 +4,3 @@ header('Content-Type: application/json');
 
 $repo = new RepositorioFamilia();
 echo json_encode($repo->getAll());
-?>

@@ -1,12 +1,28 @@
 <?php
+require_once dirname(__DIR__) . '/autoloader.php';
+
+/**
+ * Clase Validators
+ * 
+ * Encapsula y centraliza la validación de formularios y reglas de negocio para
+ * las entidades Usuario, Alumno, Empresa, etc.
+ * Se apoya en los repositorios para comprobaciones de unicidad y lógica cruzada.
+ */
 class Validators
 {
+    /** @var array Lista de mensajes de error producidos tras cada validación */
     private $errores = [];
-    private $userRepo;
-    private $alumnoRepo;
-    private $empresaRepo; // si usas uno diferente para alumnos
-    // Puedes añadir más repos como properties si tienes varias entidades
 
+    /** @var RepositorioUser */
+    private $userRepo;
+    /** @var RepositorioAlumno */
+    private $alumnoRepo;
+    /** @var RepositorioEmpresa */
+    private $empresaRepo;
+
+    /**
+     * Instancia los repositorios requeridos para comprobaciones únicas.
+     */
     public function __construct()
     {
         $this->userRepo = new RepositorioUser;
@@ -16,6 +32,9 @@ class Validators
 
     // ----------- Validaciones generales -----------
 
+    /**
+     * Valida que el correo sea correcto, no vacío y con formato.
+     */
     public function validarCorreo($correo)
     {
         if (empty($correo) || !filter_var($correo, FILTER_VALIDATE_EMAIL) || strlen($correo) > 80) {
@@ -23,17 +42,22 @@ class Validators
         }
     }
 
-    public function validarContrasenaEdicion($contrasena){
-        if (strlen($contrasena) < 8 || strlen($contrasena) > 60 ||
-            !preg_match('/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/', $contrasena)) {
+    /**
+     * Valida la contraseña en edición (sin repetir)
+     */
+    public function validarContrasenaEdicion($contrasena)
+    {
+        if (strlen($contrasena) < 8 || strlen($contrasena) > 60 || !preg_match('/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/', $contrasena)) {
             $this->errores[] = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.';
         }
     }
 
+    /**
+     * Valida que las contraseñas son seguras y coinciden (en registro)
+     */
     public function validarContrasena($contrasena, $repetir_contrasena)
     {
-        if (empty($contrasena) || strlen($contrasena) < 8 || strlen($contrasena) > 60 ||
-            !preg_match('/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/', $contrasena)) {
+        if (empty($contrasena) || strlen($contrasena) < 8 || strlen($contrasena) > 60 || !preg_match('/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/', $contrasena)) {
             $this->errores[] = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.';
         }
         if ($contrasena !== $repetir_contrasena) {
@@ -41,6 +65,9 @@ class Validators
         }
     }
 
+    /**
+     * Valida que el nombre tenga el formato adecuado.
+     */
     public function validarNombre($nombre)
     {
         if (empty($nombre) || strlen($nombre) > 60) {
@@ -48,6 +75,9 @@ class Validators
         }
     }
 
+    /**
+     * Valida la dirección postal.
+     */
     public function validarDireccion($direccion)
     {
         if (empty($direccion) || strlen($direccion) > 80) {
@@ -55,6 +85,9 @@ class Validators
         }
     }
 
+    /**
+     * Comprueba formato y plausibilidad del CIF.
+     */
     public function validarCif($cif)
     {
         $cif = strtoupper(trim($cif));
@@ -63,6 +96,9 @@ class Validators
         }
     }
 
+    /**
+     * Valida incertidumbre y formato del DNI.
+     */
     public function validarDni($dni)
     {
         $dni = strtoupper(trim($dni));
@@ -71,6 +107,9 @@ class Validators
         }
     }
 
+    /**
+     * Valida el campo teléfono: solo dígitos y longitud aceptada.
+     */
     public function validarTelefono($telefono)
     {
         if (empty($telefono) || !preg_match('/^[0-9]{9,15}$/', $telefono)) {
@@ -78,8 +117,11 @@ class Validators
         }
     }
 
-    // ----------- Validaciones de unicos -----------
+    // ----------- Validaciones de unicidad (consultas a base de datos) -----------
 
+    /**
+     * Comprueba que el correo no esté ya registrado en users.
+     */
     public function validarUnicidadCorreo($correo)
     {
         if ($this->userRepo && $this->userRepo->existeCorreo($correo)) {
@@ -87,6 +129,9 @@ class Validators
         }
     }
 
+    /**
+     * Comprueba que el correo de contacto no esté ya en empresa.
+     */
     public function validarUnicidadCorreoContacto($correo)
     {
         if ($this->empresaRepo && $this->empresaRepo->existeCorreo($correo)) {
@@ -94,7 +139,9 @@ class Validators
         }
     }
 
-
+    /**
+     * Comprueba que el DNI no esté ya registrado.
+     */
     public function validarUnicidadDni($dni)
     {
         if ($this->alumnoRepo && $this->alumnoRepo->existeDni($dni)) {
@@ -102,17 +149,21 @@ class Validators
         }
     }
 
+    /**
+     * Comprueba que el teléfono no esté ya registrado ni en empresa ni en alumno.
+     */
     public function validarUnicidadTelefono($telefono)
     {
         if ($this->empresaRepo && $this->empresaRepo->existeTelefono($telefono)) {
             $this->errores[] = 'El teléfono ya está registrado.';
-        }else{
-            if ($this->alumnoRepo && $this->alumnoRepo->existeTelefono($telefono)) {
-                $this->errores[] = 'El teléfono ya está registrado.';
-            }
+        } else if ($this->alumnoRepo && $this->alumnoRepo->existeTelefono($telefono)) {
+            $this->errores[] = 'El teléfono ya está registrado.';
         }
     }
 
+    /**
+     * Valida que el CIF sea único entre empresas.
+     */
     public function validarUnicidadCif($cif)
     {
         if ($this->empresaRepo && $this->empresaRepo->existeCif($cif)) {
@@ -120,8 +171,11 @@ class Validators
         }
     }
 
-    // ----------- Validación lógica fechas -----------
+    // ----------- Validaciones adicionales: fechas/edad -----------
 
+    /**
+     * Valida que el usuario tenga al menos 18 años según fecha de nacimiento.
+     */
     public function validarEdad($fechaNacimiento)
     {
         if (!empty($fechaNacimiento)) {
@@ -132,9 +186,12 @@ class Validators
         }
     }
 
+    /**
+     * Valida que las fechas de estudios no sean posteriores al año actual.
+     * @param array $fechas Array de fechas tipo "YYYY-MM-DD"
+     */
     public function validarFechasEstudios($fechas)
     {
-        // (int) es un cast a las fechas para que se comparen como numeros
         $anyoActual = (int)date('Y');
         foreach ($fechas as $fecha) {
             $anyo = (int)substr($fecha, 0, 4);
@@ -145,8 +202,13 @@ class Validators
         }
     }
 
-    // ----------- Validación principal (puedes personalizar estos métodos según contexto) -----------
+    // ----------- Validaciones compuestas/principales -----------
 
+    /**
+     * Validación completa para registro de alumno.
+     * @param array $datos
+     * @return array
+     */
     public function validarAlumnoRegistro($datos)
     {
         $this->errores = []; // limpia errores
@@ -163,10 +225,10 @@ class Validators
         $this->validarUnicidadDni($datos['dni'] ?? '');
         $this->validarUnicidadTelefono($datos['telefono'] ?? '');
 
-        // FECHAS
+        // Fechas
         $this->validarEdad($datos['fnacimiento'] ?? '');
 
-        // Estudios (opcional, si llegan por POST como array)
+        // Estudios (si hay)
         if (isset($datos['fechainicio']) && is_array($datos['fechainicio'])) {
             $this->validarFechasEstudios($datos['fechainicio']);
         }
@@ -174,42 +236,35 @@ class Validators
         return $this->errores;
     }
 
+    /**
+     * Validación para edición de alumno.
+     */
     public function validarAlumnoEdicion($datos){
         $this->errores = [];
-
-        // No validamos correo (no se modifica)
         $this->validarNombre($datos['nombre'] ?? '');
         $this->validarDni($datos['dni'] ?? '');
         $this->validarTelefono($datos['telefono'] ?? '');
         $this->validarDireccion($datos['direccion'] ?? '');
-
-        // Cambia 'id' por el campo real del ID en tus datos
         $id = $datos['id'] ?? null;
-
-        // Validaciones de unicidad SOLO si permiten editar esos campos:
         if (!empty($datos['dni']) && $this->alumnoRepo->existeDniExceptoId($datos['dni'], $id)) {
             $this->errores[] = 'El DNI ya está registrado por otro alumno.';
         }
         if (!empty($datos['telefono']) && $this->alumnoRepo->existeTelefonoExceptoId($datos['telefono'], $id)) {
             $this->errores[] = 'El teléfono ya está registrado por otro alumno.';
         }
-
-        // Solo valida nueva contraseña si el usuario la cambia
         if (!empty($datos['contrasena'])) {
-            // Ya NO hay repetir contraseña
             $this->validarContrasenaEdicion($datos['contrasena']);
         }
-
-        // Fechas (edad mínima, estudios)
         $this->validarEdad($datos['fnacimiento'] ?? '');
         if (isset($datos['fechainicio']) && is_array($datos['fechainicio'])) {
             $this->validarFechasEstudios($datos['fechainicio']);
         }
-
         return $this->errores;
     }
 
-
+    /**
+     * Validación para crear empresa.
+     */
     public function validarEmpresa($datos)
     {
         $this->errores = [];
@@ -219,30 +274,23 @@ class Validators
         $this->validarNombre($datos['nombre'] ?? '');
         $this->validarDireccion($datos['direccion'] ?? '');
         $this->validarCif($datos['cif'] ?? '');
-
-        // UNICIDAD
         $this->validarUnicidadCorreo($datos['correo'] ?? '');
         $this->validarUnicidadCif($datos['cif'] ?? '');
         $this->validarUnicidadTelefono($datos['tfcontacto'] ?? '');
         $this->validarUnicidadCorreoContacto($datos['pcontactoemail'] ?? '');
-
-        // ...lo demás según tus reglas...
         return $this->errores;
     }
 
+    /**
+     * Validación para la edición de empresa.
+     */
     public function validarEmpresaEdicion($datos){
         $this->errores = [];
-
-        // Validar formato de campos modificables
         $this->validarCorreo($datos['pcontactoemail'] ?? '');
         $this->validarNombre($datos['nombre'] ?? '');
         $this->validarDireccion($datos['direccion'] ?? '');
         $this->validarCif($datos['cif'] ?? '');
-
-        // ID de la empresa que se edita
         $id = $datos['id'] ?? null;
-
-        // Unicidad excluyendo el propio registro
         if (!empty($datos['cif']) && $this->empresaRepo->existeCifExceptoId($datos['cif'], $id)) {
             $this->errores[] = 'El CIF ya está registrado por otra empresa.';
         }
@@ -252,18 +300,17 @@ class Validators
         if (!empty($datos['pcontactoemail']) && $this->empresaRepo->existeCorreoExceptoId($datos['pcontactoemail'], $id)) {
             $this->errores[] = 'El email de contacto ya está registrado en otra empresa.';
         }
-
-        // Solo valida la contraseña si se ha introducido (y NO hay repetir_contrasena)
         if (!empty($datos['contrasena'])) {
             $this->validarContrasenaEdicion($datos['contrasena']);
         }
-
         return $this->errores;
     }
 
+    /**
+     * Devuelve todos los errores acumulados tras la última validación.
+     * @return array
+     */
     public function getErrores() {
         return $this->errores;
     }
 }
-
-?>

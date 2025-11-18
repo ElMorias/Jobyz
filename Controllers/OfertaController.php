@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/autoloader.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -10,43 +11,40 @@ class OfertaController {
 
     public function __construct($templates) {
         $this->templates = $templates;
-        $this->repo = new RepositorioOfertas;
+        $this->repo = new RepositorioOfertas();
     }
 
-    // Listado de ofertas según rol, y borrado
+    // Listado de ofertas, borra y prepara array para la vista
     public function mostrarOfertas() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        $rolId = $_SESSION['rol_id'] ?? null;
+        $rol_id = $_SESSION['rol_id'] ?? null;
         $empresaRepo = new RepositorioEmpresa();
-        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id']);
+        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id'] ?? null);
 
-        // Borrar oferta (admin o empresa)
+        // Borrado (admin o empresa)
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['borrar'])) {
-            if ( $rol_id != 2){
+            if ($rol_id != 2) {
                 $this->repo->borrar((int)$_POST['id']);
                 header('Location: index.php?page=ofertas');
                 exit;
-            }    
+            }
         }
 
-        if ($rolId == 3) {
-            $empresa_id;
-            $ofertas = $this->repo->deEmpresa($empresa_id);
+        // Cargar según rol
+        if ($rol_id == 3) {
+            $ofertasObj = $this->repo->deEmpresa($empresa_id);
         } else {
-            $ofertas = $this->repo->todas();
+            $ofertasObj = $this->repo->todas();
         }
 
-        // Aquí añadimos los ciclos a cada oferta en el array
-        foreach ($ofertas as &$oferta) {
-            // Si $oferta es objeto, usa $oferta->id; si es array, $oferta['id']
-            $ofertaArr = is_array($oferta) ? $oferta : $oferta->toArray();
-            $ofertaArr['ciclos'] = $this->repo->obtenerCiclosPorOferta($ofertaArr['id']);
-            $oferta = $ofertaArr;
+        // Añadir ciclos en array de salida
+        $ofertas = [];
+        foreach ($ofertasObj as $oferta) {
+            $arr = $oferta->toArray();
+            if (!isset($arr['ciclos']) || empty($arr['ciclos'])) {
+                $arr['ciclos'] = $this->repo->obtenerCiclosPorOferta($arr['id']);
+            }
+            $ofertas[] = $arr;
         }
-        unset($oferta);
-
 
         echo $this->templates->render('../ofertas', [
             'title' => 'Ofertas',
@@ -54,17 +52,16 @@ class OfertaController {
         ]);
     }
 
-    // Crear nueva oferta (solo para empresa)
+    // Crear nueva oferta - solo empresas
     public function nuevaOferta() {
         $empresaRepo = new RepositorioEmpresa();
-        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id']);
+        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id'] ?? null);
 
         if ($_SESSION['rol_id'] != 3) {
             header('Location: index.php?page=ofertas');
             exit;
         }
 
-        // Obtén ciclos para el formulario (solo si usas plantilla PHP aquí)
         $cicloRepo = new RepositorioCiclo();
         $ciclos = $cicloRepo->getAll();
 
@@ -75,12 +72,10 @@ class OfertaController {
             $fechalimite = $_POST['fechalimite'] ?? '';
             $ciclosSelecionados = $_POST['ciclos'] ?? [];
 
-            // Validación básica de campos comunes
             if (!$titulo) $errores[] = "El título es obligatorio";
             if (!$descripcion) $errores[] = "La descripción es obligatoria";
             if (!$fechalimite) $errores[] = "La fecha límite es obligatoria";
 
-            // Limpiar ciclos: quitar vacíos y duplicados
             $ciclosFiltrados = array_unique(array_filter($ciclosSelecionados));
             if (empty($ciclosFiltrados)) {
                 $errores[] = "Debes seleccionar al menos un ciclo requerido";
@@ -91,8 +86,6 @@ class OfertaController {
 
             if (!$errores) {
                 $ofertaId = $this->repo->insertarOferta($titulo, $descripcion, $empresa_id, $fechalimite);
-
-                // Insertar en tabla oferta_has_ciclo
                 foreach ($ciclosFiltrados as $cicloId) {
                     $this->repo->anadirCicloAOferta($ofertaId, $cicloId);
                 }
@@ -103,17 +96,16 @@ class OfertaController {
 
         echo $this->templates->render('../nueva_oferta', [
             'errores' => $errores,
-            'ciclos' => $ciclos // Así puedes popular los selects en la vista
+            'ciclos' => $ciclos
         ]);
     }
-
 
     // Modificar oferta (solo empresa dueña)
     public function modificarOferta() {
         $empresaRepo = new RepositorioEmpresa();
-        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id']);
+        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id'] ?? null);
         $id = $_GET['id'] ?? null;
-        
+
         if ($_SESSION['rol_id'] != 3 || !$id) {
             header('Location: index.php?page=ofertas');
             exit;
@@ -139,11 +131,11 @@ class OfertaController {
         }
         echo $this->templates->render('../modificar_oferta', [
             'errores' => $errores,
-            'oferta' => $oferta
+            'oferta' => $oferta->toArray()
         ]);
     }
 
-    // Ver detalle de una oferta (solo admin), id SIEMPRE por $_GET
+    // Ver detalle de una oferta (admin)
     public function detalleOferta() {
         $id = $_GET['id'] ?? null;
         if ($_SESSION['rol_id'] != 1 || !$id || !is_numeric($id)) {
@@ -152,34 +144,28 @@ class OfertaController {
         }
         $oferta = $this->repo->obtener($id);
         echo $this->templates->render('../detalle_oferta', [
-            'oferta' => $oferta
+            'oferta' => $oferta ? $oferta->toArray() : null
         ]);
     }
 
-
-    //solicitudes de una oferta
     public function solicitudesOferta() {
         $empresaRepo = new RepositorioEmpresa();
-        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id']);
-        
+        $empresa_id = $empresaRepo->getEmpresaIdPorUserId($_SESSION['user_id'] ?? null);
         $id = $_GET['id'] ?? null;
         if (!$id || !is_numeric($id)) {
             header('Location: index.php?page=ofertas');
             exit;
         }
-    
         $oferta = $this->repo->obtener($id);
         if (!$oferta) {
             header('Location: index.php?page=ofertas');
             exit;
         }
         $rol_id = $_SESSION['rol_id'] ?? null;
-
         if ($rol_id != 1 && ($rol_id != 3 || $oferta->empresa_id != $empresa_id)) {
             header('Location: index.php?page=ofertas');
             exit;
         }
-
         $repoSolicitudes = new RepositorioSolicitudes();
         $solicitudes = $repoSolicitudes->deOferta($id);
 
@@ -187,6 +173,4 @@ class OfertaController {
             'solicitudes' => $solicitudes
         ]);
     }
-
 }
-?>

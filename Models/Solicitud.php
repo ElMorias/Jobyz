@@ -1,4 +1,7 @@
 <?php
+/**
+ * Clase entidad para solicitud (patrón Value Object)
+ */
 class Solicitud
 {
     public int $id;
@@ -7,6 +10,7 @@ class Solicitud
     public string $fecha_solicitud;
     public string $estado;
 
+    // Extras para enriquecimiento (pueden ser null)
     public ?string $alumno_nombre = null;
     public ?string $alumno_email = null;
     public ?string $oferta_titulo = null;
@@ -26,6 +30,9 @@ class Solicitud
         $this->estado = $estado;
     }
 
+    /**
+     * Fábrica/ensamblador para crear Solicitud desde un array.
+     */
     public static function fromArray(array $row): Solicitud {
         return new Solicitud(
             (int)$row['id'],
@@ -36,6 +43,9 @@ class Solicitud
         );
     }
 
+    /**
+     * Conversión a array asociativo (exportación API)
+     */
     public function toArray(): array {
         return [
             'id' => $this->id,
@@ -50,5 +60,3 @@ class Solicitud
         ];
     }
 }
-
-?>

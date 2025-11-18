@@ -70,7 +70,7 @@
       <div class="form-group">
         <label>Logo actual:</label><br>
         <?php if (!empty($empresa['foto'])): ?>
-          <img src="<?= htmlspecialchars($empresa['foto']) ?>" alt="Logo actual" style="max-width:120px;"><br>
+          <img src="<?= htmlspecialchars($empresa['foto']) ?>" alt="Logo actual"><br>
         <?php else: ?>
           <span>No hay logo.</span><br>
         <?php endif; ?>

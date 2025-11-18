@@ -2,10 +2,11 @@
 require_once dirname(__DIR__) . '/autoloader.php';
 header('Content-Type: application/json');
 
+// Devuelve vacío si no se especifica familia_id
 if (!isset($_GET['familia_id'])) {
-  echo json_encode([]);
-  exit;
+    echo json_encode([]);
+    exit;
 }
+
 $repo = new RepositorioCiclo();
 echo json_encode($repo->getByFamilia($_GET['familia_id']));
-?>

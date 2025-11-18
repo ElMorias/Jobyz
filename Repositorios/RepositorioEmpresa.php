@@ -3,101 +3,102 @@ require_once dirname(__DIR__) . '/autoloader.php';
 
 class RepositorioEmpresa {
     private $db;
-    
     public function __construct() {
         $this->db = DB::getConnection();
     }
 
-    public function getTodas() {
-        $stmt = $this->db->query("SELECT * FROM empresa");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getTodas(): array {
+        $stmt = $this->db->query("SELECT e.*, u.correo FROM empresa e JOIN users u ON e.user_id = u.id");
+        $empresas = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $empresas[] = Empresa::fromArray($row);
+        }
+        return $empresas;
     }
 
-    public function getNoValidadas() {
-        $stmt = $this->db->query('SELECT * FROM empresa WHERE validada = 0');
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getNoValidadas(): array {
+        $stmt = $this->db->query("SELECT e.*, u.correo FROM empresa e JOIN users u ON e.user_id = u.id WHERE e.validada = 0");
+        $empresas = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $empresas[] = Empresa::fromArray($row);
+        }
+        return $empresas;
     }
 
-    public function validarEmpresa($id) {
-    $stmt = $this->db->prepare('UPDATE empresa SET validada = 1 WHERE id = ?');
-    return $stmt->execute([$id]);
+    public function validarEmpresa($id): bool {
+        $stmt = $this->db->prepare("UPDATE empresa SET validada = 1 WHERE id = ?");
+        return $stmt->execute([$id]);
     }
 
-    public function existeCorreo($correo) {
+    public function existeCorreo($correo): bool {
         $sql = "SELECT COUNT(*) FROM empresa WHERE pcontactoemail = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$correo]);
         return $stmt->fetchColumn() > 0;
     }
 
-    public function existeCorreoExceptoId($correo, $id) {
+    public function existeCorreoExceptoId($correo, $id): bool {
         $sql = "SELECT COUNT(*) FROM empresa WHERE pcontactoemail = ? AND id != ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$correo, $id]);
         return $stmt->fetchColumn() > 0;
     }
 
-    public function existeCif($cif) {
+    public function existeCif($cif): bool {
         $sql = "SELECT COUNT(*) FROM empresa WHERE cif = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$cif]);
         return $stmt->fetchColumn() > 0;
     }
 
-    public function existeCifExceptoId($cif, $id) {
+    public function existeCifExceptoId($cif, $id): bool {
         $sql = "SELECT COUNT(*) FROM empresa WHERE cif = ? AND id != ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$cif, $id]);
         return $stmt->fetchColumn() > 0;
     }
 
-    public function existeTelefono($telefono) {
+    public function existeTelefono($telefono): bool {
         $sql = "SELECT COUNT(*) FROM empresa WHERE tlfcontacto = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$telefono]);
         return $stmt->fetchColumn() > 0;
     }
 
-    public function existeTelefonoExceptoId($telefono, $id) {
+    public function existeTelefonoExceptoId($telefono, $id): bool {
         $sql = "SELECT COUNT(*) FROM empresa WHERE tlfcontacto = ? AND id != ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$telefono, $id]);
         return $stmt->fetchColumn() > 0;
     }
 
-
-    //--------------------------FINDBYID-----------------------------------------//
-    public function getPorId($id) {
-        $stmt = $this->db->prepare("SELECT e.*,u.correo
-                                    FROM empresa e join users u on e.user_id = u.id
-                                    WHERE e.id = ?");
+    public function getPorId($id): ?Empresa {
+        $stmt = $this->db->prepare("SELECT e.*, u.correo FROM empresa e JOIN users u ON e.user_id = u.id WHERE e.id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? Empresa::fromArray($row) : null;
     }
 
-    public function getPorUserId($userId) {
-        $stmt = $this->db->prepare("SELECT e.*, u.correo
-                                    FROM empresa e JOIN users u ON e.user_id = u.id
-                                    WHERE e.user_id = ?");
+    public function getPorUserId($userId): ?Empresa {
+        $stmt = $this->db->prepare("SELECT e.*, u.correo FROM empresa e JOIN users u ON e.user_id = u.id WHERE e.user_id = ?");
         $stmt->execute([$userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? Empresa::fromArray($row) : null;
     }
 
-    public function getEmpresaIdPorUserId($user_id){
+    public function getEmpresaIdPorUserId($user_id) {
         $stmt = $this->db->prepare("SELECT id FROM empresa WHERE user_id = ?");
         $stmt->execute([$user_id]);
-        $id = $stmt->fetchColumn();
-        return $id;
+        return $stmt->fetchColumn();
     }
 
     public function getEmpresaValidadaporUserId($user_id){
         $stmt = $this->db->prepare("SELECT validada FROM empresa WHERE user_id = ?");
         $stmt->execute([$user_id]);
-        $validada = $stmt->fetchColumn();
-        return $validada;
+        return $stmt->fetchColumn();
     }
 
-    public function getEmpresasPaginadoFiltrado($pagina, $porPagina, $orden, $sentido, $buscar) {
+    public function getEmpresasPaginadoFiltrado($pagina, $porPagina, $orden, $sentido, $buscar): array {
         $camposOrden = ['id', 'nombre', 'cif', 'pcontactoemail', 'tlfcontacto'];
         if (!in_array($orden, $camposOrden)) $orden = 'id';
         $sentido = (strtoupper($sentido) === 'DESC') ? 'DESC' : 'ASC';
@@ -114,26 +115,22 @@ class RepositorioEmpresa {
         $totalEmpresas = $stmtTotal->fetchColumn();
         $sql = "SELECT * FROM empresa $where ORDER BY $orden $sentido LIMIT :lim OFFSET :off";
         $stmt = $this->db->prepare($sql);
-        foreach ($params as $k=>$v) $stmt->bindValue($k, $v);
+        foreach ($params as $k => $v) $stmt->bindValue($k, $v);
         $stmt->bindValue(':lim', $porPagina, PDO::PARAM_INT);
         $stmt->bindValue(':off', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        $empresas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $totalPaginas = max(1, ceil($totalEmpresas/$porPagina));
+        $empresasArr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $empresasObjs = array_map(fn($row) => Empresa::fromArray($row), $empresasArr);
+        $totalPaginas = max(1, ceil($totalEmpresas / $porPagina));
         return [
-            'empresas' => $empresas,
+            'empresas' => $empresasObjs,
             'totalPaginas' => $totalPaginas
         ];
     }
 
-
-
-    //------------Funcion para crear una empresa-----------------//
-    public function crearEmpresa($datos, $files = []) {
+    public function crearEmpresa($datos, $files = []): ?Empresa {
         try {
             $this->db->beginTransaction();
-
-            // 1. Insertar el usuario
             $stmt = $this->db->prepare("INSERT INTO users (correo, contraseña, rol_id) VALUES (?, ?, ?)");
             $hash = password_hash($datos['contrasena'], PASSWORD_DEFAULT);
             $stmt->execute([
@@ -141,71 +138,64 @@ class RepositorioEmpresa {
                 $hash,
                 $datos['rol_id']
             ]);
-            
-            // Recuperar el user_id generado
             $userId = $this->db->lastInsertId();
 
-            // 2. Procesar foto
             $fotoPathRel = null;
             if (!empty($files['foto']['name'])) {
-            $dirRelFoto = 'assets/uploads/empresa_logo/';
-            $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
-            $ext = strtolower(pathinfo($files['foto']['name'], PATHINFO_EXTENSION));
-            $nombreFoto = 'logo_' . $userId . '.' . $ext;
-            $fotoPathAbs = $dirAbsFoto . $nombreFoto;
-            $fotoPathRel = $dirRelFoto . $nombreFoto;
-            move_uploaded_file($files['foto']['tmp_name'], $fotoPathAbs);
+                $dirRelFoto = 'assets/uploads/empresa_logo/';
+                $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
+                $ext = strtolower(pathinfo($files['foto']['name'], PATHINFO_EXTENSION));
+                $nombreFoto = 'logo_' . $userId . '.' . $ext;
+                $fotoPathAbs = $dirAbsFoto . $nombreFoto;
+                $fotoPathRel = $dirRelFoto . $nombreFoto;
+                move_uploaded_file($files['foto']['tmp_name'], $fotoPathAbs);
             }
-
-            // 3. Insertar la empresa
-            $sqlEmpresa = "INSERT INTO empresa (nombre, direccion, cif, pcontacto, pcontactoemail, tlfcontacto, foto, validada, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmtEmp = $this->db->prepare($sqlEmpresa);
-            $stmtEmp->execute([
-            $datos['nombre'],
-            $datos['direccion'],
-            $datos['cif'],
-            $datos['pcontacto'],
-            $datos['pcontactoemail'],
-            $datos['tfcontacto'],
-            $fotoPathRel,
-            $datos['validada'] ?? 0,
-            $userId
+            $sql = "INSERT INTO empresa (nombre, direccion, cif, pcontacto, pcontactoemail, tlfcontacto, foto, validada, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                $datos['nombre'],
+                $datos['direccion'],
+                $datos['cif'],
+                $datos['pcontacto'],
+                $datos['pcontactoemail'],
+                $datos['tfcontacto'],
+                $fotoPathRel,
+                $datos['validada'] ?? 0,
+                $userId
             ]);
+            $empresaId = $this->db->lastInsertId();
 
             $this->db->commit();
-            return true;
-        } catch(Exception $e) {
+            return $this->getPorId($empresaId);
+        } catch (Exception $e) {
             $this->db->rollBack();
             error_log('Fallo al crear empresa: ' . $e->getMessage());
-            return false;
+            return null;
         }
     }
 
-    //-----------------------UPDATE----------------------------------//
-   public function actualizar($id, $datos, $files) {
+    public function actualizar($id, $datos, $files): bool {
         $empresaAnterior = $this->getPorId($id);
-        $fotoPathRel = $empresaAnterior['foto'] ?? null;
+        $fotoPathRel = $empresaAnterior ? $empresaAnterior->getFoto() : null;
 
-        // Gestionar nuevo logo 
         if (isset($files['nuevoLogo']) && $files['nuevoLogo']['error'] === 0) {
             $dirRelFoto = 'assets/uploads/empresa_logo/';
             $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
             $ext = strtolower(pathinfo($files['nuevoLogo']['name'], PATHINFO_EXTENSION));
-            $nombreFoto = 'logo_' . $empresaAnterior['user_id'] . '.' . $ext;
+            $nombreFoto = 'logo_' . ($empresaAnterior ? $empresaAnterior->getUserId() : 'unknown') . '.' . $ext;
             $fotoPathAbs = $dirAbsFoto . $nombreFoto;
             $fotoPathRel = $dirRelFoto . $nombreFoto;
             move_uploaded_file($files['nuevoLogo']['tmp_name'], $fotoPathAbs);
         }
 
-        // Si se cambia el correo
+        $userId = $empresaAnterior ? $empresaAnterior->getUserId() : null;
         $sqlUser = "UPDATE users SET correo=? WHERE id=?";
         $stmtUser = $this->db->prepare($sqlUser);
         $stmtUser->execute([
             $datos['correo'],
-            $empresaAnterior['user_id']
+            $userId
         ]);
 
-        // update empresa
         $sqlEmpresa = "UPDATE empresa SET nombre=?, direccion=?, cif=?, pcontacto=?, pcontactoemail=?, tlfcontacto=?, foto=?, validada=? WHERE id=?";
         $stmtEmp = $this->db->prepare($sqlEmpresa);
         return $stmtEmp->execute([
@@ -221,20 +211,16 @@ class RepositorioEmpresa {
         ]);
     }
 
-    //---------------------------DELETE-------------------------------//
-   public function borrarPorEmpresaId($empresa_id) {
-        // 1. Buscar el user_id correspondiente a esa empresa
+    public function borrarPorEmpresaId($empresa_id): bool {
         $sql = "SELECT user_id FROM empresa WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$empresa_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$row) return false; // Empresa no existe
+        if (!$row) return false;
         $user_id = $row['user_id'];
-        // 2. Borrar el usuario, lo que borra empresa en cascada
+
         $sql = "DELETE FROM users WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$user_id]);
     }
-
 }
-?>
