@@ -1,3 +1,6 @@
+const token = sessionStorage.getItem("token");
+const user_id = sessionStorage.getItem("user_id");
+
 window.addEventListener('DOMContentLoaded', function () {
     modificarAlumno();
 });
@@ -9,7 +12,12 @@ function modificarAlumno() {
     // Modificar
     // lo de yo=1 es porquue e modifiar del admin le paso el id del la empresa, pero aqui no
     // asi que de default me manda la lista de todos los alumnos, si pongo yo=1 en el get puedo distinguir
-    fetch('api/apiAlumno.php?yo=1')
+    fetch('api/apiAlumno.php?yo=1', {
+        headers: {
+            Authorization: "Bearer " + token,
+            "X-USER-ID": user_id
+        }
+    })
         .then(res => res.json())
         .then(alumno => {
             document.getElementById('perfil-id').value = alumno.id || '';
@@ -70,6 +78,10 @@ function modificarAlumno() {
             const estudioId = e.target.getAttribute('data-id');
             // Llama a tu API/endpoint para borrar ese estudio
             fetch('api/apiEstudio.php', {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "X-USER-ID": user_id
+                },
                 method: 'DELETE',
                 body: JSON.stringify({ id: estudioId })
             })
@@ -161,6 +173,10 @@ function modificarAlumno() {
             // Si todo está ok, SÍ envía los datos como antes
             let data = new FormData(form);
             fetch('api/apiAlumno.php', {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "X-USER-ID": user_id
+                },
                 method: 'POST',
                 body: data
             })
@@ -303,7 +319,12 @@ function modificarAlumno() {
 
     // Carga familias desde API 
     let familiasCache = [];
-    fetch("api/apiFamilia.php")
+    fetch("api/apiFamilia.php", {
+        headers: {
+            Authorization: "Bearer " + token,
+            "X-USER-ID": user_id
+        }
+    })
         .then(res => res.json())
         .then(familias => { familiasCache = familias; });
 
@@ -337,7 +358,12 @@ function modificarAlumno() {
                 selectCiclo.innerHTML = '<option value="">Selecciona ciclo</option>';
                 selectCiclo.disabled = !famId;
                 if (!famId) return;
-                fetch(`api/apiCiclo.php?familia_id=${famId}`)
+                fetch(`api/apiCiclo.php?familia_id=${famId}`, {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                        "X-USER-ID": user_id
+                    }
+                })
                     .then(res => res.json())
                     .then(ciclos => {
                         ciclos.forEach(c => {

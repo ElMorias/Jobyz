@@ -3,8 +3,9 @@ window.addEventListener('load', function () {
     initRegistroAlumnoForm(document);
 });
 
-
 function initRegistroAlumnoForm(raiz) {
+    const token = sessionStorage.getItem("token");
+    const user_id = sessionStorage.getItem("user_id");
     // ---- Estudios ----
     const estudiosWrapper = raiz.querySelector('#estudios-wrapper');
     const btnAgregarEstudio = raiz.querySelector('#btn-agregar-estudio');
@@ -28,13 +29,18 @@ function initRegistroAlumnoForm(raiz) {
             </div>
             <button type="button" class="btn-eliminar-estudio">Eliminar</button>
         </div>
- `;
+    `;
 
     // Carga familias desde API 
     let familiasCache = [];
-    fetch("api/apiFamilia.php")
-        .then(res => res.json())
-        .then(familias => { familiasCache = familias; });
+    fetch("api/apiFamilia.php", {
+        headers: {
+            Authorization: "Bearer " + token,
+            "X-USER-ID": user_id
+        }
+    })
+    .then(res => res.json())
+    .then(familias => { familiasCache = familias; });
 
     // Añadir estudio
     if (btnAgregarEstudio && estudiosWrapper) {
@@ -66,21 +72,25 @@ function initRegistroAlumnoForm(raiz) {
                 selectCiclo.innerHTML = '<option value="">Selecciona ciclo</option>';
                 selectCiclo.disabled = !famId;
                 if (!famId) return;
-                fetch(`api/apiCiclo.php?familia_id=${famId}`)
-                    .then(res => res.json())
-                    .then(ciclos => {
-                        ciclos.forEach(c => {
-                            const option = document.createElement('option');
-                            option.value = c.id;
-                            option.textContent = c.nombre;
-                            selectCiclo.appendChild(option);
-                        });
+                fetch(`api/apiCiclo.php?familia_id=${famId}`, {
+                    headers: {
+                        Authorization: "Bearer " + token,
+                        "X-USER-ID": user_id
+                    }
+                })
+                .then(res => res.json())
+                .then(ciclos => {
+                    ciclos.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id;
+                        option.textContent = c.nombre;
+                        selectCiclo.appendChild(option);
                     });
+                });
             });
             selectCiclo.disabled = true;
         }
     }
-
 
     const formRegistro = document.getElementById('form-registro-alumno');
     const registroErrores = document.getElementById('modal-registro-errores');
@@ -91,7 +101,7 @@ function initRegistroAlumnoForm(raiz) {
             let errores = [];
             registroErrores.innerHTML = '';
 
-            // Captura de campos
+            // Captura de campos...
             const correo = formRegistro.correo.value.trim();
             const pass1 = formRegistro.contrasena.value;
             const pass2 = formRegistro.repetir_contrasena.value;
@@ -152,37 +162,39 @@ function initRegistroAlumnoForm(raiz) {
             let datos = new FormData(formRegistro);
             fetch('api/apiAlumno.php', {
                 method: 'POST',
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "X-USER-ID": user_id
+                },
                 body: datos
             })
-                .then(res => res.json())
-                .then(resp => {
-                    if (resp.status === 'ok') {
-                        registroErrores.innerHTML = '<span style="color: green;">Registro completado. Redirigiendo...</span>';
-                        setTimeout(() => {
-                            window.location.href = 'index.php?page=tabla_alumnos';
-                        }, 1500);
-                    } else if (Array.isArray(resp.errores)) {
-                        // Muestra lista de errores si el backend devuelve un array
-                        const ul = document.createElement('ul');
-                        resp.errores.forEach(msg => {
-                            const li = document.createElement('li');
-                            li.textContent = msg;
-                            ul.appendChild(li);
-                        });
-                        registroErrores.innerHTML = '';
-                        registroErrores.appendChild(ul);
-                    } else if (resp.mensaje) {
-                        registroErrores.innerHTML = `<span>Error: ${resp.mensaje}</span>`;
-                    } else {
-                        registroErrores.innerHTML = '<span>Error desconocido</span>';
-                    }
-                })
-                .catch(() => {
-                    registroErrores.innerHTML = '<span>Fallo en la petición AJAX</span>';
-                });
+            .then(res => res.json())
+            .then(resp => {
+                if (resp.status === 'ok') {
+                    registroErrores.innerHTML = '<span style="color: green;">Registro completado. Redirigiendo...</span>';
+                    setTimeout(() => {
+                        window.location.href = 'index.php?page=tabla_alumnos';
+                    }, 1500);
+                } else if (Array.isArray(resp.errores)) {
+                    const ul = document.createElement('ul');
+                    resp.errores.forEach(msg => {
+                        const li = document.createElement('li');
+                        li.textContent = msg;
+                        ul.appendChild(li);
+                    });
+                    registroErrores.innerHTML = '';
+                    registroErrores.appendChild(ul);
+                } else if (resp.mensaje) {
+                    registroErrores.innerHTML = `<span>Error: ${resp.mensaje}</span>`;
+                } else {
+                    registroErrores.innerHTML = '<span>Error desconocido</span>';
+                }
+            })
+            .catch(() => {
+                registroErrores.innerHTML = '<span>Fallo en la petición AJAX</span>';
+            });
         });
     }
-
 
     // ---- Foto y Cámara ----
     let streamActivo = null;
@@ -254,20 +266,18 @@ function initRegistroAlumnoForm(raiz) {
 
     // ---- Salir de la página ---- //
     const salir = document.getElementById("btn-salir");
-
     if (salir) {
         salir.addEventListener('click', function (e) {
             window.location.href = "index.php?page=landing";
         });
     }
 
-
-
-
 }
 
-
 function initCargaMasiva(raiz) {
+    const token = sessionStorage.getItem("token");
+    const user_id = sessionStorage.getItem("user_id");
+
     const selectFamilia = raiz.querySelector('#familia');
     const selectCiclo = raiz.querySelector('#ciclo');
     const inputCSV = raiz.querySelector('#csvAlumnos');
@@ -279,14 +289,19 @@ function initCargaMasiva(raiz) {
     let parsedRows = [];
 
     // Familias
-    fetch("api/apiFamilia.php")
-        .then(res => res.json())
-        .then(familias => {
-            selectFamilia.innerHTML = '<option value="">Selecciona familia</option>';
-            familias.forEach(f =>
-                selectFamilia.innerHTML += `<option value="${f.id}">${f.nombre}</option>`
-            );
-        });
+    fetch("api/apiFamilia.php", {
+        headers: {
+            Authorization: "Bearer " + token,
+            "X-USER-ID": user_id
+        }
+    })
+    .then(res => res.json())
+    .then(familias => {
+        selectFamilia.innerHTML = '<option value="">Selecciona familia</option>';
+        familias.forEach(f =>
+            selectFamilia.innerHTML += `<option value="${f.id}">${f.nombre}</option>`
+        );
+    });
 
     // Ciclos
     selectFamilia.addEventListener('change', function () {
@@ -294,17 +309,22 @@ function initCargaMasiva(raiz) {
         selectCiclo.innerHTML = '<option value="">Selecciona ciclo</option>';
         selectCiclo.disabled = !famId;
         if (!famId) return;
-        fetch('api/apiCiclo.php?familia_id=' + famId)
-            .then(res => res.json())
-            .then(ciclos => {
-                ciclos.forEach(c =>
-                    selectCiclo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`
-                );
-            });
+        fetch('api/apiCiclo.php?familia_id=' + famId, {
+            headers: {
+                Authorization: "Bearer " + token,
+                "X-USER-ID": user_id
+            }
+        })
+        .then(res => res.json())
+        .then(ciclos => {
+            ciclos.forEach(c =>
+                selectCiclo.innerHTML += `<option value="${c.id}">${c.nombre}</option>`
+            );
+        });
     });
     selectCiclo.disabled = true;
 
-    // Preview
+    // Preview: no requiere autenticación porque es local
     btnPreview.addEventListener('click', function (e) {
         e.preventDefault();
         const file = inputCSV.files[0];
@@ -335,12 +355,9 @@ function initCargaMasiva(raiz) {
                         <td><input type="hidden" class="input-dni" value="${dni}" data-idx="${idx}"></td>
                     </tr>`;
             });
-
             html += "</tbody></table>";
             previewDiv.innerHTML = html;
             btnSubir.style.display = "inline-block";
-
-            // Checkbox toggle para seleccionar/des-seleccionar todas las filas
             const checkTodos = document.getElementById('check-todos');
             if (checkTodos) {
                 checkTodos.addEventListener('change', function () {
@@ -352,7 +369,7 @@ function initCargaMasiva(raiz) {
         reader.readAsText(file);
     });
 
-    // Subir seleccionados al backend (con inputs editables en cada celda)
+    // Subir seleccionados al backend (con token y user en headers y application/json)
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         const checkboxes = previewDiv.querySelectorAll('.fila-checkbox');
@@ -374,38 +391,36 @@ function initCargaMasiva(raiz) {
 
         fetch('api/apiAlumno.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                Authorization: "Bearer " + token,
+                "X-USER-ID": user_id,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 usuarios: seleccionados,
                 familia, ciclo
             })
         })
-            .then(r => r.json())
-            .then(data => {
-                // Mostrar fallos en el div del modal
-                const divFallos = document.getElementById('carga-fallos');
-                divFallos.innerHTML = '';
-                if (data.errores && data.errores.length) {
-                    let html = `<div style="color:red;font-weight:bold;margin-bottom:6px;">No se pudieron cargar:</div><ul>`;
-                    data.errores.forEach(email => {
-                        html += `<li>${email}</li>`;
-                    });
-                    html += "</ul>";
-                    divFallos.innerHTML = html;
-                }
-
-                // Pintar tabla con los alumnos insertados
-                if (data.ok && data.alumnos && data.alumnos.length) {
-                    recargarAlumnos();
-                }
-
-                if (!data.ok) {
-                    alert('Error cargando: ' + (data.error || ''));
-                }
-            });
+        .then(r => r.json())
+        .then(data => {
+            const divFallos = document.getElementById('carga-fallos');
+            divFallos.innerHTML = '';
+            if (data.errores && data.errores.length) {
+                let html = `<div style="color:red;font-weight:bold;margin-bottom:6px;">No se pudieron cargar:</div><ul>`;
+                data.errores.forEach(email => {
+                    html += `<li>${email}</li>`;
+                });
+                html += "</ul>";
+                divFallos.innerHTML = html;
+            }
+            if (data.ok && data.alumnos && data.alumnos.length) {
+                recargarAlumnos();
+            }
+            if (!data.ok) {
+                alert('Error cargando: ' + (data.error || ''));
+            }
+        });
     });
-
-
 
     // Cancelar modal
     btnCancelar.onclick = function () {
@@ -415,7 +430,6 @@ function initCargaMasiva(raiz) {
         btnSubir.style.display = 'none';
         modalManager.cerrarModal();
     };
-
 }
 
 // Uso en modal, tras cargar el modal (en el callback de crearModalDesdeUrl):

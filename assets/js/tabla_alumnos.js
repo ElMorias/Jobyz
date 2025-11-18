@@ -1,3 +1,6 @@
+const token = sessionStorage.getItem("token");
+const user_id = sessionStorage.getItem("user_id");
+
 // Estado global independiente para cada tabla
 let listaAlumnos = [];
 let alumnosFiltrados = [];
@@ -9,7 +12,6 @@ let paginaActualNoVal = 1;
 
 const alumnosPorPagina = 10;
 
-
 // Listener global para los botones (notificar, borrar, etc.)
 document.addEventListener('click', function (e) {
     // Notificar no validados
@@ -19,7 +21,11 @@ document.addEventListener('click', function (e) {
         if (!alumnoId) return;
         fetch('api/apiAlumno.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                Authorization: "Bearer " + token,
+                "X-USER-ID": user_id,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ accion: 'notificar_no_validado', id: alumnoId })
         }).then(res => res.json())
         .then(data => {
@@ -38,6 +44,11 @@ document.addEventListener('click', function (e) {
             btnConfirmar.onclick = function () {
                 fetch('api/apiAlumno.php', {
                     method: 'DELETE',
+                    headers: {
+                        Authorization: "Bearer " + token,
+                        "X-USER-ID": user_id,
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({ id })
                 }).then(res => res.json())
                 .then(resp => {
@@ -59,27 +70,32 @@ document.addEventListener('click', function (e) {
     if (e.target.classList.contains('btn-detalles')) {
         const id = e.target.closest('tr').getAttribute('data-id');
         modalManager.crearModalDesdeUrl('assets/modales/modalDetalles.txt', function () {
-            fetch('api/apiAlumno.php?id=' + id)
-                .then(res => res.json())
-                .then(alumno => {
-                    document.getElementById('modal-correo').value = alumno.correo || '';
-                    document.getElementById('modal-nombre').value = alumno.nombre || '';
-                    document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
-                    document.getElementById('modal-apellido2').value = alumno.apellido2 || '';
-                    document.getElementById('modal-fnacimiento').value = alumno.fnacimiento || '';
-                    document.getElementById('modal-dni').value = alumno.dni || '';
-                    document.getElementById('modal-telefono').value = alumno.telefono || '';
-                    document.getElementById('modal-direccion').value = alumno.direccion || '';
-                    document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
-                    let curriculumContainer = document.getElementById('modal-curriculum');
-                    if (curriculumContainer) {
-                        if (alumno.curriculum) {
-                            curriculumContainer.innerHTML = `<a href="${alumno.curriculum}" target="_blank">Ver Curriculum</a>`;
-                        } else {
-                            curriculumContainer.innerHTML = 'No disponible';
-                        }
+            fetch('api/apiAlumno.php?id=' + id, {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "X-USER-ID": user_id
+                }
+            })
+            .then(res => res.json())
+            .then(alumno => {
+                document.getElementById('modal-correo').value = alumno.correo || '';
+                document.getElementById('modal-nombre').value = alumno.nombre || '';
+                document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
+                document.getElementById('modal-apellido2').value = alumno.apellido2 || '';
+                document.getElementById('modal-fnacimiento').value = alumno.fnacimiento || '';
+                document.getElementById('modal-dni').value = alumno.dni || '';
+                document.getElementById('modal-telefono').value = alumno.telefono || '';
+                document.getElementById('modal-direccion').value = alumno.direccion || '';
+                document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
+                let curriculumContainer = document.getElementById('modal-curriculum');
+                if (curriculumContainer) {
+                    if (alumno.curriculum) {
+                        curriculumContainer.innerHTML = `<a href="${alumno.curriculum}" target="_blank">Ver Curriculum</a>`;
+                    } else {
+                        curriculumContainer.innerHTML = 'No disponible';
                     }
-                })
+                }
+            })
         });
     }
 
@@ -90,30 +106,35 @@ document.addEventListener('click', function (e) {
             let modalRaiz = document.querySelector('.modal-contenedor');
             initRegistroAlumnoForm(modalRaiz);
             let form = modalRaiz.querySelector('form');
-            fetch('api/apiAlumno.php?id=' + id)
-                .then(res => res.json())
-                .then(alumno => {
-                    document.getElementById('modal-id').value = alumno.id || '';
-                    document.getElementById('modal-correo').value = alumno.correo || '';
-                    document.getElementById('modal-contrasena').value = alumno.contrasena || '';
-                    document.getElementById('modal-nombre').value = alumno.nombre || '';
-                    document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
-                    document.getElementById('modal-apellido2').value = alumno.apellido2 || '';
-                    document.getElementById('modal-fnacimiento').value = alumno.fnacimiento || '';
-                    document.getElementById('modal-dni').value = alumno.dni || '';
-                    document.getElementById('modal-direccion').value = alumno.direccion || '';
-                    document.getElementById('modal-telefono').value = alumno.telefono || '';
-                    document.getElementById('preview-foto').innerHTML = alumno.foto
-                        ? `<img src="${alumno.foto}">` : '';
-                    let enlaceCurriculum = document.getElementById('curriculum-link');
-                    if (alumno.curriculum) {
-                        enlaceCurriculum.href = alumno.curriculum;
-                        enlaceCurriculum.style.display = 'inline';
-                    } else {
-                        enlaceCurriculum.href = '#';
-                        enlaceCurriculum.style.display = 'none';
-                    }
-                });
+            fetch('api/apiAlumno.php?id=' + id, {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "X-USER-ID": user_id
+                }
+            })
+            .then(res => res.json())
+            .then(alumno => {
+                document.getElementById('modal-id').value = alumno.id || '';
+                document.getElementById('modal-correo').value = alumno.correo || '';
+                document.getElementById('modal-contrasena').value = alumno.contrasena || '';
+                document.getElementById('modal-nombre').value = alumno.nombre || '';
+                document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
+                document.getElementById('modal-apellido2').value = alumno.apellido2 || '';
+                document.getElementById('modal-fnacimiento').value = alumno.fnacimiento || '';
+                document.getElementById('modal-dni').value = alumno.dni || '';
+                document.getElementById('modal-direccion').value = alumno.direccion || '';
+                document.getElementById('modal-telefono').value = alumno.telefono || '';
+                document.getElementById('preview-foto').innerHTML = alumno.foto
+                    ? `<img src="${alumno.foto}">` : '';
+                let enlaceCurriculum = document.getElementById('curriculum-link');
+                if (alumno.curriculum) {
+                    enlaceCurriculum.href = alumno.curriculum;
+                    enlaceCurriculum.style.display = 'inline';
+                } else {
+                    enlaceCurriculum.href = '#';
+                    enlaceCurriculum.style.display = 'none';
+                }
+            });
 
             form.foto.addEventListener('change', function (e) {
                 const file = e.target.files[0];
@@ -147,7 +168,6 @@ document.addEventListener('click', function (e) {
     }
 });
 
-
 // DOMContentLoaded para los botones superiores/acciones globales
 document.addEventListener('DOMContentLoaded', function () {
     recargarAlumnos();
@@ -177,28 +197,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
 // --- RECARGA Y ESTADO DE TABLAS ---
 function recargarAlumnos() {
-    fetch('api/apiAlumno.php')
-        .then(res => res.json())
-        .then(datos => {
-            listaAlumnos = datos.alumnos || [];
-            alumnosFiltrados = [...listaAlumnos];
-            paginaActual = 1;
-            listaNoValidados = datos.noValidados || [];
-            alumnosNoValFiltrados = [...listaNoValidados];
-            paginaActualNoVal = 1;
-            renderAlumnos(alumnosFiltrados);
-            renderAlumnosNoValidados(alumnosNoValFiltrados);
-        })
-        .catch(err => {
-            listaAlumnos = [];
-            renderAlumnos([]);
-            renderAlumnosNoValidados([]);
-        });
+    fetch('api/apiAlumno.php', {
+        headers: {
+            Authorization: "Bearer " + token,
+            "X-USER-ID": user_id
+        }
+    })
+    .then(res => res.json())
+    .then(datos => {
+        listaAlumnos = datos.alumnos || [];
+        alumnosFiltrados = [...listaAlumnos];
+        paginaActual = 1;
+        listaNoValidados = datos.noValidados || [];
+        alumnosNoValFiltrados = [...listaNoValidados];
+        paginaActualNoVal = 1;
+        renderAlumnos(alumnosFiltrados);
+        renderAlumnosNoValidados(alumnosNoValFiltrados);
+    })
+    .catch(err => {
+        listaAlumnos = [];
+        renderAlumnos([]);
+        renderAlumnosNoValidados([]);
+    });
 }
-
 
 // ---- BÚSQUEDA SÓLO EN TABLA PRINCIPAL ----
 document.getElementById('buscador-alumnos').addEventListener('input', function () {

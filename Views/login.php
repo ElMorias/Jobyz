@@ -32,3 +32,10 @@
 </section>
 
 <?php $this->stop() ?>
+
+<?php $this->start('js') ?>
+<script>
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user_id");
+</script>
+<?php $this->stop() ?>

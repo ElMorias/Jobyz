@@ -1,9 +1,17 @@
+const token = sessionStorage.getItem("token");
+const user_id = sessionStorage.getItem("user_id");
+
 document.addEventListener('DOMContentLoaded', function () {
   recargarSolicitudes();
 });
 
 function recargarSolicitudes() {
-  fetch('api/ApiSolicitud.php')
+  fetch('api/ApiSolicitud.php', {
+    headers: {
+      Authorization: "Bearer " + token,
+      "X-USER-ID": user_id
+    }
+  })
     .then(res => res.json())
     .then(data => {
       renderSolicitudes(data.rol, data.solicitudes);
@@ -111,7 +119,11 @@ function addEmpresaListeners() {
       const id = this.closest('tr').dataset.id;
       fetch('api/ApiSolicitud.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: "Bearer " + token,
+          "X-USER-ID": user_id,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ accion: 'aceptar', id })
       }).then(() => recargarSolicitudes());
     };
@@ -122,42 +134,50 @@ function addEmpresaListeners() {
       const id = this.closest('tr').dataset.id;
       fetch('api/ApiSolicitud.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: "Bearer " + token,
+          "X-USER-ID": user_id,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ accion: 'rechazar', id })
       }).then(() => recargarSolicitudes());
     };
   });
 
-// Detalles
+  // Detalles
   document.querySelectorAll('.btn-ver-alumno').forEach(btn => {
     btn.onclick = function () {
       const alumnoId = this.getAttribute('data-alumnoid');
       if (!alumnoId) return;
 
       modalManager.crearModalDesdeUrl('assets/modales/modalDetalles.txt', function () {
-        fetch('api/apiAlumno.php?id=' + encodeURIComponent(alumnoId))
-          .then(res => res.json())
-          .then(alumno => {
-            document.getElementById('modal-correo').value = alumno.correo || '';
-            document.getElementById('modal-nombre').value = alumno.nombre || '';
-            document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
-            document.getElementById('modal-apellido2').value = alumno.apellido2 || '';
-            document.getElementById('modal-fnacimiento').value = alumno.fnacimiento || '';
-            document.getElementById('modal-dni').value = alumno.dni || '';
-            document.getElementById('modal-telefono').value = alumno.telefono || '';
-            document.getElementById('modal-direccion').value = alumno.direccion || '';
-            document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
+        fetch('api/apiAlumno.php?id=' + encodeURIComponent(alumnoId), {
+          headers: {
+            Authorization: "Bearer " + token,
+            "X-USER-ID": user_id
+          }
+        })
+        .then(res => res.json())
+        .then(alumno => {
+          document.getElementById('modal-correo').value = alumno.correo || '';
+          document.getElementById('modal-nombre').value = alumno.nombre || '';
+          document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
+          document.getElementById('modal-apellido2').value = alumno.apellido2 || '';
+          document.getElementById('modal-fnacimiento').value = alumno.fnacimiento || '';
+          document.getElementById('modal-dni').value = alumno.dni || '';
+          document.getElementById('modal-telefono').value = alumno.telefono || '';
+          document.getElementById('modal-direccion').value = alumno.direccion || '';
+          document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
 
-            // Enlace curriculum:
-            let curriculumContainer = document.getElementById('modal-curriculum');
-            if (curriculumContainer) {
-              if (alumno.curriculum) {
-                curriculumContainer.innerHTML = `<a href="${alumno.curriculum}" target="_blank">Ver Curriculum</a>`;
-              } else {
-                curriculumContainer.innerHTML = 'No disponible';
-              }
+          let curriculumContainer = document.getElementById('modal-curriculum');
+          if (curriculumContainer) {
+            if (alumno.curriculum) {
+              curriculumContainer.innerHTML = `<a href="${alumno.curriculum}" target="_blank">Ver Curriculum</a>`;
+            } else {
+              curriculumContainer.innerHTML = 'No disponible';
             }
-          })
+          }
+        })
       });
     };
   });
@@ -170,7 +190,11 @@ function addAlumnoListeners() {
       const id = this.closest('.card-solicitud').dataset.id;
       fetch('api/ApiSolicitud.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: "Bearer " + token,
+          "X-USER-ID": user_id,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ accion: 'eliminar', id })
       }).then(() => recargarSolicitudes());
     };
