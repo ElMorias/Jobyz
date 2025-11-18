@@ -22,6 +22,21 @@
         <textarea name="descripcion" rows="4" required><?= htmlspecialchars($_POST['descripcion'] ?? '') ?></textarea>
     </label>
     <br>
+    <label for="ciclo1">Ciclo requerido 1:</label>
+    <select name="ciclos[]" id="ciclo1" required>
+        <option value="">-- Seleccione ciclo --</option>
+        <?php foreach ($ciclos as $ciclo): ?>
+            <option value="<?= $ciclo['id'] ?>"><?= htmlspecialchars($ciclo['nombre']) ?></option>
+        <?php endforeach ?>
+    </select>
+
+    <label for="ciclo2">Ciclo requerido 2 (opcional):</label>
+    <select name="ciclos[]" id="ciclo2">
+        <option value="">-- Seleccione ciclo --</option>
+        <?php foreach ($ciclos as $ciclo): ?>
+            <option value="<?= $ciclo['id'] ?>"><?= htmlspecialchars($ciclo['nombre']) ?></option>
+        <?php endforeach ?>
+    </select>
     <label>
         Fecha límite<br>
         <input type="date" name="fechalimite" required value="<?= htmlspecialchars($_POST['fechalimite'] ?? '') ?>">

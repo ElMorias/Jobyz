@@ -44,6 +44,13 @@ class RepositorioOfertas {
             "INSERT INTO oferta (titulo, descripcion, empresa_id, fechalimite)
              VALUES (?, ?, ?, ?)");
         $stmt->execute([$titulo, $descripcion, $empresa_id, $fechalimite]);
+        return $this->db->lastInsertId();
+    }
+
+    public function anadirCicloAOferta($ofertaId, $cicloId) {
+        $sql = "INSERT INTO oferta_has_ciclo (oferta_id, ciclo_id) VALUES (?, ?)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$ofertaId, $cicloId]);
     }
 
     // Borrar una oferta por ID
@@ -61,9 +68,27 @@ class RepositorioOfertas {
         if($row){
             $oferta = Oferta::fromArray($row);
             $oferta->empresa_nombre = $row['empresa_nombre'];
+            
+            // Añadimos ciclos como array de nombres
+            $ciclosStmt = $this->db->prepare("SELECT c.nombre 
+                                            FROM oferta_has_ciclo ohc
+                                            INNER JOIN ciclo c ON ohc.ciclo_id = c.id
+                                            WHERE ohc.oferta_id = ?");
+            $ciclosStmt->execute([$id]);
+            $oferta->ciclos = array_column($ciclosStmt->fetchAll(PDO::FETCH_ASSOC), 'nombre');
             return $oferta;
         }
         return null;
+    }
+
+    public function obtenerCiclosPorOferta($ofertaId) {
+        $sql = "SELECT c.nombre 
+                FROM oferta_has_ciclo oc
+                INNER JOIN ciclo c ON oc.ciclo_id = c.id
+                WHERE oc.oferta_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$ofertaId]);
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'nombre');
     }
 
   

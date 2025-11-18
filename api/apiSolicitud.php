@@ -23,13 +23,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['resultado' => 'ok']);
         exit;
     }
-    if ($accion === 'aceptar' && $id) {
-        $repo->aceptar($id); 
+   if ($accion === 'aceptar' && $id) { 
+        $repo->aceptar($id);
+
+        // Obtener datos completos de la solicitud y la empresa
+        $solicitud = $repo->obtenerPorId($id); // Debe devolver nombre/email alumno, oferta, empresa_id
+        $alumnoEmail = $solicitud->alumno_email;
+        $alumnoNombre = $solicitud->alumno_nombre;
+        $ofertaTitulo = $solicitud->oferta_titulo;
+
+        // Obtener datos de la empresa para el remitente
+        $empresaRepo = new RepositorioEmpresa();
+        $empresaData = $empresaRepo->getPorId($solicitud->empresa_id); // Asegúrate de tener empresa_id en $solicitud
+        $empresaCorreo = $empresaData['correo'];
+        $empresaNombre = $empresaData['nombre'];
+
+        // Enviar el correo de aceptación
+        MailerService::enviarAceptacionSolicitud(
+            $alumnoEmail,
+            $alumnoNombre,
+            $ofertaTitulo,
+            $empresaCorreo,
+            $empresaNombre
+        );
+
         echo json_encode(['resultado' => 'ok']);
         exit;
     }
-    if ($accion === 'rechazar' && $id) {
+   if ($accion === 'rechazar' && $id) {
         $repo->rechazar($id);
+
+        // Obtener datos completos de la solicitud y la empresa
+        $solicitud = $repo->obtenerPorId($id);
+        $alumnoEmail = $solicitud->alumno_email;
+        $alumnoNombre = $solicitud->alumno_nombre;
+        $ofertaTitulo = $solicitud->oferta_titulo;
+
+        // Obtener datos de la empresa para el remitente (como array)
+        $empresaRepo = new RepositorioEmpresa();
+        $empresaData = $empresaRepo->getPorId($solicitud->empresa_id);
+        $empresaCorreo = $empresaData['correo'];
+        $empresaNombre = $empresaData['nombre'];
+
+        // Enviar el correo de rechazo
+        MailerService::enviarRechazoSolicitud(
+            $alumnoEmail,
+            $alumnoNombre,
+            $ofertaTitulo,
+            $empresaCorreo,
+            $empresaNombre
+        );
+
         echo json_encode(['resultado' => 'ok']);
         exit;
     }

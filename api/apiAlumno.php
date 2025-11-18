@@ -18,74 +18,90 @@ switch ($_SERVER['REQUEST_METHOD']) {
     $input = file_get_contents('php://input');
     $datos = [];
     if ($input) {
-      $try = json_decode($input, true);
-      $datos = is_array($try) ? $try : $_POST;
+        $try = json_decode($input, true);
+        $datos = is_array($try) ? $try : $_POST;
     } else {
-      $datos = $_POST;
+        $datos = $_POST;
     }
 
-    // Carga masiva
+    // 1. Notificar alumno no validado (ACCIÓN ESPECIAL)
+    if (!empty($datos['accion']) && $datos['accion'] === 'notificar_no_validado' && !empty($datos['id'])) {
+        $alumno = $repo->getAlumnoCompleto($datos['id'])->toArray(); // array asociativo
+        $ok = MailerService::enviarAvisoNoValidado($alumno['correo'], $alumno['nombre']);
+        echo json_encode(['ok' => $ok === true]);
+        exit;
+    }
+
+    // 2. Carga masiva usuarios
     if (!empty($datos['usuarios'])) {
-      $usuarios = $datos['usuarios'];
-      $familia = $datos['familia'] ?? null;
-      $ciclo = $datos['ciclo'] ?? null;
-      $res = $repo->cargaMasiva($usuarios, $familia, $ciclo);
+        $usuarios = $datos['usuarios'];
+        $familia = $datos['familia'] ?? null;
+        $ciclo = $datos['ciclo'] ?? null;
+        $res = $repo->cargaMasiva($usuarios, $familia, $ciclo);
 
-      echo json_encode([
-        'ok' => $res['ok'] ?? false,
-        'insertados' => $res['insertados'] ?? 0,
-        'fallos' => $res['fallos'] ?? 0,
-        'errores' => $res['fallosEmails'] ?? []
-      ]);
-      break;
+        // Envía email a cada nuevo usuario insertado
+        if (!empty($res['insertados'])) {
+            foreach ($res['alumnos'] as $u) {
+                MailerService::enviarBienvenidaMasiva($u['correo'], $u['nombre'], $u['correo'], 'Temporal1234');
+            }
+        }
+
+        echo json_encode([
+            'ok' => $res['ok'] ?? false,
+            'insertados' => $res['insertados'] ?? 0,
+            'fallos' => $res['fallos'] ?? 0,
+            'errores' => $res['fallosEmails'] ?? []
+        ]);
+        exit;
     }
 
-    // Edición (update)
-    if (!empty($datos['id'])) {
-      $id = $datos['id'];
-      $validador = new Validators();
-      $datosConId = array_merge($datos, ['id' => $id]);
-      $errores = $validador->validarAlumnoEdicion($datosConId);
 
-      if (!empty($errores)) {
-        http_response_code(400);
-        echo json_encode(['status' => 'error', 'errores' => $errores]);
-        break;
-      }
+    // 3. Edición (update alumno existente)
+    if (!empty($datos['id']) && empty($datos['accion'])) { // Solo si NO es acción especial
+        $id = $datos['id'];
+        $validador = new Validators();
+        $datosConId = array_merge($datos, ['id' => $id]);
+        $errores = $validador->validarAlumnoEdicion($datosConId);
 
-      $ok = $repo->actualizar($id, $datos);
-      if ($ok) {
-        $usuario = $repo->getAlumnoCompleto($id)->toArray();
-        echo json_encode(['status' => 'ok', 'mensaje' => 'Alumno actualizado', 'alumno' => $usuario]);
-      } else {
-        http_response_code(400);
-        echo json_encode(['status' => 'error', 'mensaje' => 'No se pudo actualizar']);
-      }
-      break;
+        if (!empty($errores)) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'errores' => $errores]);
+            exit;
+        }
+
+        $ok = $repo->actualizar($id, $datos);
+        if ($ok) {
+            $usuario = $repo->getAlumnoCompleto($id)->toArray();
+            echo json_encode(['status' => 'ok', 'mensaje' => 'Alumno actualizado', 'alumno' => $usuario]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'mensaje' => 'No se pudo actualizar']);
+        }
+        exit;
     }
 
-    // Registro (alta normal)
+    // 4. Registro (alta normal, si no hay id ni acción especial ni carga masiva)
     $validador = new Validators();
     $errores = $validador->validarAlumnoRegistro($datos);
 
     if (!empty($errores)) {
-      echo json_encode(['status' => 'error', 'errores' => $errores]);
-      exit;
+        echo json_encode(['status' => 'error', 'errores' => $errores]);
+        exit;
     }
 
     $alumno = $repo->crear($datos);
 
     if ($alumno) {
-      MailerService::enviarBienvenida($datos['correo'], $datos['nombre']);
-      echo json_encode([
-        'status' => 'ok',
-        'alumno' => $alumno->toArray(),
-        'mensaje' => 'Alumno creado correctamente'
-      ]);
+        MailerService::enviarBienvenida($datos['correo'], $datos['nombre']);
+        echo json_encode([
+            'status' => 'ok',
+            'alumno' => $alumno->toArray(),
+            'mensaje' => 'Alumno creado correctamente'
+        ]);
     } else {
-      echo json_encode(['status' => 'error', 'errores' => ['Error al registrar el alumno.']]);
+        echo json_encode(['status' => 'error', 'errores' => ['Error al registrar el alumno.']]);
     }
-    break;
+    exit;
 
   case 'DELETE':
     $datos = json_decode(file_get_contents("php://input"), true);
@@ -129,6 +145,12 @@ function getAlumnos($repo) {
 
     return $alumno;
   } else {
-    return $repo->getTodos();
+    $todos = $repo->getTodos();
+    $noValidados = $repo->getNoValidados(); // Debes tener este método en tu repo
+
+    return [
+      'alumnos' => $todos,
+      'noValidados' => $noValidados
+    ];
   }
 }

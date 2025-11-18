@@ -23,6 +23,7 @@ function renderSolicitudes(rol, solicitudes) {
             <th>Fecha</th>
             <th>Empresa</th>
             <th>Oferta</th>
+            <th>Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@ function renderSolicitudes(rol, solicitudes) {
           <td>${s.fecha_solicitud}</td>
           <td>${s.empresa_nombre}</td>
           <td>${s.oferta_titulo}</td>
+          <td>${s.estado}</td>
         </tr>
       `;
     });
@@ -66,7 +68,8 @@ function renderSolicitudes(rol, solicitudes) {
           <td>${s.fecha_solicitud}</td>
           <td>
             <button class="btn-tabla btn-aceptar">Aceptar</button>
-            <button class="btn-tabla btn-rechaza btn-borrar">Rechazar</button>
+            <button class="btn-tabla btn-rechazar btn-borrar">Rechazar</button>
+            <button class="btn-tabla btn-ver-alumno btn-detalles" data-alumnoid="${s.alumno_id}">Ver</button>
           </td>
         </tr>
       `;
@@ -86,6 +89,7 @@ function renderSolicitudes(rol, solicitudes) {
           <div class="titulo-oferta">${s.oferta_titulo}</div>
           <div class="empresa">${s.empresa_nombre}</div>
           <div class="fecha-solicitud">Solicitada el ${s.fecha_solicitud}</div>
+          <div class="estado-solicitud">Estado: ${s.estado}</div>
           <div class="card-actions">
             <button class="btn-tabla btn-borrar">Eliminar</button>
           </div>
@@ -112,6 +116,7 @@ function addEmpresaListeners() {
       }).then(() => recargarSolicitudes());
     };
   });
+
   document.querySelectorAll('.btn-rechazar').forEach(btn => {
     btn.onclick = function () {
       const id = this.closest('tr').dataset.id;
@@ -120,6 +125,40 @@ function addEmpresaListeners() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accion: 'rechazar', id })
       }).then(() => recargarSolicitudes());
+    };
+  });
+
+// Detalles
+  document.querySelectorAll('.btn-ver-alumno').forEach(btn => {
+    btn.onclick = function () {
+      const alumnoId = this.getAttribute('data-alumnoid');
+      if (!alumnoId) return;
+
+      modalManager.crearModalDesdeUrl('assets/modales/modalDetalles.txt', function () {
+        fetch('api/apiAlumno.php?id=' + encodeURIComponent(alumnoId))
+          .then(res => res.json())
+          .then(alumno => {
+            document.getElementById('modal-correo').value = alumno.correo || '';
+            document.getElementById('modal-nombre').value = alumno.nombre || '';
+            document.getElementById('modal-apellido1').value = alumno.apellido1 || '';
+            document.getElementById('modal-apellido2').value = alumno.apellido2 || '';
+            document.getElementById('modal-fnacimiento').value = alumno.fnacimiento || '';
+            document.getElementById('modal-dni').value = alumno.dni || '';
+            document.getElementById('modal-telefono').value = alumno.telefono || '';
+            document.getElementById('modal-direccion').value = alumno.direccion || '';
+            document.getElementById('detalle-foto').src = alumno.foto || 'assets/Images/default.png';
+
+            // Enlace curriculum:
+            let curriculumContainer = document.getElementById('modal-curriculum');
+            if (curriculumContainer) {
+              if (alumno.curriculum) {
+                curriculumContainer.innerHTML = `<a href="${alumno.curriculum}" target="_blank">Ver Curriculum</a>`;
+              } else {
+                curriculumContainer.innerHTML = 'No disponible';
+              }
+            }
+          })
+      });
     };
   });
 }

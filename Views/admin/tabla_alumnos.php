@@ -24,6 +24,7 @@
 
 
   <div id="contenedor-alumnos"></div>
+  <div id="contenedor-alumnos-noval"></div>
 </section>
 <?php $this->stop() ?>
 

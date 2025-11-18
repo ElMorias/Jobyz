@@ -55,13 +55,29 @@ class RepositorioAlumno {
       return $alumno;
   }
   // Obtener todos los alumnos (ojo lo he cambiado a ver si no falla), no tiene estudios
-  public function getTodos() {
-    $sql = "SELECT a.*, u.correo
-            FROM Alumno a
-            JOIN Users u ON a.user_id = u.id";
-    $stmt = $this->db->query($sql);
-    return $stmt->fetchAll();
-  }
+    public function getTodos() {
+        $sql = "SELECT a.*, u.correo
+                FROM Alumno a
+                JOIN Users u ON a.user_id = u.id";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    public function getNoValidados() {
+        $sql = "SELECT a.*, u.correo 
+                FROM alumno a
+                JOIN users u ON a.user_id = u.id
+                WHERE a.validado = 0";
+        $stmt = $this->db->query($sql);
+        $alumnos = [];
+        foreach ($stmt as $row) {
+            // Si tienes un método estático de conversión:
+            // $alumnos[] = Alumno::fromArray($row)->toArray();
+            // Si los quieres como array plano directamente:
+            $alumnos[] = $row;
+        }
+        return $alumnos;
+    }
 
     public function getAlumnoIdPorUserId($user_id){
         $stmt = $this->db->prepare("SELECT id FROM alumno WHERE user_id = ?");
@@ -96,7 +112,7 @@ class RepositorioAlumno {
         $stmt->execute([$telefono, $id]);
         return $stmt->fetchColumn() > 0;
     }
-    
+
   //Borrar alumno por ID
     public function borrarPorAlumnoId($alumnoId) {
         // Buscar el user_id asociado al alumno
@@ -349,7 +365,7 @@ class RepositorioAlumno {
                     continue;
                 }
 
-                $contrasena = password_hash("temp_pass", PASSWORD_DEFAULT);
+                $contrasena = password_hash("Temporal1234", PASSWORD_DEFAULT);
 
 
                 $userStmt = $this->db->prepare("INSERT INTO users (correo, contraseña, rol_id) VALUES (?, ?, ?)");

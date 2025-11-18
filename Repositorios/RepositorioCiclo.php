@@ -12,5 +12,11 @@ class RepositorioCiclo {
         $stmt->execute([$familia_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAll() {
+        $sql = "SELECT id, nombre FROM ciclo";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>

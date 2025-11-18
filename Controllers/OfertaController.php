@@ -38,9 +38,19 @@ class OfertaController {
             $ofertas = $this->repo->todas();
         }
 
+        // Aquí añadimos los ciclos a cada oferta en el array
+        foreach ($ofertas as &$oferta) {
+            // Si $oferta es objeto, usa $oferta->id; si es array, $oferta['id']
+            $ofertaArr = is_array($oferta) ? $oferta : $oferta->toArray();
+            $ofertaArr['ciclos'] = $this->repo->obtenerCiclosPorOferta($ofertaArr['id']);
+            $oferta = $ofertaArr;
+        }
+        unset($oferta);
+
+
         echo $this->templates->render('../ofertas', [
             'title' => 'Ofertas',
-            'ofertas' => array_map(fn($o) => $o->toArray(), $ofertas)
+            'ofertas' => $ofertas
         ]);
     }
 
@@ -53,25 +63,50 @@ class OfertaController {
             header('Location: index.php?page=ofertas');
             exit;
         }
+
+        // Obtén ciclos para el formulario (solo si usas plantilla PHP aquí)
+        $cicloRepo = new RepositorioCiclo();
+        $ciclos = $cicloRepo->getAll();
+
         $errores = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $titulo = trim($_POST['titulo'] ?? '');
             $descripcion = trim($_POST['descripcion'] ?? '');
             $fechalimite = $_POST['fechalimite'] ?? '';
-            $empresa_id;
+            $ciclosSelecionados = $_POST['ciclos'] ?? [];
+
+            // Validación básica de campos comunes
             if (!$titulo) $errores[] = "El título es obligatorio";
             if (!$descripcion) $errores[] = "La descripción es obligatoria";
             if (!$fechalimite) $errores[] = "La fecha límite es obligatoria";
+
+            // Limpiar ciclos: quitar vacíos y duplicados
+            $ciclosFiltrados = array_unique(array_filter($ciclosSelecionados));
+            if (empty($ciclosFiltrados)) {
+                $errores[] = "Debes seleccionar al menos un ciclo requerido";
+            }
+            if (count($ciclosFiltrados) > 2) {
+                $errores[] = "No puedes seleccionar más de 2 ciclos";
+            }
+
             if (!$errores) {
-                $this->repo->insertarOferta($titulo, $descripcion, $empresa_id, $fechalimite);
+                $ofertaId = $this->repo->insertarOferta($titulo, $descripcion, $empresa_id, $fechalimite);
+
+                // Insertar en tabla oferta_has_ciclo
+                foreach ($ciclosFiltrados as $cicloId) {
+                    $this->repo->anadirCicloAOferta($ofertaId, $cicloId);
+                }
                 header('Location: index.php?page=ofertas&creada=1');
                 exit;
             }
         }
+
         echo $this->templates->render('../nueva_oferta', [
-            'errores' => $errores
+            'errores' => $errores,
+            'ciclos' => $ciclos // Así puedes popular los selects en la vista
         ]);
     }
+
 
     // Modificar oferta (solo empresa dueña)
     public function modificarOferta() {

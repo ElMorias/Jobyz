@@ -39,7 +39,7 @@
     <div class="form-datos-personales">
       <div class="form-group">
         <label for="modal-curriculum">Currículum</label>
-        <input type="text" id="modal-curriculum" readonly>
+        <div id="modal-curriculum" readonly></div>
       </div>
       <div class="form-group">
         <label for="modal-dni">DNI</label>

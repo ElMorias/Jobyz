@@ -9,4 +9,5 @@
   <div id="contenedor-solicitudes"></div>
 </div>
 <script src="assets/js/solicitudes.js"></script>
+<script src="assets/js/ModalManager.js"></script>
 <?php $this->stop() ?>

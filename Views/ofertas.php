@@ -26,6 +26,16 @@
         <div class="descripcion"><?= htmlspecialchars($oferta['descripcion']) ?></div>
         <div class="fecha-inicio">Inicio: <?= htmlspecialchars($oferta['fechainicio']) ?></div>
         <div class="fecha-limite">Fecha límite: <?= htmlspecialchars($oferta['fechalimite']) ?></div>
+        <div class="ciclos-oferta">
+          <?php if (!empty($oferta['ciclos'])): ?>
+            <span class="label-ciclos">Ciclos requeridos:</span>
+            <?php foreach($oferta['ciclos'] as $nombreCiclo): ?>
+              <span class="badge-ciclo"><?= htmlspecialchars($nombreCiclo) ?></span>
+            <?php endforeach ?>
+          <?php else: ?>
+            <span class="label-ciclos">Sin ciclos requeridos</span>
+          <?php endif ?>
+        </div>
         <div class="card-actions">
           <?php if ($rolId == 1): // Admin ?>
               <form action="index.php?page=ofertas" method="POST" class="form-no-form">

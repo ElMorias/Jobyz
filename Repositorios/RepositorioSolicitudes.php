@@ -29,6 +29,38 @@ class RepositorioSolicitudes {
         return $solicitudes;
     }
 
+    public function obtenerPorId($solicitudId)
+    {
+        $sql = "SELECT s.*, 
+                    a.nombre AS alumno_nombre, 
+                    a.apellido1 AS alumno_apellido1,
+                    a.apellido2 AS alumno_apellido2,
+                    u.correo AS alumno_email,
+                    o.titulo AS oferta_titulo,
+                    o.empresa_id AS empresa_id
+                FROM solicitud s
+                JOIN alumno a ON a.id = s.alumno_id
+                JOIN users u ON u.id = a.user_id
+                JOIN oferta o ON o.id = s.oferta_id
+                WHERE s.id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$solicitudId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            // Devuelve un objeto stdClass con todos los campos necesarios
+            $solicitud = new stdClass();
+            $solicitud->id = $row['id'];
+            $solicitud->alumno_email = $row['alumno_email'];
+            $solicitud->alumno_nombre = trim($row['alumno_nombre'] . ' ' . $row['alumno_apellido1'] . ' ' . $row['alumno_apellido2']);
+            $solicitud->oferta_titulo = $row['oferta_titulo'];
+            $solicitud->empresa_id = $row['empresa_id'];
+            // Añade más propiedades si las necesitas
+            return $solicitud;
+        }
+        return null;
+    }
+
     // Ejemplo: solicitudes del alumno
     public function deAlumno($alumnoId){
 
@@ -58,7 +90,7 @@ class RepositorioSolicitudes {
                 JOIN oferta o ON o.id = s.oferta_id
                 JOIN alumno a ON a.id = s.alumno_id
                 JOIN users u ON u.id = a.user_id
-                WHERE o.empresa_id = ?";
+                WHERE o.empresa_id = ? AND s.estado = 'pendiente'";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$empresaId]);
         $solicitudes = [];
