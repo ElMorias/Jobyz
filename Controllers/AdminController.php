@@ -37,7 +37,6 @@ class AdminController
             $_SESSION['rol_id'] != 1
         ) {
             header('Location: index.php?page=landing');
-            exit;
         }
 
         echo $this->templates->render('../admin/panel_admin', [

@@ -34,7 +34,6 @@ class EmpresaController {
             if ($nuevaEmpresa) {
                 MailerService::enviarBienvenida($_POST['correo'], $_POST['nombre']);
                 header('Location: ?page=login');
-                exit();
             } else {
                 $error = 'Error al registrar la empresa. Revisa los datos.';
                 echo $this->templates->render('../registro_empresa', [
@@ -68,7 +67,6 @@ class EmpresaController {
                 if ($nuevaEmpresa) {
                     MailerService::enviarBienvenida($_POST['correo'], $_POST['nombre']);
                     header('Location: ?page=tabla_empresas');
-                    exit();
                 } else {
                     $errores = ['Error al crear la empresa. Por favor, revisa los datos.'];
                     echo $this->templates->render('../crear_empresa', [
@@ -85,7 +83,6 @@ class EmpresaController {
             }
         } else {
             header('Location: index.php?page=landing');
-            exit;
         }
     }
 
@@ -114,7 +111,6 @@ class EmpresaController {
             ]);
         } else {
             header('Location: index.php?page=landing');
-            exit;
         }
     }
 
@@ -127,10 +123,8 @@ class EmpresaController {
                 }
             }
             header('Location: ?page=tabla_empresas');
-            exit();
         } else {
             header('Location: index.php?page=landing');
-            exit;
         }
     }
 
@@ -145,10 +139,8 @@ class EmpresaController {
                 return;
             }
             header('Location: ?page=tabla_empresas');
-            exit();
         } else {
             header('Location: index.php?page=landing');
-            exit;
         }
     }
 
@@ -157,7 +149,6 @@ class EmpresaController {
             $id = $_GET['id'] ?? null;
             if (!$id) {
                 header('Location: ?page=tabla_empresas');
-                exit();
             }
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -175,7 +166,6 @@ class EmpresaController {
                 $ok = $this->repo->actualizar($id, $_POST, $_FILES);
                 if ($ok) {
                     header('Location: ?page=tabla_empresas');
-                    exit();
                 } else {
                     $empresaArr = array_merge($_POST, ['id' => $id]);
                     echo $this->templates->render('../editar_empresa', [
@@ -193,20 +183,17 @@ class EmpresaController {
             }
         } else {
             header('Location: index.php?page=landing');
-            exit;
         }
     }
 
     public function editarPerfilEmpresa() {
         if (!isset($_SESSION['user_id']) || !isset($_SESSION['rol_id']) || $_SESSION['rol_id'] != 3) {
             header('Location: index.php?page=landing');
-            exit();
         }
         $userId = $_SESSION['user_id'];
         $empresa = $this->repo->getPorUserId($userId);
         if (!$empresa) {
             header('Location: index.php?page=landing');
-            exit();
         }
         $empresaId = $empresa->getId();
 
@@ -231,7 +218,6 @@ class EmpresaController {
 
             if ($ok) {
                 header('Location: index.php?page=perfil_empresa');
-                exit();
             } else {
                 $errores = ['Error actualizando datos en la base de datos.'];
                 echo $this->templates->render('../perfil_empresa', [
@@ -255,14 +241,11 @@ class EmpresaController {
                 if ($id) {
                     $this->repo->borrarPorEmpresaId($id);
                     header('Location: ?page=tabla_empresas');
-                    exit();
                 }
             }
             header('Location: ?page=tabla_empresas');
-            exit();
         } else {
             header('Location: index.php?page=landing');
-            exit;
         }
     }
 

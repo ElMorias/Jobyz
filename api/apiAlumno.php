@@ -6,20 +6,6 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once dirname(__DIR__) . '/autoloader.php';
 header('Content-Type: application/json');
 
-$headers = getallheaders();
-$tokenHeader = $headers['Authorization'] ?? '';
-$matches = [];
-$token = (preg_match('/Bearer\s+(\S+)/', $tokenHeader, $matches)) ? $matches[1] : null;
-$user_id = $headers['X-USER-ID'] ?? null;
-
-$security = new Security();
-
-if (!$token || !$user_id || !$security->validateToken($user_id, $token)) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Token inválido o ha expirado']);
-    exit;
-}
-
 $repo = new RepositorioAlumno();
 
 /**
@@ -32,6 +18,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
     // === CONSULTA DE DATOS (DETALLE, PROPIO O LISTADO) ===
     case 'GET':
+        /*
+            Solo exige autenticación cuando se trata de una consulta privada:
+            - Detalle por ID (usado en edición/detalle)
+            - Consulta "yo" (perfil propio)
+            El resto (listado global para la tabla de administración, o para selects) NO necesita token.
+        */
+        if (isset($_GET['id']) || isset($_GET['yo'])) {
+            requireToken();
+        }
         echo json_encode(getAlumnos($repo));
         break;
 
@@ -46,16 +41,18 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $datos = $_POST;
         }
 
-        // --- 1. Notificar alumno NO validado ---
+        // --- 1. Notificar alumno NO validado (protegido, requiere token) ---
         if (!empty($datos['accion']) && $datos['accion'] === 'notificar_no_validado' && !empty($datos['id'])) {
+            requireToken();
             $alumno = $repo->getAlumnoCompleto($datos['id']);
             $ok = $alumno ? MailerService::enviarAvisoNoValidado($alumno->getCorreo(), $alumno->getNombre()) : false;
             echo json_encode(['ok' => $ok === true]);
             exit;
         }
 
-        // --- 2. Carga masiva de usuarios ---
+        // --- 2. Carga masiva de usuarios (protegido, requiere token) ---
         if (!empty($datos['usuarios'])) {
+            requireToken();
             $usuarios = $datos['usuarios'];
             $familia = $datos['familia'] ?? null;
             $ciclo = $datos['ciclo'] ?? null;
@@ -77,8 +74,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             exit;
         }
 
-        // --- 3. Edición de alumno EXISTENTE ---
+        // --- 3. Edición de alumno EXISTENTE (protegido, requiere token) ---
         if (!empty($datos['id']) && empty($datos['accion'])) {
+            requireToken();
             $id = $datos['id'];
             $validador = new Validators();
             $datosConId = array_merge($datos, ['id' => $id]);
@@ -101,7 +99,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             exit;
         }
 
-        // --- 4. Alta INDIVIDUAL ---
+        // --- 4. Alta INDIVIDUAL (NO requiere token, permite registro público) ---
         $validador = new Validators();
         $errores = $validador->validarAlumnoRegistro($datos);
 
@@ -126,6 +124,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
     // === BORRAR UN ALUMNO POR ID ===
     case 'DELETE':
+        requireToken();
         $datos = json_decode(file_get_contents("php://input"), true);
         if (isset($datos['id'])) {
             $ok = $repo->borrarPorAlumnoId($datos['id']);
@@ -148,16 +147,40 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 /**
+ * Helper para validar tokens en endpoints que sí requieren autenticación.
+ */
+function requireToken() {
+    $headers = getallheaders();
+    $tokenHeader = $headers['Authorization'] ?? '';
+    $matches = [];
+    $token = (preg_match('/Bearer\s+(\S+)/', $tokenHeader, $matches)) ? $matches[1] : null;
+    $user_id = $headers['X-USER-ID'] ?? null;
+    $security = new Security();
+
+    if (!$token || !$user_id || !$security->validateToken($user_id, $token)) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Token inválido o ha expirado']);
+        exit;
+    }
+}
+
+/**
  * Consulta flexible de alumnos:
- * - id  : devuelve alumno como array
- * - yo  : devuelve alumno propio (array) + estudios con nombres
- * - else: listado (convertido siempre a arrays planos)
+ * - id  : devuelve alumno como array (protegido)
+ * - yo  : devuelve alumno propio + estudios (protegido)
+ * - else: listado general (público o solo para administración, según tu lógica de frontend)
  */
 function getAlumnos($repo) {
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
         $alumno = $repo->getAlumnoCompleto($id);
-        return $alumno ? $alumno->toArray() : null;
+        if (!$alumno) return null;
+
+        $array = $alumno->toArray();
+        $repoEstudios = new RepositorioEstudio();
+        $array['estudios'] = $repoEstudios->getPorAlumnoIdConNombres($id);
+
+        return $array;
     } elseif (isset($_GET['yo'])) {
         $userId = $_SESSION['user_id'] ?? null;
         $id = $repo->getAlumnoIdPorUserId($userId);
@@ -171,14 +194,11 @@ function getAlumnos($repo) {
         if (!$alumno) return null;
 
         $array = $alumno->toArray();
-
-        // Adjunta estudios detallados con nombres
         $repoEstudios = new RepositorioEstudio();
         $array['estudios'] = $repoEstudios->getPorAlumnoIdConNombres($id);
 
         return $array;
     } else {
-        // Listado: convertir ambos a arrays asociativos listos para frontend
         $todos = array_map(fn($a) => $a->toArray(), $repo->getTodos());
         $noValidados = array_map(fn($a) => $a->toArray(), $repo->getNoValidados());
 

@@ -84,7 +84,7 @@
 
     <!-- Logo / Foto -->
     <div class="form-bloque form-documentos">
-      <h3>Logo / Imagen</h3>
+      <h3>Logo</h3>
       <div class="form-row">
         <div class="foto-contenedor">
           <input type="file" id="fotoFile" name="foto" accept="image/*">
@@ -97,7 +97,7 @@
     <div class="registro-botones">
       <input type="hidden" name="validada" value="0">
       <button type="submit" class="btn-registro">Registrar</button>
-      <a href="/Jobyz/index.php?page=landing" class="btn">  
+      <a href="/index.php?page=landing" class="btn">  
         Cancelar Registro
       </a>
     </div>

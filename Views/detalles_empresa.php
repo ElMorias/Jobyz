@@ -49,7 +49,7 @@
 
     <!-- Logo / Foto -->
     <div class="form-bloque form-documentos">
-      <h3>Logo / Imagen</h3>
+      <h3>Logo</h3>
       <div class="foto-contenedor">
         <?php if (!empty($empresa['foto'])): ?>
           <img src="<?= htmlspecialchars($empresa['foto']) ?>" alt="Logo de la empresa"">

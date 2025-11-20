@@ -5,7 +5,6 @@
 
 <?php $this->start('contenido') ?>
 <section class="registro-container">
-  <div id="modal-registro-errores"></div>
   <form action="" method="POST" id="form-registro-alumno" class="form-registro-alumno" enctype="multipart/form-data">
  <!-- div1: Datos de Cuenta -->
   <div class="form-bloque">
@@ -91,6 +90,7 @@
       <button type="submit" class="btn-registro">Registrarse</button>
       <button type="button" id="btn-salir" class="btn-salir">Cancelar Registro</button>
     </div>
+    <div id="modal-registro-errores"></div>
   </form>
 </section>
 

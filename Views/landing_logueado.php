@@ -1,41 +1,55 @@
-<?php $this->layout('base', ['title' => 'Jobyz – Portal de Empleo']) ?>
+<?php $this->layout('base', ['title' => 'Jobyz – Portal de Empleo']);?>
 
 <?php $this->start('css') ?>
- <link rel="stylesheet" href="assets/css/landing.css">
+  <link rel="stylesheet" href="assets/css/estilos.css">
 <?php $this->stop() ?>
 
-
 <?php $this->start('contenido') ?>
-<div class=" div-landing">
+<div class="landing-wrap">
+
+  <!-- HERO / CABECERA -->
   <section class="hero-landing">
-    <div>
-      <h1>Tu próximo desafío profesional empieza aquí</h1>
-      <p>Conecta con empresas, postúlate a ofertas y haz crecer tu carrera desde el aula.</p>
+    <div class="hero-overlay">
+      <h1>Tu futuro empieza en <span class="marcajobyz">Jobyz</span></h1>
+      <p class="hero-slogan">Conecta con empresas, lanza tu carrera e impulsa tu talento</p>
     </div>
   </section>
 
-  <section class="descripcion-landing">
-    <h2>¿Qué es Jobyz?</h2>
-    <p>Jobyz conecta alumnos con empresas de forma ágil, clara y directa. Crea tu perfil, postúlate y recibe notificaciones automáticas.</p>
-    <div class="beneficios">
-      <div class="beneficio">CV en PDF</div>
-      <div class="beneficio">Empresas validadas</div>
-      <div class="beneficio">Notificaciones automáticas</div>
-      <div class="beneficio">Estadísticas de actividad</div>
+  <!-- DESCRIPCIÓN Y BENEFICIOS -->
+  <section class="section-info">
+    <h2>¿Por qué elegir Jobyz?</h2>
+    <div class="info-flex">
+      <div>
+        <p>Descubre una experiencia de empleo directa, práctica y adaptada a centros educativos.
+           Jobyz es el puente real entre formación y trabajo: crea tu perfil, postúlate y recibe avisos en tiempo real.</p>
+        <div class="beneficios">
+          <div class="beneficio"><span>📄</span> CV digital y descarga PDF</div>
+          <div class="beneficio"><span>✅</span> Empresas verificadas</div>
+          <div class="beneficio"><span>🔔</span> Alertas automáticas</div>
+          <div class="beneficio"><span>📊</span> Estadísticas y seguimiento</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="empresas-landing">
-    <h2>Últimas empresas registradas</h2> 
-    <ul class="lista-empresas">
-      <li>NTT DATA</li>
-      <li>AMSystem</li>
-      <li>Nter Tech Services</li>
-      <li>Grupo Ibersys</li>
-      <li>Soltel</li>
-      <li>Indra</li>
-    </ul>
-    <a href="#" class="ver-todas">Ver todas las empresas</a>
+  <!-- CARROUSEL DINÁMICO DE EMPRESAS -->
+  <section class="carrousel-empresas">
+    <h2>Empresas que confían en Jobyz</h2>
+   <div class="carrousel-logos" id="carrouselLogos">
+    <?php foreach ($empresas as $empresa): ?>
+      <?php if (!empty($empresa['foto'])): ?>
+        <div class="logo-slide">
+          <img src="<?= htmlspecialchars($empresa['foto']) ?>"
+              alt="<?= htmlspecialchars($empresa['nombre']) ?>"
+              title="<?= htmlspecialchars($empresa['nombre']) ?>">
+        </div>
+      <?php endif; ?>
+    <?php endforeach; ?>
+  </div>
   </section>
 </div>
+<?php $this->stop() ?>
+
+<?php $this->start('js') ?>
+<script src="assets/js/landing.js"></script>
 <?php $this->stop() ?>

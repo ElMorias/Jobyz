@@ -7,9 +7,10 @@ window.addEventListener('DOMContentLoaded', function () {
 
 function modificarAlumno() {
 
+    // Modificar
     const form = document.getElementById('form-editar-alumno');
 
-    // Modificar
+
     // lo de yo=1 es porquue e modifiar del admin le paso el id del la empresa, pero aqui no
     // asi que de default me manda la lista de todos los alumnos, si pongo yo=1 en el get puedo distinguir
     fetch('api/apiAlumno.php?yo=1', {
@@ -22,7 +23,8 @@ function modificarAlumno() {
         .then(alumno => {
             document.getElementById('perfil-id').value = alumno.id || '';
             document.getElementById('perfil-correo').value = alumno.correo || '';
-            document.getElementById('perfil-contrasena').value = '';
+            document.getElementById('perfil-contrasena').value = alumno.contrasena || '';
+            document.getElementById('repetir-contrasena').value = alumno.contrasena || '';
             document.getElementById('perfil-nombre').value = alumno.nombre || '';
             document.getElementById('perfil-apellido1').value = alumno.apellido1 || '';
             document.getElementById('perfil-apellido2').value = alumno.apellido2 || '';
@@ -33,8 +35,7 @@ function modificarAlumno() {
 
             // Foto actual
             document.getElementById('preview-foto').innerHTML = alumno.foto
-                ? `<img src="${alumno.foto}" style="max-width:150px;">`
-                : '';
+                ? `<img src="${alumno.foto}">`: '';
 
             let enlaceCurriculum = document.getElementById('curriculum-link');
             if (alumno.curriculum) {
@@ -76,7 +77,7 @@ function modificarAlumno() {
     estudiosGuardadosWrapper.addEventListener('click', function (e) {
         if (e.target.classList.contains('btn-borrar-estudio')) {
             const estudioId = e.target.getAttribute('data-id');
-            // Llama a tu API/endpoint para borrar ese estudio
+            // Llamar para borrar ese estudio
             fetch('api/apiEstudio.php', {
                 headers: {
                     Authorization: "Bearer " + token,
@@ -90,8 +91,6 @@ function modificarAlumno() {
                     if (resp.status === 'ok') {
                         // Recarga el perfil
                         modificarAlumno();
-                    } else {
-                        alert('No se pudo borrar ese estudio');
                     }
                 });
         }
@@ -104,7 +103,7 @@ function modificarAlumno() {
         if (file) {
             let reader = new FileReader();
             reader.onload = function (evt) {
-                document.getElementById('preview-foto').innerHTML = `<img src="${evt.target.result}" style="max-width:150px;">`;
+                document.getElementById('preview-foto').innerHTML = `<img src="${evt.target.result}">`;
             };
             reader.readAsDataURL(file);
         }
@@ -127,7 +126,8 @@ function modificarAlumno() {
             const dni = form['dni'].value.trim();
             const telefono = form['telefono'].value.trim();
             const direccion = form['direccion'].value.trim();
-            const contrasena = form['contrasena'].value;
+            const contrasena1 = form['contrasena'].value;
+            const contrasena2 = form['repetir-contrasena'].value;
             // Correo solo lectura, no lo comprobamos aquí
 
             // Validaciones
@@ -144,8 +144,8 @@ function modificarAlumno() {
             if (!fnacimiento) {
                 errores.push('Debe indicar su fecha de nacimiento.');
             }
-            if (!/^\d{8}[A-Za-z]$/.test(dni)) {
-                errores.push('El DNI debe tener formato 12345678A.');
+            if (!/^\d{8}[A-Z]$/.test(dni)) {
+                errores.push('El DNI debe tener formato 12345678A(letra mayuscula).');
             }
             if (!/^\d{9}$/.test(telefono)) {
                 errores.push('El teléfono debe tener 9 dígitos.');
@@ -154,8 +154,11 @@ function modificarAlumno() {
                 errores.push('La dirección es obligatoria y de máximo 80 caracteres.');
             }
             // Si el usuario escribe una contraseña nueva, debe tener mínimo
-            if (contrasena && (contrasena.length < 6 || contrasena.length > 60)) {
+            if (contrasena1 && (contrasena1.length < 6 || contrasena1.length > 60)) {
                 errores.push('La nueva contraseña debe tener entre 6 y 60 caracteres.');
+            }
+            if (contrasena1 !== contrasena2) {
+                errores.push('Las contraseñas no coinciden.');
             }
 
             // Mostrar errores si existen
@@ -170,7 +173,7 @@ function modificarAlumno() {
                 return; // No sigue ni hace fetch si hay errores
             }
 
-            // Si todo está ok, SÍ envía los datos como antes
+            // Si todo está ok
             let data = new FormData(form);
             fetch('api/apiAlumno.php', {
                 headers: {
@@ -184,9 +187,9 @@ function modificarAlumno() {
                 .then(resp => {
                     if (resp.status === 'ok') {
                         modificarErrores.innerHTML = '<span style="color:green;">Perfil actualizado correctamente</span>';
-                        modificarAlumno(); // O recarga la UI como ya tienes
+                        modificarAlumno();
                     } else if (Array.isArray(resp.errores)) {
-                        // Mostrar lista de errores
+                        // Mostrar lista de errores que trae el back
                         const ul = document.createElement('ul');
                         resp.errores.forEach(msg => {
                             const li = document.createElement('li');
@@ -196,8 +199,10 @@ function modificarAlumno() {
                         modificarErrores.innerHTML = '';
                         modificarErrores.appendChild(ul);
                     } else if (resp.mensaje) {
+                        // si no da fallos el ok
                         modificarErrores.innerHTML = '<span>Error: ' + resp.mensaje + '</span>';
                     } else {
+                        // esto es si estatus no esta ok
                         modificarErrores.innerHTML = '<span>Error desconocido</span>';
                     }
                 });
@@ -213,6 +218,7 @@ function modificarAlumno() {
         };
     }
 
+    //modal para la camara toamr foto
     const btnTomarFoto = document.getElementById('tomarFotoBtn');
     let streamActivo = null;
 
@@ -244,7 +250,7 @@ function modificarAlumno() {
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0);
         const dataUrl = canvas.toDataURL('image/png');
-        document.getElementById('preview-foto').innerHTML = `<img src="${dataUrl}" style="width:110px">`;
+        document.getElementById('preview-foto').innerHTML = `<img src="${dataUrl}">`;
         dataURLtoFileInputJobyz(dataUrl, 'foto-captura.png', document.getElementById('fotoFile'));
         cerrarModalCamara();
     }
@@ -258,12 +264,21 @@ function modificarAlumno() {
     }
 
     function dataURLtoFileInputJobyz(dataUrl, filename, input) {
+        // Convierte el dataURL en un objeto Blob (archivo binario)
         fetch(dataUrl)
             .then(res => res.blob())
             .then(blob => {
+                // Crea un objeto File usando el blob anterior y el nombre de archivo deseado
                 const file = new File([blob], filename, { type: blob.type });
+
+                // Crea un DataTransfer
                 const dt = new DataTransfer();
+
+                // Añade el archivo al DataTransfer
                 dt.items.add(file);
+
+                // Asigna los archivos (falsos) generados al input file,
+                // para que el formulario lo trate como si el usuario los hubiera seleccionado manualmente
                 input.files = dt.files;
             });
     }
@@ -277,7 +292,7 @@ function modificarAlumno() {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    if (previewFoto) previewFoto.innerHTML = `<img src="${e.target.result}" width="120">`;
+                    if (previewFoto) previewFoto.innerHTML = `<img src="${e.target.result}">`;
                 };
                 reader.readAsDataURL(this.files[0]);
             }

@@ -32,13 +32,8 @@ class AlumnoController
      */
     public function mostrarTabla()
     {
-        if (
-            empty($_SESSION['correo']) ||
-            empty($_SESSION['rol_id']) ||
-            $_SESSION['rol_id'] != 1
-        ) {
+        if (empty($_SESSION['correo']) || empty($_SESSION['rol_id']) || $_SESSION['rol_id'] != 1) {
             header('Location: index.php?page=landing');
-            exit;
         }
         echo $this->templates->render('../admin/tabla_alumnos', [
             'title' => 'Usuarios registrados'

@@ -13,6 +13,7 @@
                         <th>Alumno</th>
                         <th>Email</th>
                         <th>Fecha solicitud</th>
+                        <th>Curriculum</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
@@ -22,6 +23,15 @@
                         <td><?= htmlspecialchars($s->alumno_nombre) ?></td>
                         <td><?= htmlspecialchars($s->alumno_email) ?></td>
                         <td><?= htmlspecialchars($s->fecha_solicitud) ?></td>
+                        <td>
+                        <?php if (!empty($s->curriculum)): ?>
+                            <a href="<?= htmlspecialchars($s->curriculum) ?>" target="_blank" rel="noopener">
+                                Ver Curriculum
+                            </a>
+                            <?php else: ?>
+                                No disponible
+                            <?php endif; ?>
+                        </td>
                         <td><?= htmlspecialchars($s->estado) ?></td>
                     </tr>
                 <?php endforeach ?>

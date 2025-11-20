@@ -25,7 +25,6 @@ class OfertaController {
             if ($rol_id != 2) {
                 $this->repo->borrar((int)$_POST['id']);
                 header('Location: index.php?page=ofertas');
-                exit;
             }
         }
 
@@ -59,7 +58,6 @@ class OfertaController {
 
         if ($_SESSION['rol_id'] != 3) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
 
         $cicloRepo = new RepositorioCiclo();
@@ -90,7 +88,6 @@ class OfertaController {
                     $this->repo->anadirCicloAOferta($ofertaId, $cicloId);
                 }
                 header('Location: index.php?page=ofertas&creada=1');
-                exit;
             }
         }
 
@@ -108,12 +105,10 @@ class OfertaController {
 
         if ($_SESSION['rol_id'] != 3 || !$id) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
         $oferta = $this->repo->obtener($id);
         if (!$oferta || $oferta->empresa_id != $empresa_id) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
         $errores = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -126,7 +121,6 @@ class OfertaController {
             if (!$errores) {
                 $this->repo->actualizar($id, $titulo, $descripcion, $fechalimite);
                 header('Location: index.php?page=ofertas');
-                exit;
             }
         }
         echo $this->templates->render('../modificar_oferta', [
@@ -140,7 +134,6 @@ class OfertaController {
         $id = $_GET['id'] ?? null;
         if ($_SESSION['rol_id'] != 1 || !$id || !is_numeric($id)) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
         $oferta = $this->repo->obtener($id);
         echo $this->templates->render('../detalle_oferta', [
@@ -154,17 +147,14 @@ class OfertaController {
         $id = $_GET['id'] ?? null;
         if (!$id || !is_numeric($id)) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
         $oferta = $this->repo->obtener($id);
         if (!$oferta) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
         $rol_id = $_SESSION['rol_id'] ?? null;
         if ($rol_id != 1 && ($rol_id != 3 || $oferta->empresa_id != $empresa_id)) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
         $repoSolicitudes = new RepositorioSolicitudes();
         $solicitudes = $repoSolicitudes->deOferta($id);

@@ -13,7 +13,7 @@
 
   <form action="" method="POST" class="login-form">
     <div class="form-group">
-      <label for="usuario">Nombre de usuario</label>
+      <label for="usuario">Correo</label>
       <input type="text" id="usuario" name="usuario" required>
     </div>
 
@@ -26,8 +26,7 @@
   </form>
 
   <div class="forgot-password">
-    <a href="/Jobyz/index.php?page=seleccion_registro">Crear cuenta</a>
-    <a href="/Jobyz/index.php?page=recuperar">¿Ha olvidado la contraseña?</a>
+    <a href="/index.php?page=seleccion_registro">Crear cuenta</a>
   </div>
 </section>
 

@@ -16,6 +16,22 @@ class RepositorioEmpresa {
         return $empresas;
     }
 
+   public function getUltimasEmpresas() {
+        $sql = 'SELECT nombre, foto FROM empresa
+                WHERE foto IS NOT NULL AND foto <> "" 
+                ORDER BY id DESC 
+                LIMIT 6'; // Obtiene las 6 empresas más recientes por ID
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //devuleve el numero de empresas
+    public function contarTodas() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM empresa");
+        return $stmt->fetchColumn();
+    }
+
     public function getNoValidadas(): array {
         $stmt = $this->db->query("SELECT e.*, u.correo FROM empresa e JOIN users u ON e.user_id = u.id WHERE e.validada = 0");
         $empresas = [];
@@ -142,8 +158,8 @@ class RepositorioEmpresa {
 
             $fotoPathRel = null;
             if (!empty($files['foto']['name'])) {
-                $dirRelFoto = 'assets/uploads/empresa_logo/';
-                $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
+                $dirRelFoto = '/assets/uploads/empresa_logo/';
+                $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . $dirRelFoto;
                 $ext = strtolower(pathinfo($files['foto']['name'], PATHINFO_EXTENSION));
                 $nombreFoto = 'logo_' . $userId . '.' . $ext;
                 $fotoPathAbs = $dirAbsFoto . $nombreFoto;
@@ -179,8 +195,8 @@ class RepositorioEmpresa {
         $fotoPathRel = $empresaAnterior ? $empresaAnterior->getFoto() : null;
 
         if (isset($files['nuevoLogo']) && $files['nuevoLogo']['error'] === 0) {
-            $dirRelFoto = 'assets/uploads/empresa_logo/';
-            $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
+            $dirRelFoto = '/assets/uploads/empresa_logo/';
+            $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . $dirRelFoto;
             $ext = strtolower(pathinfo($files['nuevoLogo']['name'], PATHINFO_EXTENSION));
             $nombreFoto = 'logo_' . ($empresaAnterior ? $empresaAnterior->getUserId() : 'unknown') . '.' . $ext;
             $fotoPathAbs = $dirAbsFoto . $nombreFoto;

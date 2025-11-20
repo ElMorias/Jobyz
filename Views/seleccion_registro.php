@@ -10,10 +10,10 @@
   <p>Selecciona tu perfil para continuar con el registro.</p>
 
   <div class="tipo-opciones">
-    <a href="/Jobyz/index.php?page=registro_alumno" class="btn">
+    <a href="/index.php?page=registro_alumno" class="btn">
       Soy alumno
     </a>
-    <a href="/Jobyz/index.php?page=registro_empresa" class="btn">
+    <a href="/index.php?page=registro_empresa" class="btn">
       Soy empresa
     </a>
   </div>

@@ -29,14 +29,12 @@ class SolicitudController {
 
         if (!$oferta_id || !is_numeric($oferta_id) || !$user_id) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
         $alumnorepo = new RepositorioAlumno();
         $alumno_id = $alumnorepo->getAlumnoIdPorUserId($user_id);
 
         if (!$alumno_id) {
             header('Location: index.php?page=ofertas');
-            exit;
         }
 
         $existe = $this->repo->buscaDuplicada($alumno_id, $oferta_id);
@@ -45,6 +43,5 @@ class SolicitudController {
         }
 
         header('Location: index.php?page=solicitudes');
-        exit;
     }
 }

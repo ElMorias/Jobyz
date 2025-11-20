@@ -1,6 +1,5 @@
 <form id="formCargaMasivaAlumnos">
   <div>
-    <div id="carga-fallos" style="margin-top:1em;"></div>
     <label for="familia">Familia profesional:</label>
     <select id="familia" class="familia" name="familia" required>
       <option value="">Selecciona familia</option>
@@ -18,6 +17,7 @@
     <label for="csvAlumnos">CSV de alumnos:</label>
     <input type="file" id="csvAlumnos" class="csvAlumnos" accept=".csv" required>
   </div>
+  <div id="carga-fallos" style="margin-top:1em;"></div>
   <div style="margin:1em 0;">
     <button type="button" id="btnPrevisualizar" class="btnPrevisualizar btn-detalles">Previsualizar</button>
     <button type="button" id="btnCancelarCarga" class="btnCancelarCarga btn-borrar">Cancelar</button>

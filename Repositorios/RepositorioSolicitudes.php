@@ -118,7 +118,7 @@ class RepositorioSolicitudes {
      * @return Solicitud[]
      */
     public function deOferta($oferta_id) {
-        $sql = "SELECT s.*, a.nombre AS alumno_nombre, u.correo AS user_correo
+        $sql = "SELECT s.*, a.nombre AS alumno_nombre, a.curriculum AS alumno_curriculum, u.correo AS user_correo
                 FROM solicitud s
                 JOIN alumno a ON a.id = s.alumno_id
                 JOIN users u ON u.id = a.user_id
@@ -130,6 +130,7 @@ class RepositorioSolicitudes {
             $s = Solicitud::fromArray($row);
             $s->alumno_nombre = $row['alumno_nombre'];
             $s->alumno_email = $row['user_correo'];
+            $s->curriculum = $row['alumno_curriculum'];
             $res[] = $s;
         }
         return $res;

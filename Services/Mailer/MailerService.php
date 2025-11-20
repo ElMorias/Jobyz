@@ -25,7 +25,7 @@ class MailerService
     {
         $mail = new PHPMailer();
         $mail->isSMTP();
-        $mail->Host = 'localhost';
+        $mail->Host = 'mailhog';
         $mail->Port = 1025; // MailHog SMTP (desarrollo)
         $mail->SMTPAuth = false;
 

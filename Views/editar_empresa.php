@@ -64,7 +64,7 @@
 
     <!-- Logo / Foto -->
     <div class="form-bloque form-documentos">
-      <h3>Logo / Imagen</h3>
+      <h3>Logo</h3>
       <div class="form-group">
         <label>Logo actual:</label><br>
         <?php if (!empty($empresa['foto'])): ?>

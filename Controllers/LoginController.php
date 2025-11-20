@@ -15,6 +15,15 @@ class LoginController {
     echo $this->templates->render('../login', ['title' => 'Iniciar sesión']);
   }
 
+  public function verPoliticas() {
+    echo $this->templates->render('../politicas_privacidad', ['title' => 'Politicas de privacidad']);
+  }
+
+  public function verCookies() {
+    echo $this->templates->render('../cookies', ['title' => 'Cookies']);
+  }
+
+
   public function mostrarSeleccion(){
     echo $this->templates->render('../seleccion_registro', ['title' => '¿Quién eres?']);
   }
@@ -44,22 +53,19 @@ class LoginController {
           $_SESSION['rol_id']  = $usuario->getRolId();
 
           // --- TOKEN LOGIC: genera, guarda en BD y lo envía al navegador ---
-          require_once dirname(__DIR__) . '/helpers/Security.php';
           $security = new Security();
           $token = $security->createAndStoreToken($usuario->getId(), $usuario->getCorreo());
           $userId = $usuario->getId();
 
-          // Si el login es normal (no AJAX), pon el token en JS para que el frontend lo guarde
+    
           echo "<script>
               sessionStorage.setItem('token', '".htmlspecialchars($token)."');
               sessionStorage.setItem('user_id', '".htmlspecialchars($userId)."');
-              window.location.href = 'index.php?page=solicitudes';
+              window.location.href = 'index.php?page=panel_admin';
           </script>";
           exit;
 
-          // Si usas login AJAX, en vez del script anterior haz:
-          // echo json_encode(['token' => $token, 'user_id' => $userId]);
-          // exit;
+    
       }
     } else {
         $error = 'Usuario y/o contraseña inválidas';
@@ -102,11 +108,7 @@ class LoginController {
         $params["secure"], $params["httponly"]
       );
     }
-    // Puedes devolver un JSON o redirección según cómo llames el logout (AJAX o normal)
-    // Para AJAX:
-    // echo json_encode(['ok' => true]);
-    // Forzado a recargar login:
+ 
     header('Location: index.php?page=login');
-    exit;
   }
 }

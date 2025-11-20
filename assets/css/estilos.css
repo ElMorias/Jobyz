@@ -210,6 +210,159 @@ footer,
   color: var(--color-gris-oscuro);
 }
 
+.footer-links{
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== HERO / CABECERA DE LANDING ========== */
+.landing-wrap{
+  background-color: var(--color-blanco);
+}
+.hero-landing {
+  min-height: 45vh;
+  background-image:url('/assets/Images/landing-hero.png');
+  background-size: cover;
+  margin-top: -10px;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
+.hero-overlay {
+  padding: 48px 48px 36px 62px;
+  margin-left: 6vw 124.26px;
+  border-radius: 24px 30px 10px 0;
+  color: var(--color-blanco);
+  max-width: 540px;
+}
+.hero-landing h1 {
+  font-size: 2.2em;
+  font-weight: 800;
+  margin-bottom: 18px;
+  color: var(--color-blanco);
+  letter-spacing: 0.3px;
+  text-shadow: 2px 3px 11px var(--color-box-shadow);
+}
+.marcajobyz { color: var(--color-blanco); }
+.hero-slogan {
+  font-size: 1.13em;
+  font-weight: 600;
+  margin-bottom: 29px;
+  color: var(--color-blanco);
+  text-shadow: 1px 1px 6px var(--color-box-shadow);
+}
+
+/* ========== DESCRIPCIÓN / BENEFICIOS / CALL TO ACTION ========== */
+.section-info {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 54px 0 0 0;
+  gap: 44px;
+  width: 100%;
+  padding: 22px 0 0 0;
+}
+.section-info h2{
+  padding: 1em 1em;
+  margin-left: 10%;
+}
+.info-flex > div:first-child {
+  flex: 2;
+  padding: 0 40px 0 9vw;
+  text-align: left;
+}
+.beneficios {
+  display: flex;
+  gap: 11px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  justify-content: flex-start;
+}
+.beneficio {
+  background: var(--color-gris-claro);
+  color: var(--color-gris-oscuro);
+  border-radius: 13px;
+  font-size: 1em;
+  padding: 10px 23px;
+  margin-bottom: 7px;
+  box-shadow: 0 2px 9px var(--color-box-shadow);
+  display: flex; align-items: center; gap: 10px;
+}
+.beneficio span { font-size: 1.25em; }
+
+/* ========== CARROUSEL DE EMPRESAS ========== */
+.carrousel-empresas {
+  padding: 38px 14vw 32px 7vw;
+  background: var(--color-blanco);
+  border-radius: 27px;
+  margin: 32px 0 50px 0;
+}
+.carrousel-empresas h2 { 
+  text-align: left;
+  margin-bottom: 24px;
+  font-size: 1.28em;
+  font-weight: 700;
+  color: var(--color-teal);
+}
+.carrousel-logos {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  padding: 1em 1em;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-verde-lima);
+  min-height: 68px;
+}
+.logo-slide {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center; justify-content: center;
+}
+
+.carrousel-logos img {
+  height: 52px;
+  width: auto;
+  max-width: 160px;
+  filter: grayscale(8%) brightness(1);
+  background: var(--color-blanco);
+  border-radius: 14px;
+  box-shadow: 0 2px 9px var(--color-box-shadow);
+  padding: 10px 17px;
+  transition: filter 0.16s, transform 0.15s, box-shadow 0.14s;
+  opacity: 0.98;
+  object-fit: contain;
+}
+.carrousel-logos img:hover {
+  filter: grayscale(0%) brightness(1.05);
+  transform: scale(1.09);
+  box-shadow: 0 3px 18px var(--color-teal);
+  opacity: 1;
+}
+
+/* --- Politicas Privacidad --- */
+
+.politicas{
+  background-color: var(--color-blanco);
+  display: flex;
+  flex-direction: column;
+  padding: 2em 2em;
+  justify-content: center;
+  align-items: center;
+}
+.politicas-forma{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 700px;
+
+}
+
 /* --- Wrapper --- */
 .wrapper {
   min-height: 100%;
@@ -312,7 +465,7 @@ table,
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 28px var(--color-box-shadow);
-  font-size: 0.95em;
+  font-size: 1.1em;
 }
 
 th,
@@ -552,6 +705,62 @@ textarea:disabled {
   justify-content: center;
 }
 
+/*--- PANEL DE ADMIN ---*/
+.dashboard-graficos {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.grafico-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1em;
+    margin-bottom: 0;
+}
+
+/* Gráfico full: arriba, ancho hasta 1000px centrado */
+.grafico-full {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto 15px auto;
+    background-color: var(--color-blanco);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+/* Dos columnas abajo */
+.grafico-half {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 400px;
+    background-color: var(--color-blanco);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.grafico-full canvas {
+    width: 100%;
+    max-width: 1000px;
+    height: 100px;    /* Antes era 300px, ahora menos alto */
+    display: block;
+}
+.grafico-half canvas {
+    width: 100%;
+    max-width: 480px;
+    min-width: 180px;
+    height: 230px;
+    display: block;
+}
 
 
 /*--- CRUD DE ADMIN DE ALUMNO-EMPRESA ---*/
@@ -569,6 +778,12 @@ textarea:disabled {
   flex-direction: row;
   justify-content: space-between;
   padding: 2em 2em;
+}
+.botones-tabla-usuarios{
+  display: flex;
+  flex-direction: row;
+  gap: 1.2em;
+
 }
 
 .form-no-form {
@@ -787,6 +1002,17 @@ textarea:disabled {
   margin-top: 0.3em;
 }
 
+
+/* --- ESTUDIOS DEL PERFIL --- */
+.estudio-guardado{
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    border: 2px solid var(--color-teal);
+    border-radius: 12px;
+    padding: 1em 1em;
+}
+
 /* --- FIN DE ESPECIFICOS --- */
 
 
@@ -915,181 +1141,160 @@ textarea:disabled {
 }
 
 /* --- RESPONSIVE Y MEDIA QUERIES --- */
-@media (max-width: 1100px) {
-  .navbar {
-    flex-direction: column;
+/* --- LAPTOP (ej: 1200px a 1440px) --- */
+@media (max-width: 1440px) and (min-width: 1025px) {
+  /* Aquí puedes ajustar anchos, márgenes, tamaño de tarjetas/titulares, grid tweaks para mayor legibilidad en monitores medios */
+  /* Ejemplo genérico: */
+  .panel-box,
+  .main-wrapper,
+  .admin-layout {
+    max-width: 98vw;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
   }
+}
 
-  .main-wrapper {
-    flex-direction: column;
+@media (max-width: 1400px) {
+  .ofertas-grid,
+  .solicitudes-grid {
+    grid-template-columns: repeat(2, minmax(310px, 1fr));
   }
+}
 
+@media (max-width: 1200px) {
   .admin-layout {
     flex-direction: column;
   }
-
   .admin-menu {
     min-width: 100%;
+    width: 100%;
     border-right: none;
-    border-bottom: 1.5px solid var(--color-modales);
+    border-bottom: 1.5px solid var(--color-gris-claro);
+    padding: 1.4em 1em 1em 1em;
+    box-shadow: 0 2px 8px var(--color-box-shadow);
   }
-
   .admin-layout .contenido {
-    padding: 1.2em;
-  }
-
-  .panel-box {
-    width: 99%;
-    padding: 1.6em 1.2em;
-  }
-
-  form {
-    padding: 1.2em 0.6em;
+    padding: 1.3em 1em 1.7em 1em;
   }
 }
 
 @media (max-width: 900px) {
-  .form-registro-alumno {
+  /* Oculta la 3ra columna en todas las filas/titulos */
+  table th:nth-child(4),
+  table td:nth-child(4),
+  .tablaUsuarios th:nth-child(4),
+  .tablaUsuarios td:nth-child(4),
+  .tablaEmpresas th:nth-child(4),
+  .tablaEmpresas td:nth-child(4) {
+    display: none;
+  }
+  /* Oculta la 5ª columna de igual forma */
+  table th:nth-child(5),
+  table td:nth-child(5),
+  .tablaUsuarios th:nth-child(5),
+  .tablaUsuarios td:nth-child(5),
+  .tablaEmpresas th:nth-child(5),
+  .tablaEmpresas td:nth-child(5) {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .ofertas-grid,
+  .solicitudes-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: none;
-    grid-row-gap: 18px;
-  }
-
-  .form-registro-alumno>div,
-  .form-registro-alumno>.registro-botones {
-    grid-area: auto;
-  }
-
-  .form-registrar-empresa>div,
-  .form-registrar-empresa>button,
-  .form-registrar-empresa>.registro-botones {
-    grid-area: auto;
   }
 }
 
 
-@media (max-width: 700px) {
-  .header-ul {
-    gap: 0.7em;
+/* --- TABLET (768px a 1024px) --- */
+@media (max-width: 1024px) and (min-width: 768px) {
+  /* Columnas se apilan, elementos laterales pasan abajo, menús se simplifican */
+  .main-wrapper,
+  .admin-layout,
+  .form-registro-alumno,
+  .form-registrar-empresa {
+    grid-template-columns: 1fr;
+    padding-left: 1em;
+    padding-right: 1em;
   }
-
-  .navbar {
-    padding: 0.7em 0.4em;
-  }
-
-  .wrapper,
-  .main-wrapper {
-    padding: 0;
-  }
-
-  .panel-box {
-    margin: 1em auto;
-  }
-
-  .modal {
-    padding: 1.2em 0.6em;
-    min-width: 90vw;
-  }
-
   .admin-menu {
-    padding: 1.2em 0.7em;
+    min-width: 100%;
+    padding: 1.2em 0.5em;
+    border: none;
+    border-bottom: 1.5px solid #eee;
   }
+
+  
 }
 
-@media (max-width: 510px) {
-
-  html,
-  body {
-    font-size: 97%;
+/* --- MOBILE LARGE (MENOS DE 768px) --- */
+@media (max-width: 767px) {
+  .navbar,
+  .main-wrapper,
+  .admin-layout,
+  .form-registro-alumno,
+  .form-registrar-empresa {
+    grid-template-columns: 1fr;
+    padding: 0.4em;
   }
-
+  .form-bloque {
+    padding: 1em 0.6em;
+    font-size: .98em;
+  }
+  .header-ul {
+    flex-direction: column;
+    gap: 0.3em;
+  }
+  .registro-botones {
+    flex-direction: column;
+    gap: .8em;
+  }
+  /* Elimina anchos fijos o max-width restrictivo en tarjetas y paneles */
   .panel-box {
-    border-radius: 9px;
-    box-shadow: 0 3px 12px var(--color-box-shadow);
+    width: 98vw;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+  }
+  input, select, textarea {
+    font-size: 1em;
   }
 
-  form {
-    border-radius: 8px;
+   .form-registro-alumno,
+  .form-registrar-empresa {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1em;
+    width: 100%;
+    min-width: 0;
   }
-}
-
-/* --- UTILIDADES Y OTROS BLOQUES --- */
-.text-center {
-  text-align: center
-}
-
-.text-right {
-  text-align: right
-}
-
-.w100 {
-  width: 100%
-}
-
-.mt-2 {
-  margin-top: 2em
-}
-
-.mt-1 {
-  margin-top: 1em
-}
-
-.mb-1 {
-  margin-bottom: 1em
-}
-
-.mb-2 {
-  margin-bottom: 2em
-}
-
-.no-shadow {
-  box-shadow: none
-}
-
-.rounded {
-  border-radius: 9px
-}
-
-.no-select {
-  user-select: none
-}
-
-.hidden {
-  display: none
-}
-
-.block {
-  display: block
-}
-
-.success-msg {
-  background: var(--color-blanco);
-  color: var(--color-hover-teal);
-  border-left: 6px solid var(--color-verde-lima);
-  padding: 0.7em 1em;
-  border-radius: 6px;
-}
-
-.error-msg {
-  background: var(--color-blanco);
-  color: var(--color-error);
-  border-left: 6px solid var(--color-error);
-  padding: 0.7em 1em;
-  border-radius: 6px;
-}
-
-.info-msg {
-  background: var(--color-blanco);
-  color: var(--color-info);
-  border-left: 6px solid var(--color-info);
-  padding: 0.7em 1em;
-  border-radius: 6px;
-}
-
-.warning-msg {
-  background: var(--color-blanco);
-  color: var(--color-warning);
-  border-left: 6px solid var(--color-warning);
-  padding: 0.7em 1em;
-  border-radius: 6px;
+  .form-registro-alumno > .form-bloque,
+  .form-registrar-empresa > .form-bloque,
+  .form-registro-alumno > .registro-botones,
+  .form-registrar-empresa > .registro-botones {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    overflow: hidden;
+    /* Elimina grid positioning fijo */
+  }
+  /* Ajuste para inputs/textareas permisos largos */
+  .form-bloque input,
+  .form-bloque select,
+  .form-bloque textarea {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    font-size: 1em;
+  }
+  /* Si algún bloque tiene tabla o grid interna muy larga */
+  .form-bloque table {
+    width: 100%;
+    min-width: 0;
+    display: block;
+    overflow-x: auto;
+  }
 }

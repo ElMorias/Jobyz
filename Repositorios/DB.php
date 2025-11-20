@@ -7,9 +7,9 @@ class DB {
     if (self::$conexion === null) {
       try {
         self::$conexion = new PDO(
-          'mysql:host=localhost;dbname=jobyz;charset=utf8mb4',
-          'root', // usuario
-          'root',     // contraseña
+          'mysql:host=db;dbname=jobyz;charset=utf8mb4',
+          'jobyz', // usuario
+          'jobyzpass',     // contraseña
           [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC

@@ -9,7 +9,6 @@
 <form action="" method="POST" id="form-editar-alumno" class="modal-form" enctype="multipart/form-data">
   <input type="hidden" name="id" id="perfil-id">
   <input type="hidden" name="validado" id="perfil-validado" value="1">
-  <div id="modal-errores"></div>
     <!--Bloque 1: Correo, contraseña, nombre -->
     <div class="form-bloque">
     <h3>Identificación</h3>
@@ -21,6 +20,10 @@
         <div class="form-group">
         <label for="perfil-contrasena">Contraseña</label>
         <input type="password" name="contrasena" id="perfil-contrasena" minlength="6" maxlength="60">
+        </div>
+        <div class="form-group">
+        <label for="repetir_contrasena">Repetir contraseña</label>
+        <input type="password" id="repetir-contrasena" name="repetir-contrasena" required minlength="6" maxlength="60">
         </div>
         <div class="form-group">
         <label for="perfil-nombre">Nombre</label>
@@ -70,8 +73,8 @@
     <!--Bloque 3: estudios -->
  
    <div class="form-bloque" id="bloque-estudios">
-      <div id="estudios-guardados" class="formd-datos-personales">
       <h3>Mis estudios actuales</h3>
+      <div id="estudios-guardados" class="formd-datos-personales">
       <!-- Aquí JS irá metiendo los estudios existentes como bloques -->
       </div>
       <h3>Estudios</h3>
@@ -100,7 +103,6 @@
         <input type="file" id="fotoFile" name="foto" accept="image/*">
       </div>
       <div class="form-group">
-        <label>&nbsp;</label>
         <button type="button" id="tomarFotoBtn" class="btn-verde-lima">Tomar foto</button>
       </div>
     </div>
@@ -112,6 +114,7 @@
     <button type="button" id="cerrar" class="btn-verde-lima">Cerrar</button>
     <button type="submit" id="actualizar" class="btn-verde-lima">Guardar Cambios</button>
   </div>
+  <div id="modal-errores"></div>
 </form>
 <?php $this->stop() ?>
 

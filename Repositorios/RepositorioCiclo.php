@@ -36,5 +36,24 @@ class RepositorioCiclo
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Devuelvve los ciclos que en los que mas alunmos estan matruculados
+    public function topCiclosPorAlumnos() {
+        $sql = "
+            SELECT ciclo.nombre, COUNT(*) as total
+            FROM estudios
+            JOIN ciclo ON ciclo.id = estudios.ciclo_id
+            GROUP BY ciclo.nombre
+            ORDER BY total DESC
+            LIMIT 5
+        ";
+        $stmt = $this->db->query($sql);
+        $arr = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $arr[$row['nombre']] = (int)$row['total'];
+        }
+        return $arr;
+    }
+
 }
 

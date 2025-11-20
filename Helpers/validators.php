@@ -187,20 +187,34 @@ class Validators
     }
 
     /**
-     * Valida que las fechas de estudios no sean posteriores al año actual.
-     * @param array $fechas Array de fechas tipo "YYYY-MM-DD"
-     */
-    public function validarFechasEstudios($fechas)
+     * Valida que las fechas de estudios no sean posteriores al año actual
+     * y que la fecha de fin (si existe) no sea menor a la de inicio.
+     * @param array $fechasInicio  Array de fechas tipo "YYYY-MM-DD" (inicio)
+     * @param array|null $fechasFin Array de fechas tipo "YYYY-MM-DD" (fin)
+    */
+    public function validarFechasEstudios($fechasInicio, $fechasFin)
     {
         $anyoActual = (int)date('Y');
-        foreach ($fechas as $fecha) {
-            $anyo = (int)substr($fecha, 0, 4);
+
+        // Verifica todas las fechas de inicio
+        foreach ($fechasInicio as $i => $fi) {
+            $anyo = (int)substr($fi, 0, 4);
             if ($anyo > $anyoActual) {
                 $this->errores[] = 'No puedes registrar estudios en un año posterior al actual.';
                 break;
             }
+
+            // Si hay fechas de fin, verifica que no sea menor que la de inicio
+            if ($fechasFin && !empty($fechasFin[$i])) {
+                $fin = $fechasFin[$i];
+                if ($fin < $fi) {
+                    $this->errores[] = 'La fecha de fin de un estudio no puede ser anterior a la de inicio.';
+                    // Puedes añadir info extra usando el índice $i si quieres saber el ciclo exacto
+                }
+            }
         }
     }
+
 
     // ----------- Validaciones compuestas/principales -----------
 
@@ -230,8 +244,10 @@ class Validators
 
         // Estudios (si hay)
         if (isset($datos['fechainicio']) && is_array($datos['fechainicio'])) {
-            $this->validarFechasEstudios($datos['fechainicio']);
+            $finArray = isset($datos['fechafin']) && is_array($datos['fechafin']) ? $datos['fechafin'] : [];
+            $this->validarFechasEstudios($datos['fechainicio'], $finArray);
         }
+
 
         return $this->errores;
     }
@@ -256,9 +272,12 @@ class Validators
             $this->validarContrasenaEdicion($datos['contrasena']);
         }
         $this->validarEdad($datos['fnacimiento'] ?? '');
+
         if (isset($datos['fechainicio']) && is_array($datos['fechainicio'])) {
-            $this->validarFechasEstudios($datos['fechainicio']);
+            $finArray = isset($datos['fechafin']) && is_array($datos['fechafin']) ? $datos['fechafin'] : [];
+            $this->validarFechasEstudios($datos['fechainicio'], $finArray);
         }
+
         return $this->errores;
     }
 

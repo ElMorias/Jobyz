@@ -34,10 +34,6 @@ function initRegistroAlumnoForm(raiz) {
     // Carga familias desde API 
     let familiasCache = [];
     fetch("api/apiFamilia.php", {
-        headers: {
-            Authorization: "Bearer " + token,
-            "X-USER-ID": user_id
-        }
     })
     .then(res => res.json())
     .then(familias => { familiasCache = familias; });
@@ -73,10 +69,6 @@ function initRegistroAlumnoForm(raiz) {
                 selectCiclo.disabled = !famId;
                 if (!famId) return;
                 fetch(`api/apiCiclo.php?familia_id=${famId}`, {
-                    headers: {
-                        Authorization: "Bearer " + token,
-                        "X-USER-ID": user_id
-                    }
                 })
                 .then(res => res.json())
                 .then(ciclos => {
@@ -162,10 +154,6 @@ function initRegistroAlumnoForm(raiz) {
             let datos = new FormData(formRegistro);
             fetch('api/apiAlumno.php', {
                 method: 'POST',
-                headers: {
-                    Authorization: "Bearer " + token,
-                    "X-USER-ID": user_id
-                },
                 body: datos
             })
             .then(res => res.json())

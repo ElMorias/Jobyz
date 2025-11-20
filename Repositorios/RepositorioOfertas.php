@@ -40,6 +40,25 @@ class RepositorioOfertas {
         return $ofertas;
     }
 
+   //Devuelve un array con el nombre del ciclo y el n de ofertas que lo solicitan
+    public function topCiclosEnOfertas() {
+        $sql = "
+            SELECT ciclo.nombre, COUNT(*) as total
+            FROM oferta_has_ciclo
+            JOIN ciclo ON ciclo.id = oferta_has_ciclo.ciclo_id
+            GROUP BY ciclo.nombre
+            ORDER BY total DESC
+            LIMIT 5
+        ";
+        $stmt = $this->db->query($sql);
+        $arr = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $arr[$row['nombre']] = (int)$row['total'];
+        }
+        return $arr;
+    }
+
+
     // Insertar nueva oferta y devolver el ID
     public function insertarOferta($titulo, $descripcion, $empresa_id, $fechalimite): int {
         $stmt = $this->db->prepare(

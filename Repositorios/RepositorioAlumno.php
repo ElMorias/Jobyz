@@ -87,6 +87,12 @@ class RepositorioAlumno {
         return $stmt->fetchColumn() ?: null;
     }
 
+    //devuelve el n de usuarios
+    public function contarTodos() {
+        $stmt = $this->db->query("SELECT COUNT(*) FROM alumno");
+        return $stmt->fetchColumn();
+    }
+
     // ==== Utilidades de existencia ====
 
     public function existeDni($dni) {
@@ -150,10 +156,10 @@ class RepositorioAlumno {
         }
 
         // Gestor de archivos (foto y CV)
-        $dirRelFoto = 'assets/uploads/alumnos_foto/';
-        $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
-        $dirRelCv = 'assets/uploads/alumnos_cv/';
-        $dirAbsCv = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelCv;
+        $dirRelFoto = '/assets/uploads/alumnos_foto/';
+        $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . $dirRelFoto;
+        $dirRelCv = '/assets/uploads/alumnos_cv/';
+        $dirAbsCv = $_SERVER['DOCUMENT_ROOT'] . $dirRelCv;
 
         // Foto
         $fotoPathRel = null;
@@ -239,13 +245,10 @@ class RepositorioAlumno {
             $userId = $this->db->lastInsertId();
 
             // Rutas archivos
-            $dirRelFoto = 'assets/uploads/alumnos_foto/';
-            $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelFoto;
-            $dirRelCv = 'assets/uploads/alumnos_cv/';
-            $dirAbsCv = $_SERVER['DOCUMENT_ROOT'] . '/Jobyz/' . $dirRelCv;
-
-            if (!is_dir($dirAbsFoto)) mkdir($dirAbsFoto, 0777, true);
-            if (!is_dir($dirAbsCv)) mkdir($dirAbsCv, 0777, true);
+            $dirRelFoto = '/assets/uploads/alumnos_foto/';
+            $dirAbsFoto = $_SERVER['DOCUMENT_ROOT'] . $dirRelFoto;
+            $dirRelCv = '/assets/uploads/alumnos_cv/';
+            $dirAbsCv = $_SERVER['DOCUMENT_ROOT'] . $dirRelCv;
 
             $fotoPathRel = null;
             $cvPathRel = null;
@@ -312,7 +315,7 @@ class RepositorioAlumno {
         $insertados = 0;
         $fallos = 0;
         $fallosEmails = [];
-        $alumnosOk = [];  // Aquí guardamos los objetos-alumno éxito
+        $alumnosOk = []; 
         $rolAlumno = 2;
 
         try {
@@ -379,7 +382,7 @@ class RepositorioAlumno {
                 'insertados'   => $insertados,
                 'fallos'       => $fallos,
                 'fallosEmails' => $fallosEmails,
-                'alumnos'      => array_map(fn($a) => $a->toArray(), $alumnosOk) // Devuelve objetos como arrays listos para API
+                'alumnos'      => array_map(fn($a) => $a->toArray(), $alumnosOk)
             ];
         } catch (\Exception $e) {
             $this->db->rollBack();

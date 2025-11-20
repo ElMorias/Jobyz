@@ -97,7 +97,7 @@
     <div class="registro-botones">
       <input type="hidden" name="validada" value="0">
       <button type="submit" class="btn-registro">Registrar</button>
-      <a href="/Jobyz/index.php?page=tabla_empresas" class="btn">  
+      <a href="/index.php?page=tabla_empresas" class="btn">  
         Cancelar Registro
       </a>
     </div>

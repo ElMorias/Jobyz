@@ -30,13 +30,19 @@ class LandingController {
      * - Si no, muestra la landing sin login.
      */
     public function mostrarLanding() {
+        // Instancia el repositorio
+        $empresaRepo = new RepositorioEmpresa();
+        $empresas = $empresaRepo->getUltimasEmpresas();
+
         if (isset($_SESSION['correo'])) {
             echo $this->templates->render('../landing_logueado', [
-                'title' => 'Bienvenido a Jobyz'
+                'title' => 'Bienvenido a Jobyz',
+                'empresas' => $empresas
             ]);
         } else {
             echo $this->templates->render('../landing', [
-                'title' => 'Bienvenido a Jobyz'
+                'title' => 'Bienvenido a Jobyz',
+                'empresas' => $empresas
             ]);
         }
     }

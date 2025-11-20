@@ -45,6 +45,7 @@
               <a class="btn-card btn" href="index.php?page=solicitudes_oferta&id=<?= $oferta['id'] ?>">Solicitudes</a>
           <?php elseif ($rolId == 3): // Empresa ?>
             <a class="btn btn-modificar" href="index.php?page=modificar_oferta&id=<?= $oferta['id'] ?>">Modificar</a>
+            <a class="btn-card btn" href="index.php?page=solicitudes_oferta&id=<?= $oferta['id'] ?>">Solicitudes</a>
             <form action="index.php?page=ofertas" method="POST" class="form-no-form">
               <input type="hidden" name="id" value="<?= $oferta['id'] ?>">
               <button class="btn-card btn-borrar" type="submit" name="borrar">Borrar</button>

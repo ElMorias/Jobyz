@@ -101,9 +101,17 @@ switch ($page) {
     $controller = new EmpresaController($templates);
     $controller->exportarEmpresaPDF();
     break;
-    case 'exportar_alumno_pdf':
+  case 'exportar_alumno_pdf':
     $controller = new AlumnoController($templates);
     $controller->exportarAlumnoPDF();
+    break;
+  case 'politicas_privacidad':
+    $controller = new LoginController($templates);
+    $controller->verPoliticas();
+    break;
+   case 'cookies':
+    $controller = new LoginController($templates);
+    $controller->verCookies();
     break;
 
   case 'landing':
